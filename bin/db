@@ -1,0 +1,15 @@
+#!/bin/sh
+
+if [[ ! -d vendor/postgres-data ]] ; then
+  mkdir -p vendor/postgres-data
+
+  initdb -D vendor/postgres-data
+  postgres -D vendor/postgres-data &
+  sleep 1
+
+  createuser -s postgres
+
+  pkill postgres
+fi
+
+exec postgres -D vendor/postgres-data
