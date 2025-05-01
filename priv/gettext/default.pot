@@ -31,7 +31,7 @@ msgstr ""
 msgid "Something went wrong!"
 msgstr ""
 
-#: lib/cms_web/live/liturgy_live/show.ex:36
+#: lib/cms_web/live/liturgy_live/show.ex:33
 #, elixir-autogen, elixir-format
 msgid "Song"
 msgstr ""
@@ -44,4 +44,19 @@ msgstr ""
 #: lib/cms_web/components/core_components.ex:74
 #, elixir-autogen, elixir-format
 msgid "close"
+msgstr ""
+
+#: lib/cms_web/live/liturgy_live/show.ex:18
+#, elixir-autogen, elixir-format
+msgid "Edit"
+msgstr ""
+
+#: lib/cms_web/live/liturgy_live/show.ex:11
+#, elixir-autogen, elixir-format
+msgid "Liturgy"
+msgstr ""
+
+#: lib/cms_web/live/liturgy_live/show.ex:54
+#, elixir-autogen, elixir-format
+msgid "Show Liturgy"
 msgstr ""

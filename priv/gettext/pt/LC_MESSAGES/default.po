@@ -31,7 +31,7 @@ msgstr ""
 msgid "Something went wrong!"
 msgstr ""
 
-#: lib/cms_web/live/liturgy_live/show.ex:36
+#: lib/cms_web/live/liturgy_live/show.ex:33
 #, elixir-autogen, elixir-format
 msgid "Song"
 msgstr "Hino"
@@ -45,3 +45,18 @@ msgstr ""
 #, elixir-autogen, elixir-format
 msgid "close"
 msgstr ""
+
+#: lib/cms_web/live/liturgy_live/show.ex:18
+#, elixir-autogen, elixir-format
+msgid "Edit"
+msgstr "Editar"
+
+#: lib/cms_web/live/liturgy_live/show.ex:11
+#, elixir-autogen, elixir-format
+msgid "Liturgy"
+msgstr "Liturgia"
+
+#: lib/cms_web/live/liturgy_live/show.ex:54
+#, elixir-autogen, elixir-format
+msgid "Show Liturgy"
+msgstr "Mostrar Liturgia"

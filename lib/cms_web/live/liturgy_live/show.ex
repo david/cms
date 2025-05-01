@@ -8,36 +8,37 @@ defmodule CMSWeb.LiturgyLive.Show do
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>
-        Liturgy {@liturgy.id}
-        <:subtitle>This is a liturgy record from your database.</:subtitle>
+        {gettext("Liturgy")}
+        <p title="Service date" class="text-sm font-normal">{@liturgy.service_on}</p>
         <:actions>
           <.button navigate={~p"/liturgies"}>
             <.icon name="hero-arrow-left" />
           </.button>
-          <.button variant="primary" navigate={~p"/liturgies/#{@liturgy}/edit?return_to=show"}>
-            <.icon name="hero-pencil-square" /> Edit liturgy
-          </.button>
+          <%= if get_in(@current_scope.user.organization_id) == @liturgy.organization_id do %>
+            <.button variant="primary" navigate={~p"/liturgies/#{@liturgy}/edit?return_to=show"}>
+              <.icon name="hero-pencil-square" /> {gettext("Edit")}
+            </.button>
+          <% end %>
         </:actions>
       </.header>
 
-      <.list>
-        <:item title="Service on">{@liturgy.service_on}</:item>
-      </.list>
-
-      <h2 class="mt-6 mb-4 text-xl font-semibold">Liturgy Blocks</h2>
-      <div class="space-y-4">
-        <div :for={block <- @liturgy.liturgy_blocks} class="p-4">
+      <div class="space-y-10">
+        <div :for={block <- @liturgy.liturgy_blocks} class="">
           <%= case block.type do %>
             <% :text -> %>
-              <span :if={block.subtitle} class="text-xs uppercase text-gray-500">{block.subtitle}</span>
+              <span :if={block.subtitle} class="text-xs uppercase text-gray-500">
+                {block.subtitle}
+              </span>
               <h3 :if={block.title} class="text-lg font-medium">{block.title}</h3>
               <p :if={block.body} class="mt-4">{block.body}</p>
             <% :song -> %>
-              <span class="text-xs uppercase text-gray-500"><%= gettext "Song" %></span>
+              <span class="text-xs uppercase text-gray-500">{gettext("Song")}</span>
               <h3 :if={block.title} class="text-lg font-medium">{block.title}</h3>
               <pre :if={block.body} class="mt-4 whitespace-pre-wrap font-sans"><%= block.body %></pre>
             <% :passage -> %>
-              <span :if={block.subtitle} class="text-xs uppercase text-gray-500">{block.subtitle}</span>
+              <span :if={block.subtitle} class="text-xs uppercase text-gray-500">
+                {block.subtitle}
+              </span>
               <h3 :if={block.title} class="text-lg font-medium">{block.title}</h3>
           <% end %>
         </div>
@@ -52,7 +53,7 @@ defmodule CMSWeb.LiturgyLive.Show do
 
     {:ok,
      socket
-     |> assign(:page_title, "Show Liturgy")
+     |> assign(:page_title, gettext("Show Liturgy"))
      |> assign(
        :liturgy,
        Liturgies.get_liturgy!(socket.assigns.current_scope, id)

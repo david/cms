@@ -57,7 +57,6 @@ defmodule CMSWeb.Router do
 
       live "/liturgies", LiturgyLive.Index, :index
       live "/liturgies/new", LiturgyLive.Form, :new
-      live "/liturgies/:id", LiturgyLive.Show, :show
       live "/liturgies/:id/edit", LiturgyLive.Form, :edit
     end
 
@@ -72,6 +71,7 @@ defmodule CMSWeb.Router do
       live "/users/register", UserLive.Registration, :new
       live "/users/log-in", UserLive.Login, :new
       live "/users/log-in/:token", UserLive.Confirmation, :new
+      live "/liturgies/:id", LiturgyLive.Show, :show
     end
 
     post "/users/log-in", UserSessionController, :create
