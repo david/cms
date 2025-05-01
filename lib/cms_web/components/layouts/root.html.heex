@@ -30,14 +30,17 @@
   <body>
     <ul class="menu menu-horizontal w-full relative z-10 flex items-center gap-4 px-4 sm:px-6 lg:px-8 justify-end">
       <%= if @current_scope do %>
-        <li>
-          {@current_scope.user.email}
-        </li>
-        <li>
-          <.link href={~p"/users/settings"}>Settings</.link>
-        </li>
-        <li>
-          <.link href={~p"/users/log-out"} method="delete">Log out</.link>
+        <li class="dropdown dropdown-end">
+          <div tabindex="0" role="button" class="btn btn-ghost">
+            {@current_scope.user.email}
+          </div>
+          <ul
+            tabindex="0"
+            class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 mt-4 z-[1]"
+          >
+            <li><.link href={~p"/users/settings"}>Settings</.link></li>
+            <li><.link href={~p"/users/log-out"} method="delete">Log out</.link></li>
+          </ul>
         </li>
       <% else %>
         <li>
