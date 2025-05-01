@@ -11,6 +11,7 @@
 - **Planning:** **Always outline your plan** (files to modify, commands to run, etc.) and **wait for explicit approval** before taking action.
 - **Code Comments:** **Strictly avoid adding *any* type of comments** (including explanatory comments like `<%# ... %>` in Heex or `<!-- ... -->` in HTML) to generated or modified code. Keep code self-explanatory or rely on surrounding context.
 - **Commit Messages:** **Do not use prefixes** like `feat:`, `chore:`, `fix:`, etc. Use clear, descriptive messages.
+- **`get_in` Syntax:** Prefer `get_in(record.property.other)` over `get_in(record, [:property, :other])` for accessing nested data.
 
 ## Key Directories & Files (relative to project root)
 
