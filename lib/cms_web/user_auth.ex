@@ -71,7 +71,10 @@ defmodule CMSWeb.UserAuth do
       |> assign(:current_scope, Scope.for_user(user))
       |> maybe_reissue_user_session_token(user, token_inserted_at)
     else
-      nil -> assign(conn, :current_scope, Scope.for_user(nil))
+      nil ->
+        org = Accounts.fetch_singleton_organization!()
+
+        assign(conn, :current_scope, %Scope{organization: org})
     end
   end
 
@@ -247,12 +250,15 @@ defmodule CMSWeb.UserAuth do
 
   defp mount_current_scope(socket, session) do
     Phoenix.Component.assign_new(socket, :current_scope, fn ->
-      {user, _} =
-        if user_token = session["user_token"] do
-          Accounts.get_user_by_session_token(user_token)
-        end || {nil, nil}
+      if user_token = session["user_token"] do
+        {user, _} = Accounts.get_user_by_session_token(user_token)
 
-      Scope.for_user(user)
+        Scope.for_user(user)
+      else
+        org = Accounts.fetch_singleton_organization!()
+
+        %Scope{organization: org}
+      end
     end)
   end
 

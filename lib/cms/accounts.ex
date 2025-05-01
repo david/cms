@@ -60,6 +60,16 @@ defmodule CMS.Accounts do
   """
   def get_user!(id), do: Repo.get!(User, id)
 
+  @doc """
+  Gets the single organization presumed to exist in the system.
+
+  Raises `Ecto.NoResultsError` if no organization is found.
+  This function assumes a single-organization setup.
+  """
+  def fetch_singleton_organization! do
+    Repo.one!(Organization)
+  end
+
   ## User registration
 
   @doc """
