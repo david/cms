@@ -29,18 +29,16 @@ defmodule CMSWeb.LiturgyLive.Show do
         <div :for={block <- @liturgy.liturgy_blocks} class="p-4">
           <%= case block.type do %>
             <% :text -> %>
-              <span class="text-xs uppercase text-gray-500">Text</span>
+              <span :if={block.subtitle} class="text-xs uppercase text-gray-500">{block.subtitle}</span>
               <h3 :if={block.title} class="text-lg font-medium">{block.title}</h3>
-              <h4 :if={block.subtitle} class="text-md italic">{block.subtitle}</h4>
-              <p :if={block.body} class="mt-2">{block.body}</p>
+              <p :if={block.body} class="mt-4">{block.body}</p>
             <% :song -> %>
-              <span class="text-xs uppercase text-gray-500">Song</span>
+              <span class="text-xs uppercase text-gray-500"><%= gettext "Song" %></span>
               <h3 :if={block.title} class="text-lg font-medium">{block.title}</h3>
-              <pre :if={block.body} class="mt-2 whitespace-pre-wrap"><%= block.body %></pre>
+              <pre :if={block.body} class="mt-4 whitespace-pre-wrap font-sans"><%= block.body %></pre>
             <% :passage -> %>
-              <span class="text-xs uppercase text-gray-500">Passage</span>
+              <span :if={block.subtitle} class="text-xs uppercase text-gray-500">{block.subtitle}</span>
               <h3 :if={block.title} class="text-lg font-medium">{block.title}</h3>
-              <h4 :if={block.subtitle} class="text-md italic">{block.subtitle}</h4>
           <% end %>
         </div>
       </div>
