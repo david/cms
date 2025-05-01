@@ -16,15 +16,20 @@ defmodule CMS.Accounts.Scope do
   growing application requirements.
   """
 
-  alias CMS.Accounts.User
+  alias CMS.Accounts.{User, Organization}
 
-  defstruct user: nil
+  defstruct user: nil, organization: nil
 
   @doc """
   Creates a scope for the given user.
 
+  Expects the user struct to have the `:organization` association preloaded.
   Returns nil if no user is given.
   """
+  def for_user(%User{organization: %Organization{}} = user) do
+    %__MODULE__{user: user, organization: user.organization}
+  end
+
   def for_user(%User{} = user) do
     %__MODULE__{user: user}
   end

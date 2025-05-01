@@ -14,7 +14,7 @@ defmodule CMSWeb.LiturgyLive.Show do
           <.button navigate={~p"/liturgies"}>
             <.icon name="hero-arrow-left" />
           </.button>
-          <%= if get_in(@current_scope.user.organization_id) == @liturgy.organization_id do %>
+          <%= if get_in(@current_scope.organization.id) == @liturgy.organization_id do %>
             <.button variant="primary" navigate={~p"/liturgies/#{@liturgy}/edit?return_to=show"}>
               <.icon name="hero-pencil-square" /> {gettext("Edit")}
             </.button>

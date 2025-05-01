@@ -20,14 +20,14 @@ defmodule CMS.Liturgies do
     * {:deleted, %Liturgy{}}
 
   """
-  def subscribe_liturgies(%Scope{} = scope) do
-    key = scope.user.organization_id
+  def subscribe_liturgies(%Scope{organization: org} = scope) do
+    key = org.id
 
     Phoenix.PubSub.subscribe(CMS.PubSub, "user:#{key}:liturgies")
   end
 
-  defp broadcast(%Scope{} = scope, message) do
-    key = scope.user.organization_id
+  defp broadcast(%Scope{organization: org} = scope, message) do
+    key = org.id
 
     Phoenix.PubSub.broadcast(CMS.PubSub, "user:#{key}:liturgies", message)
   end
@@ -42,9 +42,7 @@ defmodule CMS.Liturgies do
 
   """
   def list_liturgies(%Scope{} = scope) do
-    Repo.all(
-      from liturgy in Liturgy, where: liturgy.organization_id == ^scope.user.organization_id
-    )
+    Repo.all(from liturgy in Liturgy, where: liturgy.organization_id == ^scope.organization.id)
   end
 
   @doc """
@@ -64,7 +62,7 @@ defmodule CMS.Liturgies do
   def get_liturgy!(%Scope{} = scope, id) do
     query =
       from(l in Liturgy,
-        where: l.id == ^id and l.organization_id == ^scope.user.organization_id,
+        where: l.id == ^id and l.organization_id == ^scope.organization.id,
         preload: [liturgy_blocks: [:block]]
       )
 
@@ -116,7 +114,7 @@ defmodule CMS.Liturgies do
 
   """
   def update_liturgy(%Scope{} = scope, %Liturgy{} = liturgy, attrs) do
-    true = liturgy.organization_id == scope.user.organization_id
+    true = liturgy.organization_id == scope.organization.id
 
     with {:ok, liturgy = %Liturgy{}} <-
            liturgy
@@ -140,7 +138,7 @@ defmodule CMS.Liturgies do
 
   """
   def delete_liturgy(%Scope{} = scope, %Liturgy{} = liturgy) do
-    true = liturgy.organization_id == scope.user.organization_id
+    true = liturgy.organization_id == scope.organization.id
 
     with {:ok, liturgy = %Liturgy{}} <-
            Repo.delete(liturgy) do
@@ -161,12 +159,12 @@ defmodule CMS.Liturgies do
   def change_liturgy(%Scope{} = scope, %Liturgy{} = liturgy, attrs \\ %{}) do
     true =
       is_nil(liturgy.organization_id) or
-        liturgy.organization_id == scope.user.organization_id
+        liturgy.organization_id == scope.organization.id
 
     Liturgy.changeset(liturgy, attrs, scope)
   end
 
   def list_songs(%Scope{} = scope) do
-    Repo.all(from song in Song, where: song.organization_id == ^scope.user.organization_id)
+    Repo.all(from song in Song, where: song.organization_id == ^scope.organization.id)
   end
 end

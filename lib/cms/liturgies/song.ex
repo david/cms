@@ -5,7 +5,8 @@ defmodule CMS.Liturgies.Song do
   schema "songs" do
     field :title, :string
     field :body, :string
-    field :organization_id, :id
+
+    belongs_to :organization, CMS.Accounts.Organization
 
     timestamps(type: :utc_datetime)
   end
@@ -15,6 +16,6 @@ defmodule CMS.Liturgies.Song do
     song
     |> cast(attrs, [:title, :body])
     |> validate_required([:title, :body])
-    |> put_change(:organization_id, scope.user.organization_id)
+    |> put_change(:organization_id, scope.organization.id)
   end
 end

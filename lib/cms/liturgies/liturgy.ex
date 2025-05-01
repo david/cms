@@ -7,7 +7,8 @@ defmodule CMS.Liturgies.Liturgy do
 
   schema "liturgies" do
     field :service_on, :date
-    field :organization_id, :id
+
+    belongs_to :organization, CMS.Accounts.Organization
 
     has_many :liturgy_blocks, LiturgyBlock, on_replace: :delete
     has_many :blocks, through: [:liturgy_blocks, :block]
@@ -28,7 +29,7 @@ defmodule CMS.Liturgies.Liturgy do
       drop_param: :liturgy_blocks_drop
     )
     |> validate_required([:service_on])
-    |> put_change(:organization_id, user_scope.user.organization_id)
+    |> put_change(:organization_id, user_scope.organization.id)
   end
 
   defp block_changeset(lb, lb_attrs, index, liturgy, liturgy_attrs, user_scope) do

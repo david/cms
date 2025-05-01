@@ -26,6 +26,6 @@ defmodule CMS.Liturgies.LiturgyBlock do
     liturgy_block
     |> cast(attrs, [:liturgy_id, :position])
     |> cast_assoc(:block, with: &Block.changeset(&1, &2, user_scope), required: true)
-    |> put_change(:organization_id, user_scope.user.organization_id)
+    |> put_change(:organization_id, user_scope.organization.id)
   end
 end

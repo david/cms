@@ -2,6 +2,8 @@ defmodule CMS.Liturgies.Block do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias CMS.Accounts.Scope
+
   @types [:text, :song, :passage]
 
   schema "blocks" do
@@ -46,24 +48,24 @@ defmodule CMS.Liturgies.Block do
   def changeset(block, %{"type" => "passage"} = attrs, scope),
     do: passage_changeset(block, Map.put(attrs, "type", :passage), scope)
 
-  defp text_changeset(block, attrs, scope) do
+  defp text_changeset(block, attrs, %Scope{} = scope) do
     block
     |> cast(attrs, [:title, :body, :subtitle])
     |> put_change(:type, :text)
-    |> put_change(:organization_id, scope.user.organization_id)
+    |> put_change(:organization_id, scope.organization.id)
   end
 
-  defp song_changeset(block, attrs, scope) do
+  defp song_changeset(block, attrs, %Scope{} = scope) do
     block
     |> cast(attrs, [:title, :body])
     |> put_change(:type, :song)
-    |> put_change(:organization_id, scope.user.organization_id)
+    |> put_change(:organization_id, scope.organization.id)
   end
 
-  defp passage_changeset(block, attrs, scope) do
+  defp passage_changeset(block, attrs, %Scope{} = scope) do
     block
     |> cast(attrs, [:title, :subtitle])
     |> put_change(:type, :passage)
-    |> put_change(:organization_id, scope.user.organization_id)
+    |> put_change(:organization_id, scope.organization.id)
   end
 end
