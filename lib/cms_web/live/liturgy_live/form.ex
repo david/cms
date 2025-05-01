@@ -29,8 +29,6 @@ defmodule CMSWeb.LiturgyLive.Form do
                 value={block[:type].value}
               />
 
-              <% IO.inspect(block) %>
-
               <%= case to_string(block[:type].value) do %>
                 <% "text" -> %>
                   <.block_bar index={block.index} title="Text" />
@@ -166,8 +164,6 @@ defmodule CMSWeb.LiturgyLive.Form do
 
   @impl true
   def handle_event("validate", %{"liturgy" => liturgy_params}, socket) do
-    IO.inspect(liturgy_params)
-
     changeset =
       Liturgies.change_liturgy(
         socket.assigns.current_scope,
