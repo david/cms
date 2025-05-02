@@ -24,6 +24,12 @@ defmodule CMSWeb.LiturgyLive.Form do
           <div class="flex flex-col">
             <fieldset class="flex flex-col">
               <input
+                name={"liturgy[liturgy_blocks][#{block.index}][block_id]"}
+                type="hidden"
+                value={block.data.block_id}
+              />
+
+              <input
                 name={"liturgy[liturgy_blocks][#{block.index}][type]"}
                 type="hidden"
                 value={block[:type].value}
