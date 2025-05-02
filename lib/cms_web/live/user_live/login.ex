@@ -40,7 +40,7 @@ defmodule CMSWeb.UserLive.Login do
           phx-submit="submit_magic"
         >
           <.input
-            readonly={!!@current_scope}
+            readonly={!!@current_scope.user}
             field={f[:email]}
             type="email"
             label="Email"
