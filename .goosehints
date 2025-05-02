@@ -9,9 +9,11 @@
 ## Development Guidelines
 
 - **Planning:** **Always outline your plan** (files to modify, commands to run, etc.) and **wait for explicit approval** before taking action.
-- **Code Comments:** **Strictly avoid adding *any* type of comments** (including explanatory comments like `<%# ... %>` in Heex or `<!-- ... -->` in HTML) to generated or modified code. Keep code self-explanatory or rely on surrounding context.
+- **CRITICAL - NO CODE COMMENTS:** **ABSOLUTELY NO comments** of any kind (Elixir `#`, Heex `<%#`, HTML `<!--`, etc.) should be added to generated or modified code. Rely *only* on self-explanatory code and context. This is a strict requirement.
 - **Commit Messages:** **Do not use prefixes** like `feat:`, `chore:`, `fix:`, etc. Use clear, descriptive messages.
 - **`get_in` Syntax:** Prefer `get_in(record.property.other)` over `get_in(record, [:property, :other])` for accessing nested data.
+- **Safe Navigation:** Prefer `get_in(data.a.b)` over `data.a && data.a.b` for safely accessing potentially nil nested map/struct data. Avoid manual short-circuit checks.
+- **Context Boundaries:** **Strictly keep Ecto Repo interactions within context modules.** Do not call `Repo` functions directly from controllers, LiveViews, components, **schema modules**, or other non-context modules. Contexts should provide the sole interface for database operations.
 
 ## Key Directories & Files (relative to project root)
 
