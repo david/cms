@@ -1,0 +1,25 @@
+services:
+  dev:
+    build: .
+    command: ["sleep", "infinity"]
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    volumes:
+      - mix:/home/dev/.mix
+      - .:/app
+
+  db:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: cms_dev
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  mix:
+  postgres_data:
+    driver: local
