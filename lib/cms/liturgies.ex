@@ -20,13 +20,13 @@ defmodule CMS.Liturgies do
     * {:deleted, %Liturgy{}}
 
   """
-  def subscribe_liturgies(%Scope{organization: org} = scope) do
+  def subscribe_liturgies(%Scope{organization: org}) do
     key = org.id
 
     Phoenix.PubSub.subscribe(CMS.PubSub, "user:#{key}:liturgies")
   end
 
-  defp broadcast(%Scope{organization: org} = scope, message) do
+  defp broadcast(%Scope{organization: org}, message) do
     key = org.id
 
     Phoenix.PubSub.broadcast(CMS.PubSub, "user:#{key}:liturgies", message)
