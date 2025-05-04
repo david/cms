@@ -72,13 +72,11 @@ defmodule CMS.MixProject do
   defp aliases do
     [
       setup: ["deps.get", "ecto.setup", "assets.setup", "assets.build"],
-      "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
+      "ecto.setup": ["ecto.create", "ecto.load", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
-
       "ecto.migrate": ["ecto.migrate", "ecto.dump"],
       "ecto.rollback": ["ecto.rollback", "ecto.dump"],
-
       "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
       "assets.build": ["tailwind cms", "esbuild cms"],
       "assets.deploy": [
