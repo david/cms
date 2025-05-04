@@ -76,7 +76,6 @@ ALTER SEQUENCE public.blocks_id_seq OWNED BY public.blocks.id;
 
 CREATE TABLE public.liturgies (
     id bigint NOT NULL,
-    blocks jsonb NOT NULL,
     service_on date,
     organization_id bigint,
     inserted_at timestamp(0) without time zone NOT NULL,
@@ -509,3 +508,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20250428113617);
 INSERT INTO public."schema_migrations" (version) VALUES (20250429145956);
 INSERT INTO public."schema_migrations" (version) VALUES (20250429164023);
 INSERT INTO public."schema_migrations" (version) VALUES (20250429200224);
+INSERT INTO public."schema_migrations" (version) VALUES (20250504143742);
