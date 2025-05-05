@@ -23,17 +23,8 @@ defmodule CMSWeb.LiturgyLive.Form do
 
           <div class="flex flex-col">
             <fieldset class="flex flex-col">
-              <input
-                name={"liturgy[liturgy_blocks][#{block.index}][block_id]"}
-                type="hidden"
-                value={block.data.block_id}
-              />
-
-              <input
-                name={"liturgy[liturgy_blocks][#{block.index}][type]"}
-                type="hidden"
-                value={block[:type].value}
-              />
+              <input name={block[:block_id].name} type="hidden" value={block[:block_id].value} />
+              <input name={block[:type].name} type="hidden" value={block[:type].value} />
 
               <%= case to_string(block[:type].value) do %>
                 <% "text" -> %>
@@ -59,7 +50,7 @@ defmodule CMSWeb.LiturgyLive.Form do
           </div>
         </.inputs_for>
 
-        <input type="hidden" name="liturgy[liturgy_blocks_drop][]" />
+        <input type="hidden" name={"#{@form[:liturgy_blocks_drop].name}[]"} />
 
         <footer>
           <.button phx-disable-with="Saving..." variant="primary">Save Liturgy</.button>
