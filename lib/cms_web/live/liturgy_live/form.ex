@@ -45,12 +45,6 @@ defmodule CMSWeb.LiturgyLive.Form do
                 <% "song" -> %>
                   <.block_bar index={block.index} title="Song" />
 
-                  <input
-                    name={"liturgy[liturgy_blocks][#{block.index}][song_id]"}
-                    type="hidden"
-                    value={block[:song_id].value}
-                  />
-
                   <.input type="text" field={block[:title]} placeholder="title" />
                   <.input type="textarea" field={block[:body]} placeholder="body" rows={15} />
                 <% "passage" -> %>
