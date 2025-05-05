@@ -89,8 +89,8 @@ CREATE TABLE public.liturgies (
 
 CREATE TABLE public.liturgies_blocks (
     id bigint NOT NULL,
-    liturgy_id bigint,
-    block_id bigint,
+    liturgy_id bigint NOT NULL,
+    block_id bigint NOT NULL,
     "position" integer NOT NULL,
     organization_id bigint NOT NULL,
     inserted_at timestamp(0) without time zone NOT NULL,
@@ -509,3 +509,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20250429145956);
 INSERT INTO public."schema_migrations" (version) VALUES (20250429164023);
 INSERT INTO public."schema_migrations" (version) VALUES (20250429200224);
 INSERT INTO public."schema_migrations" (version) VALUES (20250504143742);
+INSERT INTO public."schema_migrations" (version) VALUES (20250505202451);
