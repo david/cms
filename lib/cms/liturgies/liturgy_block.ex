@@ -24,8 +24,8 @@ defmodule CMS.Liturgies.LiturgyBlock do
   @doc false
   def changeset(liturgy_block, attrs, user_scope) do
     liturgy_block
-    |> cast(attrs, [:liturgy_id, :position])
-    |> cast_assoc(:block, with: &Block.changeset(&1, &2, user_scope), required: true)
+    |> cast(attrs, [:block_id, :position])
+    |> merge(Block.changeset(liturgy_block, attrs, user_scope))
     |> put_change(:organization_id, user_scope.organization.id)
   end
 end

@@ -94,13 +94,47 @@ defmodule CMS.Liturgies do
 
   """
   def create_liturgy(%Scope{} = scope, attrs) do
+    # TODO: use Ecto.Multi
+    # TODO: Avoid creating new blocks by matching block content
+
     with {:ok, liturgy = %Liturgy{}} <-
            %Liturgy{}
            |> Liturgy.changeset(attrs, scope)
+           |> put_blocks(scope)
            |> Repo.insert() do
       broadcast(scope, {:created, liturgy})
       {:ok, liturgy}
     end
+  end
+
+  def put_blocks(
+        %{valid?: true, changes: %{liturgy_blocks: liturgy_blocks}} = liturgy_changeset,
+        scope
+      ) do
+    blocks_index =
+      Block
+      |> from(where: [organization_id: ^scope.organization.id])
+      |> Repo.all()
+      |> Enum.map(&{&1.id, &1})
+      |> Map.new()
+
+    Ecto.Changeset.put_assoc(
+      liturgy_changeset,
+      :liturgy_blocks,
+      for %{changes: changes} = lb <- liturgy_blocks do
+        {:ok, block} =
+          changes
+          |> Map.get(:block_id)
+          |> case do
+            nil -> %Block{type: changes.type}
+            id -> Map.get(blocks_index, id)
+          end
+          |> then(&Block.changeset(&1, changes, scope))
+          |> Repo.insert_or_update()
+
+        Ecto.Changeset.put_change(lb, :block_id, block.id)
+      end
+    )
   end
 
   @doc """

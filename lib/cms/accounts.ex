@@ -254,14 +254,17 @@ defmodule CMS.Accounts do
         "Mixing magic link and password registration" section of `mix help phx.gen.auth`.
         """
 
-      {%User{confirmed_at: nil} = user, _token} ->
-        user
-        |> User.confirm_changeset()
-        |> update_user_and_delete_all_tokens()
+      {%User{confirmed_at: nil} = u, _token} ->
+        {:ok, user, expired_tokens} =
+          u
+          |> User.confirm_changeset()
+          |> update_user_and_delete_all_tokens()
+
+        {:ok, Repo.preload(user, [:organization]), expired_tokens}
 
       {user, token} ->
         Repo.delete!(token)
-        {:ok, user, []}
+        {:ok, Repo.preload(user, [:organization]), []}
 
       nil ->
         {:error, :not_found}
