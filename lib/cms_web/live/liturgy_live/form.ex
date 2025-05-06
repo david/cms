@@ -16,6 +16,12 @@ defmodule CMSWeb.LiturgyLive.Form do
       <.form for={@form} id="liturgy-form" phx-change="validate" phx-submit="save">
         <.input field={@form[:service_on]} type="date" label="Service on" />
 
+        <datalist id="liturgy-song-blocks">
+          <%= for block <- @song_blocks do %>
+            <option value={block.title} />
+          <% end %>
+        </datalist>
+
         <.add_block_button />
 
         <.inputs_for :let={block} field={@form[:liturgy_blocks]}>
@@ -36,7 +42,13 @@ defmodule CMSWeb.LiturgyLive.Form do
                 <% "song" -> %>
                   <.block_bar index={block.index} title="Song" />
 
-                  <.input type="text" field={block[:title]} placeholder="title" />
+                  <.input
+                    type="text"
+                    field={block[:title]}
+                    placeholder="title"
+                    list="liturgy-song-blocks"
+                  />
+
                   <.input type="textarea" field={block[:body]} placeholder="body" rows={15} />
                 <% "passage" -> %>
                   <.block_bar index={block.index} title="Bible passage" />
@@ -119,6 +131,7 @@ defmodule CMSWeb.LiturgyLive.Form do
     {:ok,
      socket
      |> assign(:return_to, return_to(params["return_to"]))
+     |> assign(:song_blocks, Liturgies.list_songs(socket.assigns.current_scope))
      |> apply_action(socket.assigns.live_action, params)}
   end
 
@@ -159,7 +172,25 @@ defmodule CMSWeb.LiturgyLive.Form do
       Liturgies.change_liturgy(
         socket.assigns.current_scope,
         socket.assigns.liturgy,
-        liturgy_params
+        Map.put(
+          liturgy_params,
+          "liturgy_blocks",
+          (liturgy_params["liturgy_blocks"] || %{})
+          |> Enum.map(fn {k, v} ->
+            case Enum.find(socket.assigns.song_blocks, &(&1.title == v["title"])) do
+              nil ->
+                {k, v}
+
+              block ->
+                {k,
+                 Map.merge(v, %{
+                   "block_id" => Map.get(block, :id),
+                   "body" => Map.get(block, :body)
+                 })}
+            end
+          end)
+          |> Enum.into(%{})
+        )
       )
 
     {:noreply, assign(socket, form: to_form(changeset, action: :validate))}

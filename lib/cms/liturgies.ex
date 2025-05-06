@@ -209,7 +209,9 @@ defmodule CMS.Liturgies do
   end
 
   def list_songs(%Scope{} = scope) do
-    Repo.all(from song in Song, where: song.organization_id == ^scope.organization.id)
+    Block
+    |> from(where: [organization_id: ^scope.organization.id, type: :song])
+    |> Repo.all()
   end
 
   defp ensure_safe_liturgy(liturgy, organization, opts \\ [optional: false])
