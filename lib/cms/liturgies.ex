@@ -9,8 +9,6 @@ defmodule CMS.Liturgies do
   alias CMS.Accounts.Scope
   alias CMS.Liturgies.Block
   alias CMS.Liturgies.Liturgy
-  alias CMS.Liturgies.LiturgyBlock
-  alias CMS.Liturgies.Song
 
   @doc """
   Subscribes to scoped notifications about any liturgy changes.
@@ -184,7 +182,7 @@ defmodule CMS.Liturgies do
 
   """
   def delete_liturgy(%Scope{} = scope, %Liturgy{} = liturgy) do
-    ensure_safe_liturgy(liturgy, scope.organization)
+    true = liturgy.organization_id == scope.organization.id
 
     with {:ok, liturgy = %Liturgy{}} <-
            Repo.delete(liturgy) do
@@ -203,8 +201,6 @@ defmodule CMS.Liturgies do
 
   """
   def change_liturgy(%Scope{} = scope, %Liturgy{} = liturgy, attrs \\ %{}) do
-    ensure_safe_liturgy(liturgy, scope.organization, optional: true)
-
     Liturgy.changeset(liturgy, attrs, scope)
   end
 
@@ -213,51 +209,4 @@ defmodule CMS.Liturgies do
     |> from(where: [organization_id: ^scope.organization.id, type: :song])
     |> Repo.all()
   end
-
-  defp ensure_safe_liturgy(liturgy, organization, opts \\ [optional: false])
-
-  defp ensure_safe_liturgy(liturgy, organization, optional: true) do
-    is_nil(liturgy.organization_id) or ensure_safe_liturgy(liturgy, organization)
-  end
-
-  defp ensure_safe_liturgy(liturgy, organization, _opts),
-    do:
-      true =
-        liturgy.organization_id == organization.id &&
-          safe_liturgy_blocks?(liturgy, organization) &&
-          safe_blocks?(liturgy, organization)
-
-  defp safe_blocks?(liturgy, organization) do
-    liturgy.liturgy_blocks
-    |> Enum.map(& &1.block_id)
-    |> safe_ids?(Block, organization.id)
-  end
-
-  defp safe_liturgy_blocks?(liturgy, organization) do
-    liturgy.liturgy_blocks
-    |> Enum.map(& &1.id)
-    |> safe_ids?(LiturgyBlock, organization.id)
-  end
-
-  defp safe_ids?(unsafe_ids, source, organization_id) do
-    safe_ids =
-      from(b in source, where: b.organization_id == ^organization_id, select: b.id)
-      |> Repo.all()
-
-    IO.inspect(unsafe_ids)
-
-    unsafe_ids
-    |> Enum.filter(&(&1 not in [nil, ""]))
-    |> Enum.map(&parse_id/1)
-    |> Kernel.--(safe_ids)
-    |> Enum.empty?()
-  end
-
-  defp parse_id(str) when is_binary(str) do
-    {id, _} = Integer.parse(str)
-
-    id
-  end
-
-  defp parse_id(id) when is_integer(id), do: id
 end
