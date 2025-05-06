@@ -106,11 +106,42 @@ defmodule CMS.LiturgiesTest do
 
     test "creates blocks in the correct order"
     test "validates blocks"
-    test "update also creates blocks when required"
 
     test "create_liturgy/2 with invalid data returns error changeset" do
       scope = user_scope_fixture()
       assert {:error, %Ecto.Changeset{}} = Liturgies.create_liturgy(scope, @invalid_attrs)
+    end
+
+    test "update_liturgy/3 creates text blocks" do
+      scope = user_scope_fixture()
+
+      assert 0 == Repo.aggregate(Block, :count, :id)
+
+      attrs = %{
+        "service_on" => ~D[2025-04-26],
+        "liturgy_blocks" => %{
+          "0" => %{
+            "title" => "Text Block",
+            "type" => "text"
+          }
+        }
+      }
+
+      assert {:ok, %Liturgy{} = liturgy} = Liturgies.create_liturgy(scope, attrs)
+
+      new_attrs =
+        attrs
+        |> put_in(
+          ["liturgy_blocks", "0", "block_id"],
+          liturgy.liturgy_blocks |> List.first() |> Map.get(:block_id)
+        )
+        |> put_in(
+          ["liturgy_blocks", "1"],
+          %{"title" => "Text Block 2", "type" => "text"}
+        )
+
+      assert {:ok, %Liturgy{}} = Liturgies.update_liturgy(scope, liturgy, new_attrs)
+      assert 2 == Repo.aggregate(Block, :count, :id)
     end
 
     test "update_liturgy/3 with valid data updates the liturgy" do
@@ -125,6 +156,9 @@ defmodule CMS.LiturgiesTest do
       assert {:ok, %Liturgy{} = liturgy} = Liturgies.update_liturgy(scope, liturgy, update_attrs)
       assert liturgy.service_on == ~D[2025-04-27]
     end
+
+    test "update_liturgy/2 always creates the liturgy in the correct organization"
+    test "update_liturgy/2 always updates block in the correct organization"
 
     test "update_liturgy/3 with invalid scope raises" do
       scope = user_scope_fixture()

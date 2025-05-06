@@ -121,12 +121,18 @@ defmodule CMS.Liturgies do
     Ecto.Changeset.put_assoc(
       liturgy_changeset,
       :liturgy_blocks,
-      for %{changes: changes} = lb <- liturgy_blocks do
+      for %{action: action, changes: changes, data: data} = lb <- liturgy_blocks,
+          data != %{} && action != :replace do
+        merged =
+          data
+          |> Map.take([:type, :block_id, :title, :subtitle, :body])
+          |> Map.merge(changes)
+
         {:ok, block} =
-          changes
+          merged
           |> Map.get(:block_id)
           |> case do
-            nil -> %Block{type: changes.type}
+            nil -> %Block{type: merged.type}
             id -> Map.get(blocks_index, id)
           end
           |> then(&Block.changeset(&1, changes, scope))
@@ -150,11 +156,15 @@ defmodule CMS.Liturgies do
 
   """
   def update_liturgy(%Scope{} = scope, %Liturgy{} = liturgy, attrs) do
-    ensure_safe_liturgy(liturgy, scope.organization)
+    # TODO: use Ecto.Multi
+    # TODO: Avoid creating new blocks by matching block content
+
+    true = liturgy.organization_id == scope.organization.id
 
     with {:ok, liturgy = %Liturgy{}} <-
            liturgy
            |> Liturgy.changeset(attrs, scope)
+           |> put_blocks(scope)
            |> Repo.update() do
       broadcast(scope, {:updated, liturgy})
       {:ok, liturgy}
