@@ -72,7 +72,11 @@ defmodule CMS.Liturgies do
   end
 
   defp populate_liturgy_blocks(%{liturgy_blocks: liturgy_blocks} = liturgy) do
-    Map.put(liturgy, :liturgy_blocks, Enum.map(liturgy_blocks, &populate_liturgy_block/1))
+    Map.put(
+      liturgy,
+      :liturgy_blocks,
+      liturgy_blocks |> Enum.map(&populate_liturgy_block/1) |> Enum.sort_by(& &1.position)
+    )
   end
 
   defp populate_liturgy_block(liturgy_block) do
