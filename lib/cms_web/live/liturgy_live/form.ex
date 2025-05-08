@@ -5,6 +5,8 @@ defmodule CMSWeb.LiturgyLive.Form do
   alias CMS.Liturgies
   alias CMS.Liturgies.Liturgy
 
+  alias CMSWeb.LiturgyComponents
+
   @impl true
   def render(assigns) do
     ~H"""
@@ -57,14 +59,7 @@ defmodule CMSWeb.LiturgyLive.Form do
                   <.input type="text" field={block[:subtitle]} placeholder="subtitle" />
                   <.input type="text" field={block[:title]} placeholder="verses" />
 
-                  <div>
-                    <%= if block[:body].value do %>
-                      <%= for %{number: number, body: body} <- block[:body].value do %>
-                        <span class="align-super text-xs text-neutral-500">{number}</span>
-                        <span>{body}</span>
-                      <% end %>
-                    <% end %>
-                  </div>
+                  <LiturgyComponents.verse_list verses={block[:body].value} />
               <% end %>
             </fieldset>
 

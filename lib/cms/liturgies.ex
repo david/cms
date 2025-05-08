@@ -7,6 +7,7 @@ defmodule CMS.Liturgies do
   alias CMS.Repo
 
   alias CMS.Accounts.Scope
+  alias CMS.Bibles
   alias CMS.Liturgies.Block
   alias CMS.Liturgies.Liturgy
 
@@ -77,6 +78,15 @@ defmodule CMS.Liturgies do
       :liturgy_blocks,
       liturgy_blocks |> Enum.map(&populate_liturgy_block/1) |> Enum.sort_by(& &1.position)
     )
+  end
+
+  defp populate_liturgy_block(%{block: %{type: :passage}} = liturgy_block) do
+    block =
+      liturgy_block.block
+      |> Map.take([:title, :subtitle, :body, :type])
+      |> then(&Map.put(&1, :body, Bibles.get_verses(&1.title)))
+
+    Map.merge(liturgy_block, block)
   end
 
   defp populate_liturgy_block(liturgy_block) do

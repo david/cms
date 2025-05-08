@@ -3,6 +3,8 @@ defmodule CMSWeb.LiturgyLive.Show do
 
   alias CMS.Liturgies
 
+  alias CMSWeb.LiturgyComponents
+
   @impl true
   def render(assigns) do
     ~H"""
@@ -36,10 +38,10 @@ defmodule CMSWeb.LiturgyLive.Show do
               <h3 :if={block.title} class="text-lg font-medium">{block.title}</h3>
               <pre :if={block.body} class="mt-4 whitespace-pre-wrap font-sans"><%= block.body %></pre>
             <% :passage -> %>
-              <span :if={block.subtitle} class="text-xs uppercase text-gray-500">
-                {block.subtitle}
-              </span>
-              <h3 :if={block.title} class="text-lg font-medium">{block.title}</h3>
+              <span class="text-xs uppercase text-gray-500">{block.subtitle}</span>
+              <h3 class="text-lg font-medium">{block.title}</h3>
+
+              <LiturgyComponents.verse_list verses={block.body} />
           <% end %>
         </div>
       </div>
