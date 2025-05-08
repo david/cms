@@ -1,6 +1,7 @@
 defmodule CMSWeb.LiturgyLive.Form do
   use CMSWeb, :live_view
 
+  alias CMS.Bibles
   alias CMS.Liturgies
   alias CMS.Liturgies.Liturgy
 
@@ -55,6 +56,15 @@ defmodule CMSWeb.LiturgyLive.Form do
 
                   <.input type="text" field={block[:subtitle]} placeholder="subtitle" />
                   <.input type="text" field={block[:title]} placeholder="verses" />
+
+                  <div>
+                    <%= if block[:body].value do %>
+                      <%= for %{number: number, body: body} <- block[:body].value do %>
+                        <span class="align-super text-xs text-neutral-500">{number}</span>
+                        <span>{body}</span>
+                      <% end %>
+                    <% end %>
+                  </div>
               <% end %>
             </fieldset>
 
@@ -233,6 +243,11 @@ defmodule CMSWeb.LiturgyLive.Form do
 
   defp match_block({key, %{"title" => title} = block}, cached_blocks),
     do: {key, block, Enum.find(cached_blocks, &(&1.title == title))}
+
+  defp normalize_block({key, %{"type" => type} = block_attrs, nil})
+       when type in ["passage", :passage] do
+    {key, Map.put(block_attrs, "body", Bibles.get_verses(block_attrs["title"]))}
+  end
 
   defp normalize_block({key, block_attrs, nil}), do: {key, block_attrs}
 
