@@ -36,6 +36,8 @@ config :cms, CMSWeb.Endpoint,
   pubsub_server: CMS.PubSub,
   live_view: [signing_salt: "91mAmnWG"]
 
+config :cms, CMSWeb.Gettext, default_locale: "pt", locales: ~w(pt en)
+
 # Configures the mailer
 #
 # By default it uses the "Local" adapter which stores the emails
