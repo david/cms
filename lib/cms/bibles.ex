@@ -82,6 +82,8 @@ defmodule CMS.Bibles do
     }
   }
 
+  def default_bible, do: @bible
+
   def get_verses(ref) when is_binary(ref), do: ref |> Passage.parse(@bible) |> get_verses(@bible)
 
   defp get_verses({:error, _}, _bible), do: []
