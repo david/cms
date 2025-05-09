@@ -223,4 +223,20 @@ defmodule CMS.Liturgies do
     |> from(where: [organization_id: ^scope.organization.id, type: :song])
     |> Repo.all()
   end
+
+  @doc """
+  Returns the id of the latest liturgy on or before today.
+  Returns `nil` if no such liturgy is found.
+  """
+  def get_latest_liturgy_id(%Scope{} = scope) do
+    today = Date.utc_today()
+
+    from(l in Liturgy,
+      select: l.id,
+      where: l.organization_id == ^scope.organization.id and l.service_on <= ^today,
+      order_by: [desc: l.service_on],
+      limit: 1
+    )
+    |> Repo.one()
+  end
 end

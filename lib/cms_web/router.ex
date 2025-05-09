@@ -74,6 +74,8 @@ defmodule CMSWeb.Router do
       live "/liturgies/:id", LiturgyLive.Show, :show
     end
 
+    get "/liturgy", LiturgyController, :latest
+
     post "/users/log-in", UserSessionController, :create
     delete "/users/log-out", UserSessionController, :delete
   end
