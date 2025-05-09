@@ -32,18 +32,25 @@ defmodule CMS.YouVersion do
       |> Enum.map(&get_data/1)
       |> Enum.join(" ")
       |> String.replace(~r/\s+([,.])/u, "\\1")
+      |> String.replace(~r/\s{2,}/u, " ")
       |> String.trim()
 
   defp get_data(data) when is_binary(data), do: data
 
-  defp get_data({_tag, _attrs, data}),
-    do:
-      data |> Enum.filter(&content?/1) |> Enum.map(&get_data/1) |> Enum.join(" ") |> String.trim()
+  defp get_data({_tag, _attrs, data} = elem) do
+    class = get_attr(elem, "class")
 
-  defp content?(data) when is_binary(data), do: true
+    cond do
+      class =~ ~r/^ChapterContent_label/ ->
+        ""
 
-  defp content?(elem),
-    do: get_attr(elem, "class") =~ ~r/^ChapterContent_(content|nd)/
+      class =~ ~r/^ChapterContent_note/ ->
+        ""
+
+      true ->
+        data |> Enum.map(&get_data/1) |> Enum.join(" ")
+    end
+  end
 
   defp get_attr({_tag, attrs, _data}, key),
     do: attrs |> Enum.find(fn {k, _v} -> k == key end) |> elem(1)
