@@ -16,27 +16,27 @@ msgstr ""
 msgid "Actions"
 msgstr ""
 
-#: lib/cms_web/components/layouts.ex:77
+#: lib/cms_web/components/layouts.ex:50
 #, elixir-autogen, elixir-format
 msgid "Attempting to reconnect"
 msgstr ""
 
-#: lib/cms_web/components/layouts.ex:89
+#: lib/cms_web/components/layouts.ex:62
 #, elixir-autogen, elixir-format
 msgid "Hang in there while we get back on track"
 msgstr ""
 
-#: lib/cms_web/components/layouts.ex:84
+#: lib/cms_web/components/layouts.ex:57
 #, elixir-autogen, elixir-format
 msgid "Something went wrong!"
 msgstr ""
 
-#: lib/cms_web/live/liturgy_live/show.ex:33
+#: lib/cms_web/live/liturgy_live/show.ex:37
 #, elixir-autogen, elixir-format
 msgid "Song"
 msgstr ""
 
-#: lib/cms_web/components/layouts.ex:72
+#: lib/cms_web/components/layouts.ex:45
 #, elixir-autogen, elixir-format
 msgid "We can't find the internet"
 msgstr ""
@@ -46,17 +46,17 @@ msgstr ""
 msgid "close"
 msgstr ""
 
-#: lib/cms_web/live/liturgy_live/show.ex:18
+#: lib/cms_web/live/liturgy_live/show.ex:21
 #, elixir-autogen, elixir-format
 msgid "Edit"
 msgstr ""
 
-#: lib/cms_web/live/liturgy_live/show.ex:11
+#: lib/cms_web/live/liturgy_live/show.ex:13
 #, elixir-autogen, elixir-format
 msgid "Liturgy"
 msgstr ""
 
-#: lib/cms_web/live/liturgy_live/show.ex:54
+#: lib/cms_web/live/liturgy_live/show.ex:58
 #, elixir-autogen, elixir-format
 msgid "Show Liturgy"
 msgstr ""
