@@ -16,7 +16,7 @@ defmodule CMS.YouVersion do
     |> Enum.group_by(&(&1 |> get_attr("data-usfm") |> parse_verse()))
     |> Enum.sort_by(fn {number, _} -> number end)
     |> Enum.map(fn {number, data} ->
-      %Verse{body: get_body(data), book: book, chapter: chapter, number: number}
+      %Verse{body: get_body(data), book_usfm: book, chapter: chapter, verse_number: number}
     end)
   end
 
@@ -31,8 +31,8 @@ defmodule CMS.YouVersion do
       data
       |> Enum.map(&get_data/1)
       |> Enum.join(" ")
-      |> String.replace(~r/\s+([,.])/u, "\\1")
-      |> String.replace(~r/\s{2,}/u, " ")
+      |> String.replace(~r/\s+([,.])/, "\\1")
+      |> String.replace(~r/\s{2,}/, " ")
       |> String.trim()
 
   defp get_data(data) when is_binary(data), do: data

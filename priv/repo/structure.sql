@@ -36,6 +36,40 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
+-- Name: bible_verses; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.bible_verses (
+    id bigint NOT NULL,
+    book_usfm character varying(255) NOT NULL,
+    chapter integer NOT NULL,
+    verse_number integer NOT NULL,
+    body text NOT NULL,
+    inserted_at timestamp(0) without time zone NOT NULL,
+    updated_at timestamp(0) without time zone NOT NULL
+);
+
+
+--
+-- Name: bible_verses_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.bible_verses_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: bible_verses_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.bible_verses_id_seq OWNED BY public.bible_verses.id;
+
+
+--
 -- Name: blocks; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -279,6 +313,13 @@ ALTER SEQUENCE public.users_tokens_id_seq OWNED BY public.users_tokens.id;
 
 
 --
+-- Name: bible_verses id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.bible_verses ALTER COLUMN id SET DEFAULT nextval('public.bible_verses_id_seq'::regclass);
+
+
+--
 -- Name: blocks id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -325,6 +366,14 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 --
 
 ALTER TABLE ONLY public.users_tokens ALTER COLUMN id SET DEFAULT nextval('public.users_tokens_id_seq'::regclass);
+
+
+--
+-- Name: bible_verses bible_verses_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.bible_verses
+    ADD CONSTRAINT bible_verses_pkey PRIMARY KEY (id);
 
 
 --
@@ -389,6 +438,13 @@ ALTER TABLE ONLY public.users
 
 ALTER TABLE ONLY public.users_tokens
     ADD CONSTRAINT users_tokens_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: bible_verses_book_chapter_verse_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX bible_verses_book_chapter_verse_index ON public.bible_verses USING btree (book_usfm, chapter, verse_number);
 
 
 --
@@ -510,3 +566,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20250429164023);
 INSERT INTO public."schema_migrations" (version) VALUES (20250429200224);
 INSERT INTO public."schema_migrations" (version) VALUES (20250504143742);
 INSERT INTO public."schema_migrations" (version) VALUES (20250505202451);
+INSERT INTO public."schema_migrations" (version) VALUES (20250509164126);

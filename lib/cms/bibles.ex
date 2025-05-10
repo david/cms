@@ -1,8 +1,10 @@
 defmodule CMS.Bibles do
   import Ecto.Query, warn: false
 
+  alias CMS.Repo
   alias CMS.Bibles.Bible
   alias CMS.Bibles.Passage
+  alias CMS.Bibles.Verse
   alias CMS.YouVersion
 
   @bible %Bible{
@@ -88,26 +90,75 @@ defmodule CMS.Bibles do
 
   defp get_verses({:error, _}, _bible), do: []
 
-  defp get_verses({:ok, {book, chapter, verse}, {_book, end_chapter, end_verse}}, bible) do
-    {first, rest} =
-      chapter..end_chapter
-      |> Range.to_list()
-      |> Enum.map(&YouVersion.get_chapter(&1, book, bible))
-      |> List.pop_at(0)
+  defp get_verses(
+         {:ok, {book_usfm, start_chapter, start_verse}, {_end_book_usfm, end_chapter, end_verse}},
+         bible
+       ) do
+    start_chapter..end_chapter
+    |> Enum.to_list()
+    |> ensure_persisted_chapters(book_usfm, bible)
+    |> get_cached_verses(book_usfm)
+    |> filter_verses_by_reference_range(start_chapter, start_verse, end_chapter, end_verse)
+    |> Enum.to_list()
+  end
 
-    list =
-      case first do
-        nil -> []
-        fst -> [Enum.drop_while(fst, fn %{number: num} -> num < verse end)] ++ rest
+  defp ensure_persisted_chapters(required_chapters, book_usfm, bible) do
+    cached_chapter_numbers = get_cached_chapter_numbers(book_usfm, required_chapters)
+    chapters_to_fetch = required_chapters -- cached_chapter_numbers
+
+    chapters_to_fetch
+    |> Enum.flat_map(&YouVersion.get_chapter(&1, book_usfm, bible))
+    |> create_verses()
+
+    required_chapters
+  end
+
+  defp get_cached_chapter_numbers(book_usfm, chapter_numbers) do
+    from(v in Verse,
+      where: v.book_usfm == ^book_usfm and v.chapter in ^chapter_numbers,
+      select: v.chapter,
+      distinct: true
+    )
+    |> Repo.all()
+  end
+
+  defp filter_verses_by_reference_range(
+         verses,
+         start_chapter,
+         start_verse,
+         end_chapter,
+         end_verse
+       ) do
+    verses
+    |> Stream.drop_while(fn verse ->
+      verse.chapter == start_chapter && verse.verse_number < start_verse
+    end)
+    |> Stream.take_while(fn verse ->
+      verse.chapter < end_chapter or verse.verse_number <= end_verse
+    end)
+    |> Enum.to_list()
+  end
+
+  defp get_cached_verses(chapter_numbers, book_usfm) when is_list(chapter_numbers) do
+    Verse
+    |> where([v], v.book_usfm == ^book_usfm and v.chapter in ^chapter_numbers)
+    |> order_by([v], asc: v.chapter, asc: v.verse_number)
+    |> Repo.all()
+  end
+
+  defp create_verses(verses) do
+    changesets = Enum.map(verses, &Verse.changeset/1)
+
+    Repo.transaction(fn ->
+      for c <- changesets do
+        {:ok, verse} =
+          Repo.insert(c,
+            on_conflict: :nothing,
+            conflict_target: [:book_usfm, :chapter, :verse_number]
+          )
+
+        verse
       end
-
-    case List.pop_at(list, -1) do
-      {nil, _} ->
-        []
-
-      {last, initial} ->
-        initial ++ [Enum.take_while(last, fn %{number: num} -> num <= end_verse end)]
-    end
-    |> List.flatten()
+    end)
   end
 end
