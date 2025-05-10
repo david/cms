@@ -2,7 +2,7 @@ defmodule CMSWeb.LiturgyLive.Show do
   use CMSWeb, :live_view
 
   alias CMS.Liturgies
-
+  alias Earmark
   alias CMSWeb.LiturgyComponents
 
   @impl true
@@ -32,11 +32,15 @@ defmodule CMSWeb.LiturgyLive.Show do
                 {block.subtitle}
               </span>
               <h3 :if={block.title} class="text-lg font-medium">{block.title}</h3>
-              <p :if={block.body} class="mt-4">{block.body}</p>
+              <div :if={block.body} class="mt-4 prose max-w-none">
+                {raw(Earmark.as_html!(block.body))}
+              </div>
             <% :song -> %>
               <span class="text-xs uppercase text-gray-500">{gettext("Song")}</span>
               <h3 :if={block.title} class="text-lg font-medium">{block.title}</h3>
-              <pre :if={block.body} class="mt-4 whitespace-pre-wrap font-sans"><%= block.body %></pre>
+              <div :if={block.body} class="mt-4 prose max-w-none [&_p]:mb-6">
+                {raw(Earmark.as_html!(block.body, breaks: true))}
+              </div>
             <% :passage -> %>
               <span class="text-xs uppercase text-gray-500">{block.subtitle}</span>
               <h3 class="text-lg font-medium">{block.title}</h3>
