@@ -4,7 +4,7 @@
 
 - **Type:** Elixir/Phoenix Web Application
 - **Location:** This file resides in the project root directory. Run commands from here.
-- **Note:** This project uses git worktrees; the specific root directory path might vary (e.g., `/var/home/david/Boxes/chr/some-branch`).
+- **Note:** This project uses git worktrees; the specific root directory path might vary (e.g., `/var/home/david/Projects/chr/some-branch`).
 
 ## Development Guidelines
 
