@@ -8,7 +8,12 @@
 
 ## Development Guidelines
 
-- **Planning:** **Always outline your plan** (files to modify, commands to run, etc.) and **wait for explicit approval** before taking action.
+- **Planning & Execution Cycle:**
+  - **1. Propose Plan:** Outline the overall strategy. This **must include a list of all files to be created or modified.** For file modifications, present changes in a **unified diff format** (approx. 3 lines context), ideally with removals in red, additions in green, and context in gray (actual color rendering depends on the terminal). For new files, describe their purpose and structure. Detail any commands to be run.
+  - **2. Seek Single Approval for Plan:** Wait for explicit approval of the entire proposed plan (all file changes, new file descriptions, commands).
+  - **3. Execute Approved Plan:** Once the plan is approved, proceed with all specified file creations/modifications and non-destructive commands. Write file content directly without re-displaying it, unless a very small modification (1-2 lines) is clearer shown in full.
+  - **4. Summarize & Confirm Completion:** After all operations are complete, **list all files that were actually written/modified.** Then, ask for final approval/confirmation of the completed work.
+  - **Critical Actions:** Still seek separate confirmation before executing potentially destructive commands (e.g., running migrations if not part of the explicitly approved plan details) or if significant deviations from the approved plan become necessary.
 - **CRITICAL - NO CODE COMMENTS:** **ABSOLUTELY NO comments** of any kind (Elixir `#`, Heex `<%#`, HTML `<!--`, etc.) should be added to generated or modified code. Rely *only* on self-explanatory code and context. This is a strict requirement.
 - **Commit Messages:** **Do not use prefixes** like `feat:`, `chore:`, `fix:`, etc. Use clear, descriptive messages.
 - **`get_in` Syntax:** Prefer `get_in(record.property.other)` over `get_in(record, [:property, :other])` for accessing nested data.
