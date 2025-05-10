@@ -32,7 +32,7 @@ defmodule CMSWeb.LiturgyLive.Show do
                 {block.subtitle}
               </span>
               <h3 :if={block.title} class="text-lg font-medium">{block.title}</h3>
-              <div :if={block.body} class="mt-4 prose max-w-none">
+              <div :if={block.body} class="mt-4 prose max-w-none [&_p]:mb-6">
                 {raw(Earmark.as_html!(block.body))}
               </div>
             <% :song -> %>
