@@ -31,6 +31,13 @@ defmodule CMS.Accounts.User do
   end
 
   defp validate_email(changeset, opts) do
+    validate_email = Keyword.get(opts, :validate_email, true)
+    changeset = validate_email_for_invitation(changeset, validate_email)
+
+    if(validate_email, do: validate_email_changed(changeset), else: changeset)
+  end
+
+  defp validate_email_for_invitation(changeset, ensure_uniqueness \\ true) do
     changeset =
       changeset
       |> validate_required([:email])
@@ -39,11 +46,10 @@ defmodule CMS.Accounts.User do
       )
       |> validate_length(:email, max: 160)
 
-    if Keyword.get(opts, :validate_email, true) do
+    if ensure_uniqueness do
       changeset
       |> unsafe_validate_unique(:email, CMS.Repo)
       |> unique_constraint(:email)
-      |> validate_email_changed()
     else
       changeset
     end
@@ -55,6 +61,17 @@ defmodule CMS.Accounts.User do
     else
       changeset
     end
+  end
+
+  @doc """
+  A changeset for inviting a new user.
+  It requires an email and associates the user with the given organization.
+  """
+  def invitation_changeset(user, attrs, scope) do
+    user
+    |> cast(attrs, [:email])
+    |> validate_email_for_invitation()
+    |> put_change(:organization_id, scope.organization.id)
   end
 
   @doc """

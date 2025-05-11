@@ -65,7 +65,7 @@ defmodule CMS.Accounts do
     |> Repo.all()
   end
 
-  ## User registration
+  ## User registration and invitation
 
   @doc """
   Registers a user.
@@ -83,6 +83,33 @@ defmodule CMS.Accounts do
     %User{}
     |> User.email_changeset(attrs, organization)
     |> Repo.insert()
+  end
+
+  @doc """
+  Invites a new user based on the provided scope (for organization) and delivers login instructions.
+
+  Requires an email in attrs. Creates a user record associated with the scope's organization.
+  A `magic_link_url_fun` that takes an encoded token and returns a URL must be provided.
+
+  ## Examples
+
+      iex> invite_user(scope, %{email: "new@example.com"}, &url_fun/1)
+      {:ok, %User{}}
+
+      iex> invite_user(scope, %{email: "invalid"}, &url_fun/1)
+      {:error, %Ecto.Changeset{}}
+  """
+  def invite_user(scope, attrs \\ %{}, magic_link_url_fun)
+      when is_function(magic_link_url_fun, 1) do
+    with {:ok, %User{} = user} <-
+           %User{}
+           |> User.invitation_changeset(attrs, scope)
+           |> Repo.insert() do
+      {encoded_token, user_token} = UserToken.build_email_token(user, "login")
+      Repo.insert!(user_token)
+      UserNotifier.deliver_login_instructions(user, magic_link_url_fun.(encoded_token))
+      {:ok, user}
+    end
   end
 
   ## Settings

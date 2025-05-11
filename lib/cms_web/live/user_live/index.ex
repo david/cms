@@ -27,6 +27,11 @@ defmodule CMSWeb.UserLive.Index do
         Users
         for {@organization.name}
         <:subtitle>This is a list of users for the selected organization.</:subtitle>
+        <:actions>
+          <.button variant="primary" navigate={~p"/users/new"}>
+            <.icon name="hero-plus" /> Invite User
+          </.button>
+        </:actions>
       </.header>
 
       <.table id="users" rows={@streams.users}>
