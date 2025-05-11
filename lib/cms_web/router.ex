@@ -53,15 +53,13 @@ defmodule CMSWeb.Router do
     live_session :require_authenticated_user,
       on_mount: [{CMSWeb.UserAuth, :require_authenticated}] do
       live "/users/settings", UserLive.Settings, :edit
-      live "/users", UserLive.Index # ADDED
+      live "/users", UserLive.Index
       live "/users/settings/confirm-email/:token", UserLive.Settings, :confirm_email
 
       live "/liturgies", LiturgyLive.Index, :index
       live "/liturgies/new", LiturgyLive.Form, :new
       live "/liturgies/:id/edit", LiturgyLive.Form, :edit
     end
-
-    post "/users/update-password", UserSessionController, :update_password
   end
 
   scope "/", CMSWeb do

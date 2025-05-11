@@ -10,8 +10,8 @@ defmodule CMSWeb.UserLive.Login do
         <.header class="text-center">
           <p>Log in</p>
           <:subtitle>
-            <%= if @current_scope do %>
-              You need to reauthenticate to perform sensitive actions on your account.
+            <%= if @current_scope.user do %>
+              Use the button below to send a new login link to your email.
             <% else %>
               Don't have an account? <.link
                 navigate={~p"/users/register"}
@@ -52,41 +52,6 @@ defmodule CMSWeb.UserLive.Login do
             Log in with email <span aria-hidden="true">→</span>
           </.button>
         </.form>
-
-        <div class="divider">or</div>
-
-        <.form
-          :let={f}
-          for={@form}
-          id="login_form_password"
-          action={~p"/users/log-in"}
-          phx-submit="submit_password"
-          phx-trigger-action={@trigger_submit}
-        >
-          <.input
-            readonly={!!@current_scope}
-            field={f[:email]}
-            type="email"
-            label="Email"
-            autocomplete="username"
-            required
-          />
-          <.input
-            field={@form[:password]}
-            type="password"
-            label="Password"
-            autocomplete="current-password"
-          />
-          <.input
-            :if={!@current_scope}
-            field={f[:remember_me]}
-            type="checkbox"
-            label="Keep me logged in"
-          />
-          <.button class="w-full" variant="primary">
-            Log in <span aria-hidden="true">→</span>
-          </.button>
-        </.form>
       </div>
     </Layouts.app>
     """
@@ -99,11 +64,7 @@ defmodule CMSWeb.UserLive.Login do
 
     form = to_form(%{"email" => email}, as: "user")
 
-    {:ok, assign(socket, form: form, trigger_submit: false)}
-  end
-
-  def handle_event("submit_password", _params, socket) do
-    {:noreply, assign(socket, :trigger_submit, true)}
+    {:ok, assign(socket, form: form)}
   end
 
   def handle_event("submit_magic", %{"user" => %{"email" => email}}, socket) do

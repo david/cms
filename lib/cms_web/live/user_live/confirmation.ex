@@ -19,7 +19,7 @@ defmodule CMSWeb.UserLive.Confirmation do
         >
           <input type="hidden" name={@form[:token].name} value={@form[:token].value} />
           <.input
-            :if={!@current_scope}
+            :if={!@current_scope.user}
             field={@form[:remember_me]}
             type="checkbox"
             label="Keep me logged in"
@@ -39,17 +39,13 @@ defmodule CMSWeb.UserLive.Confirmation do
         >
           <input type="hidden" name={@form[:token].name} value={@form[:token].value} />
           <.input
-            :if={!@current_scope}
+            :if={!@current_scope.user}
             field={@form[:remember_me]}
             type="checkbox"
             label="Keep me logged in"
           />
           <.button variant="primary" phx-disable-with="Logging in..." class="w-full">Log in</.button>
         </.form>
-
-        <p :if={!@user.confirmed_at} class="alert alert-outline mt-8">
-          Tip: If you prefer passwords, you can enable them in the user settings.
-        </p>
       </div>
     </Layouts.app>
     """
