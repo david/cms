@@ -1,0 +1,35 @@
+- hosts: localhost
+  connection: local
+
+  tasks:
+    - name: Add .ssh/
+      ansible.builtin.file:
+        path: ~/.ssh
+        state: directory
+        mode: "0700"
+
+    - name: Generate SSH sys key
+      community.crypto.openssh_keypair:
+        path: ~/.ssh/chr-prod-sys
+        type: ed25519
+
+    - name: Generate SSH app key
+      community.crypto.openssh_keypair:
+        path: ~/.ssh/chr-prod-app
+        type: ed25519
+
+    - name: Add SSH config
+      ansible.builtin.blockinfile:
+        create: true
+        path: ~/.ssh/config
+        mode: "0600"
+        block: |
+          Host chr-prod-sys
+            User {{ lookup('env', 'PROD_SYS_USERNAME', default=undef()) }}
+            HostName {{ lookup('env', 'PROD_HOST', default=undef()) }}
+            IdentityFile ~/.ssh/chr-prod-sys
+
+          Host chr-prod-app
+            User {{ lookup('env', 'PROD_APP_USERNAME', default=undef()) }}
+            HostName {{ lookup('env', 'PROD_HOST', default=undef()) }}
+            IdentityFile ~/.ssh/chr-prod-app

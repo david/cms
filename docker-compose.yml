@@ -10,7 +10,7 @@ services:
       - .:/app
 
   db:
-    image: postgres:17
+    image: "public.ecr.aws/docker/library/postgres:${POSTGRES_VERSION}"
     restart: unless-stopped
     environment:
       POSTGRES_DB: cms_dev

@@ -1,0 +1,25 @@
+- name: Setup app
+  hosts: app
+  tags: app
+
+  tasks:
+    - name: Add secret key base
+      community.docker.docker_secret:
+        name: chr-app-secret-key-base
+        data: "{{ lookup('env', 'PROD_APP_SECRET_KEY_BASE', default=undef()) }}"
+
+    - name: Add database password
+      community.docker.docker_secret:
+        name: chr-db-password
+        data: "{{ lookup('env', 'PROD_DB_PASSWORD', default=undef()) }}"
+
+    - name: Add database url
+      community.docker.docker_secret:
+        name: chr-db-url
+        data: "{{ lookup('env', 'PROD_DB_URL', default=undef()) }}"
+
+    - name: Registry auth
+      community.docker.docker_login:
+        registry: "{{ lookup('env', 'PROD_REGISTRY_URL', default=undef()) }}"
+        username: "{{ lookup('env', 'PROD_REGISTRY_USERNAME', default=undef()) }}"
+        password: "{{ lookup('env', 'PROD_REGISTRY_PASSWORD', default=undef()) }}"

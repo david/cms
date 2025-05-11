@@ -1,0 +1,27 @@
+- name: Prepare remote images
+  hosts: app
+
+  tasks:
+    - name: Pull postgres
+      community.docker.docker_image:
+        name: "public.ecr.aws/docker/library/postgres:17"
+        source: pull
+
+    - name: Pull traefik
+      community.docker.docker_image:
+        name: "public.ecr.aws/docker/library/traefik:v3.3"
+        source: pull
+
+- name: Deploy
+  hosts: localhost
+
+  tasks:
+    - name: Deploy stack
+      community.general.docker_stack:
+        compose:
+          - docker-stack.yml
+        docker_host: ssh://chr-prod-app
+        name: chr
+        prune: true
+        state: present
+        with_registry_auth: true

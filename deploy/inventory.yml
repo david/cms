@@ -1,0 +1,14 @@
+prod:
+  children:
+    sys:
+      hosts:
+        chr-prod-sys:
+          ansible_become: true
+    app:
+      hosts:
+        chr-prod-app:
+  vars:
+    ansible_connection: ssh
+    ansible_become_method: sudo
+    ansible_python_interpreter: /usr/bin/python3.12
+

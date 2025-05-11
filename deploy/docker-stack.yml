@@ -1,0 +1,58 @@
+services:
+  reverse-proxy:
+    image: "public.ecr.aws/docker/library/traefik:${TRAEFIK_VERSION}"
+    command:
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entryPoints.websecure.address=:443"
+      - "--entryPoints.web.address=:80"
+      - "--entryPoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entryPoints.web.http.redirections.entryPoint.scheme=https"
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.email=${PROD_EMAIL}"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "letsencrypt:/letsencrypt"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+  web:
+    image: "ghcr.io/david/cms:latest"
+    environment:
+      PHX_HOST: "${PROD_HOST}"
+      DATABASE_URL_FILE: /run/secrets/chr-db-url
+      SECRET_KEY_BASE_FILE: /run/secrets/chr-app-secret-key-base
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.web.rule=Host(`${PROD_HOST}`)"
+      - "traefik.http.routers.web.entrypoints=websecure"
+      - "traefik.http.routers.web.tls.certresolver=myresolver"
+      - "traefik.http.services.web.loadbalancer.server.port=4000"
+    secrets:
+      - chr-app-secret-key-base
+      - chr-db-url
+
+  db:
+    image: "public.ecr.aws/docker/library/postgres:${POSTGRES_VERSION}"
+    environment:
+      POSTGRES_DB: "${PROD_DB_NAME}"
+      POSTGRES_USER: "${PROD_DB_USERNAME}"
+      POSTGRES_PASSWORD_FILE: /run/secrets/chr-db-password
+    secrets:
+      - chr-db-password
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+secrets:
+  chr-db-password:
+    external: true
+  chr-db-url:
+    external: true
+  chr-app-secret-key-base:
+    external: true
+
+volumes:
+  db-data:
+  letsencrypt:

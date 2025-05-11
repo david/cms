@@ -1,0 +1,11 @@
+#!/bin/sh
+set -eu
+
+cd -P -- "$(dirname -- "$0")"
+
+export SECRET_KEY_BASE=$(cat $SECRET_KEY_BASE_FILE)
+export DATABASE_URL=$(cat $DATABASE_URL_FILE)
+
+./migrate
+
+PHX_SERVER=true exec ./cms start

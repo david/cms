@@ -1,0 +1,83 @@
+- name: Setup system
+  hosts: sys
+
+  tasks:
+    - name: Configure login
+      block:
+        - name: install fail2ban
+          ansible.builtin.apt:
+            name: fail2ban
+            state: present
+
+        - name: harden sshd
+          ansible.builtin.copy:
+            dest: /etc/ssh/sshd_config.d/hardened.conf
+            content: |
+              PasswordAuthentication no
+              PermitRootLogin no
+
+        - name: restart sshd
+          ansible.builtin.service:
+            name: ssh
+            state: restarted
+
+    - name: Configure firewall
+      block:
+        - name: deny incoming traffic by default
+          community.general.ufw:
+            default: deny
+            direction: incoming
+
+        - name: allow outgoing traffic by default
+          community.general.ufw:
+            default: allow
+            direction: outgoing
+
+        - name: allow ssh
+          community.general.ufw:
+            rule: allow
+            name: OpenSSH
+
+        - name: enable
+          community.general.ufw:
+            state: enabled
+
+    - name: Setup docker
+      block:
+        - name: download gpg key
+          ansible.builtin.get_url:
+            url: https://download.docker.com/linux/ubuntu/gpg
+            dest: /etc/apt/keyrings/docker.asc
+
+        - name: add deb source
+          ansible.builtin.apt_repository:
+            repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+            state: present
+
+        - name: install packages
+          ansible.builtin.apt:
+            name:
+              - docker-ce
+              - docker-ce-cli
+              - containerd.io
+              - python3-docker
+              - python3-jsondiff
+            state: present
+
+        - name: init swarm
+          community.docker.docker_swarm:
+            state: present
+
+    - name: Add app user
+      block:
+        - name: add user
+          ansible.builtin.user:
+            name: app
+            groups: docker
+            password: "*"
+
+        - name: add public key
+          ansible.posix.authorized_key:
+            user: app
+            state: present
+            key: "{{ lookup('file', '~/.ssh/chr-prod-app.pub') }}"
