@@ -25,15 +25,12 @@ defmodule CMSWeb.UserLive.Index do
     <Layouts.app flash={@flash} current_scope={@current_scope} page_title={@page_title}>
       <.header>
         Users
-        for <%= @organization.name %>
+        for {@organization.name}
         <:subtitle>This is a list of users for the selected organization.</:subtitle>
       </.header>
 
-      <.table
-        id="users"
-        rows={@streams.users}
-      >
-        <:col :let={{_id, user}} label="Email"><%= user.email %></:col>
+      <.table id="users" rows={@streams.users}>
+        <:col :let={{_id, user}} label="Email">{user.email}</:col>
       </.table>
     </Layouts.app>
     """

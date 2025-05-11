@@ -62,6 +62,9 @@ defmodule CMSWeb.LiturgyLive.Index do
   @impl true
   def handle_info({type, %CMS.Liturgies.Liturgy{}}, socket)
       when type in [:created, :updated, :deleted] do
-    {:noreply, stream(socket, :liturgies, Liturgies.list_liturgies(socket.assigns.current_scope), reset: true)}
+    {:noreply,
+     stream(socket, :liturgies, Liturgies.list_liturgies(socket.assigns.current_scope),
+       reset: true
+     )}
   end
 end
