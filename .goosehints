@@ -7,7 +7,7 @@
 ## Development Guidelines
 
 ### CRITICAL - NO CODE COMMENTS
-**ABSOLUTELY NO code comments** (Elixir `#`, Heex `<%#`, HTML `<!--`, etc.). This includes comments explaining rationale, removed code, or historical context. Rely *only* on self-explanatory code and descriptive commit messages (which *can* explain reasoning). This is an inviolable, strict requirement for all code output. **This applies even to comments intended for internal clarification during code generation; the final output must be free of any comments I might have added.**
+**ABSOLUTELY NO code comments**. This includes comments explaining rationale, removed code, or historical context. Rely *only* on self-explanatory code and descriptive commit messages (which *can* explain reasoning). This is an inviolable, strict requirement for all code output. **This applies even to comments intended for internal clarification during code generation; the final output must be free of any comments I might have added.**
 
 ### Task Adherence & Scope Management
 -   **Strictly Adhere to Requested Task:** Focus exclusively on implementing the user's explicit request.
@@ -59,7 +59,7 @@ Prefer `get_in(data.property.other)` for safe, concise access to potentially nil
 ### Context Boundaries
 **Strictly keep Ecto Repo interactions within context modules.** Do not call `Repo` functions directly from controllers, LiveViews, components, **schema modules**, or other non-context modules. Contexts should provide the sole interface for database operations.
 
-### Data Pipelines (`|>`)
+### Data Pipelines
 Strongly favor. Design functions for direct piping (data as first argument). For functions in a pipeline primarily for side-effects, ensure they return the input value to avoid `Kernel.tap/2`. Avoid unnecessary intermediate variables unless they significantly improve readability for a complex value.
 
 ### Collection Processing (`Enum` vs. `Stream`)
