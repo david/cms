@@ -1,5 +1,3 @@
-# .goosehints
-
 ## Project Overview
 
 - **Type:** Elixir/Phoenix Web Application
@@ -9,16 +7,51 @@
 ## Development Guidelines
 
 ### CRITICAL - NO CODE COMMENTS
-**ABSOLUTELY NO code comments** (Elixir `#`, Heex `<%#`, HTML `<!--`, etc.). This includes comments explaining rationale, removed code, or historical context. Rely *only* on self-explanatory code and descriptive commit messages (which *can* explain reasoning). This is an inviolable, strict requirement for all code output.
+**ABSOLUTELY NO code comments** (Elixir `#`, Heex `<%#`, HTML `<!--`, etc.). This includes comments explaining rationale, removed code, or historical context. Rely *only* on self-explanatory code and descriptive commit messages (which *can* explain reasoning). This is an inviolable, strict requirement for all code output. **This applies even to comments intended for internal clarification during code generation; the final output must be free of any comments I might have added.**
+
+### Task Adherence & Scope Management
+-   **Strictly Adhere to Requested Task:** Focus exclusively on implementing the user's explicit request.
+-   **No Unsolicited Changes:** Do not make any changes, refactors (e.g., renaming variables/functions, stylistic code changes like HEEx interpolation), or cleanups (e.g., removing unused aliases, code) that were not explicitly requested or are not a direct, unavoidable consequence of the requested task.
+-   **Propose Deviations Explicitly:** If a deviation, beneficial refactor, or consequential cleanup seems warranted, it *must* be proposed to the user as a separate item or an optional part of the plan, clearly stating its rationale and impact. Do not implement without explicit user approval for that specific deviation.
 
 ### Planning & Execution Cycle
-1.  **Propose Plan:** Detail strategy, including: all files for creation/modification (changes as unified diffs, ~3 lines context; new files with purpose/structure), and any commands to be run.
-2.  **Seek Single Approval for Plan:** Wait for explicit approval of the *entire* proposed plan. **Re-confirm before executing potentially destructive commands (e.g., migrations not in the approved plan details) or if significant deviations from the plan become necessary.**
-3.  **Execute Approved Plan:** Proceed with all specified file creations/modifications and non-destructive commands. Write file content directly, unless a very small modification (1-2 lines) is clearer shown in full.
-4.  **Summarize & Confirm Completion:** After all operations, **list all files actually written/modified.** Then, ask for final approval/confirmation.
+This cycle guides each unit of work:
+
+#### 1. Propose Plan
+Detail strategy, including all files for creation/modification, and any commands to be run. Changes must be presented as described under "Presenting Changes in Plans" below.
+
+#### 2. Seek Single Approval for Plan from the User
+After proposing a plan, **explicitly ask the user for their approval.** Wait for the user to provide their direct, unambiguous approval of the *entire* proposed plan before proceeding. Do not assume approval or answer on the user's behalf. **Re-confirm with the user before executing potentially destructive commands (e.g., migrations not in the approved plan details) or if significant deviations from the plan become necessary.**
+-   **Self-Correction Step:** Before proposing, re-read relevant sections of these `.goosehints`, paying close attention to "NO CODE COMMENTS," "Task Adherence," and "Presenting Changes in Plans."
+
+#### 3. Execute Approved Plan
+Proceed with all specified file creations/modifications and non-destructive commands. Write file content directly.
+
+#### 4. Summarize & Confirm Completion
+After all operations, run `mix format`. Confirm completion of other mandated actions. Then, ask for final approval/confirmation. **Do not list all files actually written/modified in the summary, as the user will check this via `git status`.**
+
+#### Presenting Changes in Plans
+-   **Modifications to Existing Files:** Always present changes as a **unified diff** (e.g., output similar to `git diff -U3` or a clear textual representation of lines added/removed with ~3 lines of context). Avoid showing the full file content unless the changes are pervasive.
+-   **New Files:** Provide the full proposed content, along with its purpose and structure.
+-   **Reverts/Corrections:** If reverting changes (especially those identified by `git diff`), the proposal to revert should also be in a diff format or clearly show only the lines being reverted.
 
 ### Commit Messages
 **Do not use prefixes** like `feat:`, `chore:`, `fix:`, etc. Use clear, descriptive messages.
+
+### Project Structure Verification & Code Understanding
+
+#### Verify Project Structure and Conventions Proactively
+-   **CRITICAL:** Instead of making assumptions, use tools (`ls`, `rg --files`, `developer__text_editor command="view"`) proactively.
+-   **Application & Module Naming:** Don't assume application or top-level module names. Verify from `mix.exs` or existing file paths if unsure, or ask.
+-   **File/Directory Paths & Naming Conventions:** Do not guess paths to modules (e.g., context modules) or specific naming conventions (e.g., `_component.ex` vs. `_components.ex`). Explicitly check the filesystem.
+
+#### Understand Existing Code & Patterns
+Before implementing new features or modifying existing ones, inspect related code to understand established patterns and conventions.
+-   **Verify Code Behavior:** Actively verify the behavior of existing functions and the structure of data (e.g., function return values, API responses, database query results) *before* writing code that depends on them. Use `developer__text_editor command="view"` to inspect relevant code sections if behavior is not clear from existing hints or prior interactions. Do not operate on unverified assumptions.
+-   **Schema Definitions:** Once a schema module is identified (e.g., `User.ex`), *always* view its content to confirm field names, types, and associations before using them. Do not guess field names (e.g., `first_name` vs. `given_name`).
+-   **Assign Keys & Data Flow:** For data passed through `conn` or `socket` assigns (e.g., `current_user`, `current_organization`), inspect the relevant plugs (e.g., in `router.ex`) or `on_mount` hooks (e.g., `UserAuth.ex`) to determine the correct assign keys and data structure (e.g., `socket.assigns.current_scope.organization` vs. `socket.assigns.current_organization`).
+-   **Component Usage:** When replicating the use of a shared component (e.g., a table component), analyze how it's used in existing, working examples. Understand its props and slots by checking both the call site and the component's definition (e.g., in `core_components.ex`) to avoid unnecessary boilerplate or incorrect assumptions about its API.
+-   **LiveView Mechanics:** Be precise about LiveView-specific features. For instance, understand that `@streams.name` is a stream configuration struct, not the enumerable collection itself for direct inspection of emptiness in templates.
 
 ### Safe Nested Data Access
 Prefer `get_in(data.property.other)` for safe, concise access to potentially nil nested data. This avoids `get_in(data, [:property, :other])` syntax and manual nil checks (e.g., `data.a && data.a.b`).
@@ -34,9 +67,11 @@ For multi-step collection processing (e.g., `map`, `filter`), prefer `Stream` fu
 
 ### Logic Simplification
 Critically evaluate conditions within functions. If upstream data processing or queries already guarantee certain data states, remove redundant checks in downstream functions to simplify logic.
+-   **Rely on Guarantees:** Trust established guarantees (e.g., data presence/structure ensured by authentication plugs or other upstream processes). Avoid overly defensive coding (e.g., unnecessary `nil` checks or fallback function clauses for conditions that should not occur if preconditions are met). "Let it crash" can be appropriate if an invariant is violated.
+-   **Question Boilerplate:** For common patterns like `handle_params/3` or default fallback clauses, actively question their necessity in the specific context if they appear to be no-ops or if reference patterns omit them.
 
 ### Naming Conventions
-Strive for clear, concise, and intention-revealing names for functions and variables. Avoid verbose suffixes (e.g., `_data`, `_list`, `_from_source`) if the context or function signature makes them obvious. Ensure function names accurately reflect their full responsibility.
+Strive for clear, concise, and intention-revealing names for functions and variables. Avoid verbose suffixes (e.g., `_data`, `_list`, `_from_source`) if the context or function signature makes them obvious. Ensure function names accurately reflect their full responsibility. **Do not change existing names unless explicitly requested as part of a refactoring task.**
 
 ## Ecto & Database
 
@@ -56,11 +91,11 @@ For creating changesets for *new* records from attribute maps/structs, the stand
 Understand Ecto function behavior with edge cases (e.g., `Repo.insert_all/3` handles empty lists gracefully). Avoid redundant guards if the library function is already robust.
 
 ## Key Directories & Files (relative to project root)
-
 - `mix.exs`: Project definition, dependencies. **Check this to see available libraries/APIs.**
 - `mix.lock`: Exact dependency versions.
-- `lib/`: Core application code (Elixir).
-  - `lib/your_app_web/components/`: Often contains reusable UI components (`*_components.ex`) for Eex/Heex templates. (Verify exact path based on app name).
+- `lib/cms/`: Core application logic (Elixir).
+- `lib/cms_web/`: Phoenix web interface code (LiveViews, controllers, templates, components).
+  - `lib/cms_web/components/`: Reusable UI components (`*_components.ex`) for Heex templates.
 - `test/`: Tests (ExUnit).
 - `config/`: Configurations.
 - `priv/`: Static files, migrations, templates.
@@ -76,3 +111,21 @@ Understand Ecto function behavior with edge cases (e.g., `Repo.insert_all/3` han
 - `mix phx.routes`: List routes.
 - `mix ecto.migrate`: Run DB migrations.
 - `iex -S mix`: Start interactive console.
+
+## Goose Operational Reminders
+
+### Always Use Absolute Paths
+When providing file or directory paths to developer extension tools (e.g., for `developer__text_editor` or when referencing files in `developer__shell` commands), always use absolute paths. This ensures tool calls are unambiguous regardless of the project's location or the user's current directory.
+
+### Communicate Succinctly
+Provide all necessary information but omit conversational pleasantries (e.g., "thank you," "please," apologies) and emotional expressions. Minimize intermediate status updates (e.g., "I have the content," "Starting X step") if the context implies them; proceed directly to the next logical output or proposal. Focus on direct, factual communication.
+
+### Optimize Plan and Summary Content
+#### Plans (Cycle Step 1)
+When detailing the strategy, focus on the essential deliverables: specific files for modification/creation, the nature of the changes (as per "Presenting Changes in Plans" under "Planning & Execution Cycle"), and commands to be run. **Ensure modifications to existing files are presented as unified diffs.** Avoid narrating standard procedural elements of the Planning & Execution Cycle itself (e.g., "I will then ask for approval"), as these are already mandated.
+
+#### Summaries (Cycle Step 4)
+Confirm completion of mandated actions (e.g., `mix format`). **Do not list all files actually written/modified.** Limit any additional remarks strictly to critical outcomes or significant deviations from the approved plan.
+
+### Adapt to User Workflow & Feedback
+Pay close attention to user corrections and stated preferences (e.g., using `git status` instead of explicit file lists from me, preferences for diffs). Adapt my interaction style and output accordingly. Remember and apply feedback from previous interactions and retrospectives.
