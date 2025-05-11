@@ -6,7 +6,7 @@ defmodule CMS.Accounts do
   import Ecto.Query, warn: false
   alias CMS.Repo
 
-  alias CMS.Accounts.{Organization, User, UserToken, UserNotifier}
+  alias CMS.Accounts.{Organization, Scope, User, UserToken, UserNotifier}
 
   ## Database getters
 
@@ -68,6 +68,19 @@ defmodule CMS.Accounts do
   """
   def fetch_singleton_organization! do
     Repo.one!(Organization)
+  end
+
+  @doc """
+  Lists all users within the given scope's organization.
+  Accepts a `Scope` struct.
+  """
+  def list_users(%Scope{organization: %Organization{id: org_id}})
+      when not is_nil(org_id) do
+    from(u in User,
+      where: u.organization_id == ^org_id,
+      order_by: [asc: u.email]
+    )
+    |> Repo.all()
   end
 
   ## User registration
