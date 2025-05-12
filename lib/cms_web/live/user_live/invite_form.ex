@@ -29,6 +29,7 @@ defmodule CMSWeb.UserLive.InviteForm do
       <.form for={@form} id="invite-user-form" phx-change="validate" phx-submit="save">
         <.input field={@form[:name]} type="text" label="Name" required />
         <.input field={@form[:email]} type="email" label="Email" required />
+        <.input field={@form[:phone_number]} type="tel" label="Phone Number" />
         <footer>
           <.button phx-disable-with="Inviting..." variant="primary">Invite User</.button>
           <.button navigate={~p"/users"}>Cancel</.button>

@@ -255,7 +255,8 @@ CREATE TABLE public.users (
     inserted_at timestamp(0) without time zone NOT NULL,
     updated_at timestamp(0) without time zone NOT NULL,
     organization_id integer,
-    name character varying(255) NOT NULL
+    name character varying(255) NOT NULL,
+    phone_number character varying(255)
 );
 
 
@@ -569,3 +570,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20250505202451);
 INSERT INTO public."schema_migrations" (version) VALUES (20250509164126);
 INSERT INTO public."schema_migrations" (version) VALUES (20250511162023);
 INSERT INTO public."schema_migrations" (version) VALUES (20250512180606);
+INSERT INTO public."schema_migrations" (version) VALUES (20250512205212);

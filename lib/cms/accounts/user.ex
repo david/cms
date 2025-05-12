@@ -5,6 +5,7 @@ defmodule CMS.Accounts.User do
   schema "users" do
     field :name, :string
     field :email, :string
+    field :phone_number, :string
     field :confirmed_at, :utc_datetime
     field :authenticated_at, :utc_datetime, virtual: true
 
@@ -70,7 +71,7 @@ defmodule CMS.Accounts.User do
   """
   def invitation_changeset(user, attrs, scope) do
     user
-    |> cast(attrs, [:name, :email])
+    |> cast(attrs, [:name, :email, :phone_number])
     |> validate_required([:name, :email])
     |> validate_email_for_invitation()
     |> put_change(:organization_id, scope.organization.id)
