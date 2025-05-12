@@ -2,7 +2,7 @@ defmodule CMSWeb.UserLive.Index do
   use CMSWeb, :live_view
 
   alias CMS.Accounts
-  alias CMS.Accounts.Organization
+  alias CMS.Accounts.User
   alias CMSWeb.Layouts
 
   @impl true
@@ -35,6 +35,7 @@ defmodule CMSWeb.UserLive.Index do
       </.header>
 
       <.table id="users" rows={@streams.users}>
+        <:col :let={{_id, user}} label="Name">{user.name}</:col>
         <:col :let={{_id, user}} label="Email">{user.email}</:col>
       </.table>
     </Layouts.app>

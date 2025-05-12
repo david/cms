@@ -22,11 +22,12 @@ defmodule CMSWeb.UserLive.InviteForm do
       <.header>
         {@page_title}
         <:subtitle>
-          Enter the email of the user to invite to {@current_scope.organization.name}.
+          Enter the name and email of the user to invite to {@current_scope.organization.name}.
         </:subtitle>
       </.header>
 
       <.form for={@form} id="invite-user-form" phx-change="validate" phx-submit="save">
+        <.input field={@form[:name]} type="text" label="Name" required />
         <.input field={@form[:email]} type="email" label="Email" required />
         <footer>
           <.button phx-disable-with="Inviting..." variant="primary">Invite User</.button>

@@ -251,11 +251,11 @@ ALTER SEQUENCE public.songs_id_seq OWNED BY public.songs.id;
 CREATE TABLE public.users (
     id bigint NOT NULL,
     email public.citext NOT NULL,
-    hashed_password character varying(255),
     confirmed_at timestamp(0) without time zone,
     inserted_at timestamp(0) without time zone NOT NULL,
     updated_at timestamp(0) without time zone NOT NULL,
-    organization_id integer
+    organization_id integer,
+    name character varying(255) NOT NULL
 );
 
 
@@ -567,3 +567,5 @@ INSERT INTO public."schema_migrations" (version) VALUES (20250429200224);
 INSERT INTO public."schema_migrations" (version) VALUES (20250504143742);
 INSERT INTO public."schema_migrations" (version) VALUES (20250505202451);
 INSERT INTO public."schema_migrations" (version) VALUES (20250509164126);
+INSERT INTO public."schema_migrations" (version) VALUES (20250511162023);
+INSERT INTO public."schema_migrations" (version) VALUES (20250512180606);

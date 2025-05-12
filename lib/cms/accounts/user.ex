@@ -3,6 +3,7 @@ defmodule CMS.Accounts.User do
   import Ecto.Changeset
 
   schema "users" do
+    field :name, :string
     field :email, :string
     field :confirmed_at, :utc_datetime
     field :authenticated_at, :utc_datetime, virtual: true
@@ -65,11 +66,12 @@ defmodule CMS.Accounts.User do
 
   @doc """
   A changeset for inviting a new user.
-  It requires an email and associates the user with the given organization.
+  It requires an email and name, and associates the user with the given organization.
   """
   def invitation_changeset(user, attrs, scope) do
     user
-    |> cast(attrs, [:email])
+    |> cast(attrs, [:name, :email])
+    |> validate_required([:name, :email])
     |> validate_email_for_invitation()
     |> put_change(:organization_id, scope.organization.id)
   end
