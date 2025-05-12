@@ -37,8 +37,12 @@
           <.link href={~p"/liturgies"}>Liturgies</.link>
         </li>
         <li class="dropdown dropdown-end">
-          <div tabindex="0" role="button" class="btn btn-ghost">
-            {@current_scope.user.email}
+          <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar placeholder">
+            <div class="bg-neutral text-neutral-content rounded-full w-10">
+              <span class="text-xl">
+                {@current_scope.user.name |> String.first() |> String.upcase()}
+              </span>
+            </div>
           </div>
           <ul
             tabindex="0"
@@ -63,3 +67,4 @@
     {@inner_content}
   </body>
 </html>
+'''
