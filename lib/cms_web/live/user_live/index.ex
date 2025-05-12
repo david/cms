@@ -2,7 +2,6 @@ defmodule CMSWeb.UserLive.Index do
   use CMSWeb, :live_view
 
   alias CMS.Accounts
-  alias CMS.Accounts.User
   alias CMSWeb.Layouts
 
   @impl true
@@ -37,6 +36,11 @@ defmodule CMSWeb.UserLive.Index do
       <.table id="users" rows={@streams.users}>
         <:col :let={{_id, user}} label="Name">{user.name}</:col>
         <:col :let={{_id, user}} label="Email">{user.email}</:col>
+        <:col :let={{_id, user}} label={~H(<div class="text-center">Confirmed?</div>)}>
+          <div :if={user.confirmed_at} class="text-center">
+            <.icon name="hero-check-solid" class="size-5 text-success inline-block" />
+          </div>
+        </:col>
       </.table>
     </Layouts.app>
     """
