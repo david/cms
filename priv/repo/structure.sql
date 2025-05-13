@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 17.4 (Debian 17.4-1.pgdg120+2)
+-- Dumped from database version 17.5 (Debian 17.5-1.pgdg120+1)
 -- Dumped by pg_dump version 17.4 (Debian 17.4-1.pgdg120+2)
 
 SET statement_timeout = 0;
@@ -102,6 +102,39 @@ CREATE SEQUENCE public.blocks_id_seq
 --
 
 ALTER SEQUENCE public.blocks_id_seq OWNED BY public.blocks.id;
+
+
+--
+-- Name: families; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.families (
+    id bigint NOT NULL,
+    designation character varying(255) NOT NULL,
+    address text,
+    organization_id bigint NOT NULL,
+    inserted_at timestamp(0) without time zone NOT NULL,
+    updated_at timestamp(0) without time zone NOT NULL
+);
+
+
+--
+-- Name: families_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.families_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: families_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.families_id_seq OWNED BY public.families.id;
 
 
 --
@@ -256,7 +289,8 @@ CREATE TABLE public.users (
     updated_at timestamp(0) without time zone NOT NULL,
     organization_id integer,
     name character varying(255) NOT NULL,
-    phone_number character varying(255)
+    phone_number character varying(255),
+    family_id bigint NOT NULL
 );
 
 
@@ -328,6 +362,13 @@ ALTER TABLE ONLY public.blocks ALTER COLUMN id SET DEFAULT nextval('public.block
 
 
 --
+-- Name: families id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.families ALTER COLUMN id SET DEFAULT nextval('public.families_id_seq'::regclass);
+
+
+--
 -- Name: liturgies id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -383,6 +424,14 @@ ALTER TABLE ONLY public.bible_verses
 
 ALTER TABLE ONLY public.blocks
     ADD CONSTRAINT blocks_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: families families_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.families
+    ADD CONSTRAINT families_pkey PRIMARY KEY (id);
 
 
 --
@@ -449,6 +498,13 @@ CREATE UNIQUE INDEX bible_verses_book_chapter_verse_index ON public.bible_verses
 
 
 --
+-- Name: families_organization_id_designation_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX families_organization_id_designation_index ON public.families USING btree (organization_id, designation);
+
+
+--
 -- Name: liturgies_organization_id_index; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -467,6 +523,13 @@ CREATE INDEX songs_organization_id_index ON public.songs USING btree (organizati
 --
 
 CREATE UNIQUE INDEX users_email_index ON public.users USING btree (email);
+
+
+--
+-- Name: users_family_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX users_family_id_index ON public.users USING btree (family_id);
 
 
 --
@@ -496,6 +559,14 @@ CREATE INDEX users_tokens_user_id_index ON public.users_tokens USING btree (user
 
 ALTER TABLE ONLY public.blocks
     ADD CONSTRAINT blocks_organization_id_fkey FOREIGN KEY (organization_id) REFERENCES public.organizations(id) ON DELETE CASCADE;
+
+
+--
+-- Name: families families_organization_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.families
+    ADD CONSTRAINT families_organization_id_fkey FOREIGN KEY (organization_id) REFERENCES public.organizations(id) ON DELETE CASCADE;
 
 
 --
@@ -539,6 +610,14 @@ ALTER TABLE ONLY public.songs
 
 
 --
+-- Name: users users_family_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_family_id_fkey FOREIGN KEY (family_id) REFERENCES public.families(id) ON DELETE CASCADE;
+
+
+--
 -- Name: users users_organization_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -571,3 +650,5 @@ INSERT INTO public."schema_migrations" (version) VALUES (20250509164126);
 INSERT INTO public."schema_migrations" (version) VALUES (20250511162023);
 INSERT INTO public."schema_migrations" (version) VALUES (20250512180606);
 INSERT INTO public."schema_migrations" (version) VALUES (20250512205212);
+INSERT INTO public."schema_migrations" (version) VALUES (20250513111841);
+INSERT INTO public."schema_migrations" (version) VALUES (20250513184139);

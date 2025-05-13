@@ -6,11 +6,13 @@ defmodule CMS.Accounts.User do
     field :name, :string
     field :email, :string
     field :phone_number, :string
-    field :family_designation, :string
     field :confirmed_at, :utc_datetime
     field :authenticated_at, :utc_datetime, virtual: true
 
+    field :family_designation, :string, virtual: true
+
     belongs_to :organization, CMS.Accounts.Organization
+    belongs_to :family, CMS.Accounts.Family
 
     timestamps(type: :utc_datetime)
   end
@@ -22,7 +24,7 @@ defmodule CMS.Accounts.User do
 
   ## Options
 
-    * `:validate_email` - Set to false if you don't want to validate the
+    * `:validate_email` - Set to false if you don\'t want to validate the
       uniqueness of the email, useful when displaying live validations.
       Defaults to `true`.
   """
@@ -69,13 +71,15 @@ defmodule CMS.Accounts.User do
   @doc """
   A changeset for inviting a new user.
   It requires an email and name, and associates the user with the given organization.
+  It also expects family_id to be set prior to calling Accounts.invite_user.
   """
   def invitation_changeset(user, attrs, scope) do
     user
-    |> cast(attrs, [:name, :email, :phone_number, :family_designation])
-    |> validate_required([:name, :email, :family_designation])
+    |> cast(attrs, [:name, :email, :phone_number, :family_id, :family_designation])
+    |> validate_required([:name, :email, :family_designation, :family_id])
     |> validate_email_for_invitation()
     |> put_change(:organization_id, scope.organization.id)
+    |> assoc_constraint(:family)
   end
 
   @doc """

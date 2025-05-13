@@ -24,10 +24,33 @@ import {Socket} from "phoenix"
 import {LiveSocket} from "phoenix_live_view"
 import topbar from "../vendor/topbar"
 
+const Hooks = {
+  DatalistPopulator: {
+    mounted() {
+      this.el.addEventListener("input", (event) => {
+        const textInput = event.target;
+        const selected = Array.
+          from(textInput.list.options).
+          find(option => option.value === textInput.value);
+
+        const hiddenInput = document.getElementById(textInput.dataset.inputId);
+        const oldValue = hiddenInput.value;
+        const newValue = selected ? selected.dataset.id : "";
+
+        if (oldValue !== newValue) {
+          hiddenInput.value = newValue;
+          hiddenInput.dispatchEvent(new Event('change'));
+        }
+      });
+    }
+  }
+};
+
 const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 const liveSocket = new LiveSocket("/live", Socket, {
   longPollFallbackMs: 2500,
-  params: {_csrf_token: csrfToken}
+  params: {_csrf_token: csrfToken},
+  hooks: Hooks
 })
 
 // Show progress bar on live navigation and form submits
@@ -78,4 +101,3 @@ if (process.env.NODE_ENV === "development") {
     window.liveReloader = reloader
   })
 }
-

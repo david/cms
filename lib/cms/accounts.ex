@@ -4,9 +4,11 @@ defmodule CMS.Accounts do
   """
 
   import Ecto.Query, warn: false
-  alias CMS.Repo
 
-  alias CMS.Accounts.{Organization, Scope, User, UserToken, UserNotifier}
+  alias Ecto.Changeset
+
+  alias CMS.Accounts.{Family, Organization, Scope, User, UserToken, UserNotifier}
+  alias CMS.Repo
 
   ## Database getters
 
@@ -65,11 +67,10 @@ defmodule CMS.Accounts do
     |> Repo.all()
   end
 
-  def list_unique_family_designations(%Scope{organization: %Organization{id: org_id}}) do
-    from(u in User,
-      where: u.organization_id == ^org_id,
-      select: u.family_designation,
-      distinct: true
+  def list_families(%Scope{organization: %Organization{id: org_id}}) do
+    from(f in Family,
+      where: f.organization_id == ^org_id,
+      order_by: [asc: f.designation]
     )
     |> Repo.all()
   end
@@ -108,15 +109,41 @@ defmodule CMS.Accounts do
       iex> invite_user(scope, %{email: "invalid"}, &url_fun/1)
       {:error, %Ecto.Changeset{}}
   """
-  def invite_user(scope, attrs \\ %{}, magic_link_url_fun)
+  def invite_user(
+        %Scope{organization: %Organization{id: current_org_id}} = scope,
+        attrs \\ %{},
+        magic_link_url_fun
+      )
       when is_function(magic_link_url_fun, 1) do
+    # TODO: Ecto.Multi
+
+    changeset = User.invitation_changeset(%User{}, attrs, scope)
+
+    {:ok, family} =
+      case {Changeset.get_change(changeset, :family_id),
+            Changeset.get_change(changeset, :family_designation)} do
+        {nil, designation} ->
+          %Family{}
+          |> Family.changeset(%{designation: designation}, scope)
+          |> Repo.insert()
+
+        {family_id, designation} when is_integer(family_id) ->
+          fam = %Family{} = Repo.get_by!(Family, id: family_id, organization_id: current_org_id)
+
+          fam
+          |> Family.changeset(%{designation: designation}, scope)
+          |> Repo.update()
+      end
+
     with {:ok, %User{} = user} <-
            %User{}
-           |> User.invitation_changeset(attrs, scope)
+           |> User.invitation_changeset(Map.merge(attrs, %{"family_id" => family.id}), scope)
            |> Repo.insert() do
       {encoded_token, user_token} = UserToken.build_email_token(user, "login")
+
       Repo.insert!(user_token)
       UserNotifier.deliver_login_instructions(user, magic_link_url_fun.(encoded_token))
+
       {:ok, user}
     end
   end
