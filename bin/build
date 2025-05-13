@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -eu
+
+[ ! -v ELIXIR_VERSION ] && 2>&1 echo "ELIXIR_VERSION is not set" && exit 1
+[ ! -v OTP_VERSION ] && 2>&1 echo "OTP_VERSION is not set" && exit 1
+
+docker build \
+  --tag ghcr.io/david/cms:latest \
+  --build-arg ELIXIR_VERSION=${ELIXIR_VERSION} \
+  --build-arg OTP_VERSION=${OTP_VERSION} \
+  .

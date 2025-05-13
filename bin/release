@@ -1,0 +1,4 @@
+#!/bin/sh
+
+docker push ghcr.io/david/cms:latest
+ansible-playbook deploy/prod-app-deploy.yml
