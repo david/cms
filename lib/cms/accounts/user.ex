@@ -6,6 +6,7 @@ defmodule CMS.Accounts.User do
     field :name, :string
     field :email, :string
     field :phone_number, :string
+    field :family_designation, :string
     field :confirmed_at, :utc_datetime
     field :authenticated_at, :utc_datetime, virtual: true
 
@@ -71,8 +72,8 @@ defmodule CMS.Accounts.User do
   """
   def invitation_changeset(user, attrs, scope) do
     user
-    |> cast(attrs, [:name, :email, :phone_number])
-    |> validate_required([:name, :email])
+    |> cast(attrs, [:name, :email, :phone_number, :family_designation])
+    |> validate_required([:name, :email, :family_designation])
     |> validate_email_for_invitation()
     |> put_change(:organization_id, scope.organization.id)
   end

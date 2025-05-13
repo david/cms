@@ -9,9 +9,13 @@ defmodule CMSWeb.UserLive.InviteForm do
   def mount(_params, _session, socket) do
     changeset = User.invitation_changeset(%User{}, %{}, socket.assigns.current_scope)
 
+    family_designations =
+      Accounts.list_unique_family_designations(socket.assigns.current_scope)
+
     {:ok,
      socket
      |> assign(:form, to_form(changeset))
+     |> assign(:family_designations, family_designations)
      |> assign(:page_title, "Invite New User")}
   end
 
@@ -29,6 +33,18 @@ defmodule CMSWeb.UserLive.InviteForm do
       <.form for={@form} id="invite-user-form" phx-change="validate" phx-submit="save">
         <.input field={@form[:name]} type="text" label="Name" required />
         <.input field={@form[:email]} type="email" label="Email" required />
+        <.input
+          field={@form[:family_designation]}
+          type="text"
+          label="Family Designation"
+          required
+          list="family-designations-list"
+        />
+        <datalist id="family-designations-list">
+          <option :for={designation <- @family_designations} value={designation}>
+            {designation}
+          </option>
+        </datalist>
         <.input field={@form[:phone_number]} type="tel" label="Phone Number" />
         <footer>
           <.button phx-disable-with="Inviting..." variant="primary">Invite User</.button>

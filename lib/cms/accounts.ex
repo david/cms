@@ -65,6 +65,15 @@ defmodule CMS.Accounts do
     |> Repo.all()
   end
 
+  def list_unique_family_designations(%Scope{organization: %Organization{id: org_id}}) do
+    from(u in User,
+      where: u.organization_id == ^org_id,
+      select: u.family_designation,
+      distinct: true
+    )
+    |> Repo.all()
+  end
+
   ## User registration and invitation
 
   @doc """
