@@ -290,7 +290,8 @@ CREATE TABLE public.users (
     organization_id integer,
     name character varying(255) NOT NULL,
     phone_number character varying(255),
-    family_id bigint NOT NULL
+    family_id bigint NOT NULL,
+    birth_date date
 );
 
 
@@ -652,3 +653,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20250512180606);
 INSERT INTO public."schema_migrations" (version) VALUES (20250512205212);
 INSERT INTO public."schema_migrations" (version) VALUES (20250513111841);
 INSERT INTO public."schema_migrations" (version) VALUES (20250513184139);
+INSERT INTO public."schema_migrations" (version) VALUES (20250514145059);
