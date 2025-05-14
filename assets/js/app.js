@@ -39,7 +39,7 @@ const Hooks = {
 
         if (oldValue !== newValue) {
           hiddenInput.value = newValue;
-          hiddenInput.dispatchEvent(new Event('change'));
+          hiddenInput.dispatchEvent(new Event("change", { bubbles: true }));
         }
       });
     }

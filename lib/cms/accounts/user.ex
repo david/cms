@@ -11,6 +11,7 @@ defmodule CMS.Accounts.User do
     field :authenticated_at, :utc_datetime, virtual: true
 
     field :family_designation, :string, virtual: true
+    field :family_address, :string, virtual: true
 
     belongs_to :organization, CMS.Accounts.Organization
     belongs_to :family, CMS.Accounts.Family
@@ -76,7 +77,15 @@ defmodule CMS.Accounts.User do
   """
   def invitation_changeset(user, attrs, scope) do
     user
-    |> cast(attrs, [:name, :email, :phone_number, :family_id, :family_designation, :birth_date])
+    |> cast(attrs, [
+      :name,
+      :email,
+      :phone_number,
+      :family_id,
+      :family_designation,
+      :family_address,
+      :birth_date
+    ])
     |> validate_required([:name, :email, :family_designation, :family_id])
     |> validate_email_for_invitation()
     |> put_change(:organization_id, scope.organization.id)

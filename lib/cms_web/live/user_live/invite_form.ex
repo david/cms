@@ -14,6 +14,7 @@ defmodule CMSWeb.UserLive.InviteForm do
      socket
      |> assign(:form, to_form(changeset))
      |> assign(:family_suggestions, Accounts.list_families(socket.assigns.current_scope))
+     |> assign(:family_address, nil)
      |> assign(:page_title, "Invite New User")}
   end
 
@@ -44,6 +45,13 @@ defmodule CMSWeb.UserLive.InviteForm do
           data-input-id="family_id"
         />
 
+        <.input
+          field={@form[:family_address]}
+          type="textarea"
+          label="Family Address"
+          value={@family_address}
+        />
+
         <datalist id="family-suggestions">
           <%= for fam <- @family_suggestions do %>
             <option value={fam.designation} data-id={fam.id}></option>
@@ -55,6 +63,7 @@ defmodule CMSWeb.UserLive.InviteForm do
           name={@form[:family_id].name}
           id="family_id"
           value={@form[:family_id].value}
+          phx-change="update_address"
         />
 
         <.input field={@form[:phone_number]} type="tel" label="Phone Number" />
@@ -75,6 +84,19 @@ defmodule CMSWeb.UserLive.InviteForm do
     form_changeset = User.invitation_changeset(%User{}, user_params, current_scope)
     socket = assign(socket, :form, to_form(form_changeset, action: :validate))
     {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event("update_address", %{"user" => %{"family_id" => fam_id}}, socket) do
+    case Integer.parse(fam_id) do
+      {id, _} ->
+        family = Enum.find(socket.assigns.family_suggestions, &(&1.id == id))
+
+        {:noreply, assign(socket, :family_address, family.address)}
+
+      :error ->
+        {:noreply, socket}
+    end
   end
 
   @impl true

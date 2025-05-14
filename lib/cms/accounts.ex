@@ -115,23 +115,25 @@ defmodule CMS.Accounts do
         magic_link_url_fun
       )
       when is_function(magic_link_url_fun, 1) do
-    # TODO: Ecto.Multi
-
     changeset = User.invitation_changeset(%User{}, attrs, scope)
 
+    family_attrs = %{
+      designation: Changeset.get_change(changeset, :family_designation),
+      address: Changeset.get_change(changeset, :family_address)
+    }
+
     {:ok, family} =
-      case {Changeset.get_change(changeset, :family_id),
-            Changeset.get_change(changeset, :family_designation)} do
-        {nil, designation} ->
+      case Changeset.get_change(changeset, :family_id) do
+        nil ->
           %Family{}
-          |> Family.changeset(%{designation: designation}, scope)
+          |> Family.changeset(family_attrs, scope)
           |> Repo.insert()
 
-        {family_id, designation} when is_integer(family_id) ->
+        family_id when is_integer(family_id) ->
           fam = %Family{} = Repo.get_by!(Family, id: family_id, organization_id: current_org_id)
 
           fam
-          |> Family.changeset(%{designation: designation}, scope)
+          |> Family.changeset(family_attrs, scope)
           |> Repo.update()
       end
 
