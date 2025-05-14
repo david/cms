@@ -30,6 +30,9 @@ defmodule CMS.Liturgies.Liturgy do
     )
     |> validate_required([:service_on])
     |> put_change(:organization_id, user_scope.organization.id)
+    |> unique_constraint(:service_on,
+      message: "A liturgy already exists for this organization on this date."
+    )
   end
 
   def copy_changeset(source, user_scope) do

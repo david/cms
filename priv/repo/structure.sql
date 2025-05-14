@@ -513,6 +513,13 @@ CREATE INDEX liturgies_organization_id_index ON public.liturgies USING btree (or
 
 
 --
+-- Name: liturgies_organization_id_service_on_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX liturgies_organization_id_service_on_index ON public.liturgies USING btree (organization_id, service_on);
+
+
+--
 -- Name: songs_organization_id_index; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -654,3 +661,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20250512205212);
 INSERT INTO public."schema_migrations" (version) VALUES (20250513111841);
 INSERT INTO public."schema_migrations" (version) VALUES (20250513184139);
 INSERT INTO public."schema_migrations" (version) VALUES (20250514145059);
+INSERT INTO public."schema_migrations" (version) VALUES (20250514212755);
