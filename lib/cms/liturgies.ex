@@ -43,7 +43,11 @@ defmodule CMS.Liturgies do
 
   """
   def list_liturgies(%Scope{} = scope) do
-    Repo.all(from liturgy in Liturgy, where: liturgy.organization_id == ^scope.organization.id)
+    from(liturgy in Liturgy,
+      where: liturgy.organization_id == ^scope.organization.id,
+      order_by: [desc: :service_on]
+    )
+    |> Repo.all()
   end
 
   @doc """
