@@ -28,4 +28,15 @@ defmodule CMS.Liturgies.LiturgyBlock do
     |> merge(Block.changeset(liturgy_block, attrs, user_scope))
     |> put_change(:organization_id, user_scope.organization.id)
   end
+
+  @doc false
+  def copy_changeset(%{block_id: block_id, position: position}, user_scope) do
+    attrs = %{
+      block_id: block_id,
+      organization_id: user_scope.organization.id,
+      position: position
+    }
+
+    cast(%__MODULE__{}, attrs, [:block_id, :organization_id, :position])
+  end
 end
