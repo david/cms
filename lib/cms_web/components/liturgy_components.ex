@@ -6,11 +6,9 @@ defmodule CMSWeb.LiturgyComponents do
   def verse_list(assigns) do
     ~H"""
     <div>
-      <%= if @verses do %>
-        <%= for %{verse_number: number, body: body} <- @verses do %>
-          <span class="align-super text-xs text-neutral-500">{number}</span>
-          <span>{body}</span>
-        <% end %>
+      <%= for %{verse_number: number, body: body} <- (@verses || []) do %>
+        <span class="align-super text-xs text-neutral-500">{number}</span>
+        <span>{body}</span>
       <% end %>
     </div>
     """
