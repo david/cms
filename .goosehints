@@ -89,8 +89,10 @@ This file contains information and instructions for LLMs to follow when writing 
     4.  **Function Components for Encapsulation:** Good for complex cases or readability. Ensure conditional logic *inside* uses valid methods.
     #### g. Assertive Pre-condition Validations in Contexts
     For validating critical pre-conditions in context functions (e.g., ensuring an associated entity belongs to the correct parent organization before another entity is created/updated), prefer direct and assertive Elixir patterns **before** performing database mutations.
-        -   Example: `if family_id = Map.get(attrs, :family_id) do %CMS.Accounts.Family{} = CMS.Repo.get_by!(CMS.Accounts.Family, id: family_id, organization_id: current_org_id) end`.
+        -   Example: `%Family{} = Repo.get_by!(Family, id: family_id, organization_id: current_org_id) end`.
         -   A `MatchError` (from pattern matching a `nil` result) or an `Ecto.NoResultsError` (from `get_by!`) in such cases correctly halts execution if the pre-condition is violated, preventing inconsistent data operations. This approach is often preferred over manual error tuple construction for fundamental integrity checks.
+    #### h. Function Component Invocation
+    When invoking a function component defined in an aliased module (e.g., `alias CMSWeb.CoreComponents`), call it directly using the `<.component_name ... />` syntax. Do not prefix it with the module name (e.g., avoid `<CoreComponents.component_name ... />`) if the alias is present and the component is defined in that module.
 
 ## IV. Goose Operational Guidelines
 
