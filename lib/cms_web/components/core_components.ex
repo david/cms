@@ -408,6 +408,70 @@ defmodule CMSWeb.CoreComponents do
     """
   end
 
+  @doc """
+  Renders an autocomplete input with a datalist.
+  """
+  attr :id, :string,
+    required: true,
+    doc: "The id for the text input. The datalist id will be derived from this."
+
+  attr :label, :string, required: true
+
+  attr :text_field, Phoenix.HTML.FormField,
+    required: true,
+    doc: "The form field for the text input (e.g., @form[:family_designation])."
+
+  attr :value_field, Phoenix.HTML.FormField,
+    required: true,
+    doc: "The form field for the hidden value input (e.g., @form[:family_id])."
+
+  attr :suggestions, :list,
+    required: true,
+    doc: "A list of suggestions (structs or maps) each having at least a label and :id key."
+
+  attr :suggestion_label, :atom,
+    default: :label,
+    doc: "The label key for the suggestions."
+
+  attr :on_value_change, :string,
+    default: nil,
+    doc: "Optional phx-change event to trigger on the hidden value input."
+
+  attr :rest, :global, doc: "The arbitrary HTML attributes to add to the text input."
+
+  def autocomplete(assigns) do
+    ~H"""
+    <div>
+      <.input
+        autocomplete="off"
+        data-input-id={@value_field.id}
+        field={@text_field}
+        id={@id}
+        label={@label}
+        list={"#{@id}-suggestions"}
+        phx-hook="DatalistPopulator"
+        required
+        type="text"
+        {@rest}
+      />
+
+      <datalist id={"#{@id}-suggestions"}>
+        <%= for suggestion <- @suggestions do %>
+          <option value={Map.get(suggestion, @suggestion_label)} data-id={suggestion.id}></option>
+        <% end %>
+      </datalist>
+
+      <input
+        type="hidden"
+        name={@value_field.name}
+        id={@value_field.id || @value_field.name}
+        value={@value_field.value}
+        phx-change={@on_value_change}
+      />
+    </div>
+    """
+  end
+
   ## JS Commands
 
   def show(js \\ %JS{}, selector) do

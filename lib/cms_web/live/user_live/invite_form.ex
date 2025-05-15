@@ -5,6 +5,7 @@ defmodule CMSWeb.UserLive.InviteForm do
   alias CMS.Accounts.User
 
   alias CMSWeb.Layouts
+  alias CMSWeb.CoreComponents
 
   @impl true
   def mount(_params, _session, socket) do
@@ -34,15 +35,14 @@ defmodule CMSWeb.UserLive.InviteForm do
         <.input field={@form[:email]} type="email" label="Email" required />
         <.input field={@form[:birth_date]} type="date" label="Birth Date" />
 
-        <.input
-          field={@form[:family_designation]}
-          type="text"
+        <.autocomplete
+          id="family_designation_input"
           label="Family Designation"
-          required
-          list="family-suggestions"
-          autocomplete="off"
-          phx-hook="DatalistPopulator"
-          data-input-id="family_id"
+          text_field={@form[:family_designation]}
+          value_field={@form[:family_id]}
+          suggestions={@family_suggestions}
+          suggestion_label={:designation}
+          on_value_change="update_address"
         />
 
         <.input
@@ -50,20 +50,6 @@ defmodule CMSWeb.UserLive.InviteForm do
           type="textarea"
           label="Family Address"
           value={@family_address}
-        />
-
-        <datalist id="family-suggestions">
-          <%= for fam <- @family_suggestions do %>
-            <option value={fam.designation} data-id={fam.id}></option>
-          <% end %>
-        </datalist>
-
-        <input
-          type="hidden"
-          name={@form[:family_id].name}
-          id="family_id"
-          value={@form[:family_id].value}
-          phx-change="update_address"
         />
 
         <.input field={@form[:phone_number]} type="tel" label="Phone Number" />
