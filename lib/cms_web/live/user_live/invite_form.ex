@@ -5,7 +5,6 @@ defmodule CMSWeb.UserLive.InviteForm do
   alias CMS.Accounts.User
 
   alias CMSWeb.Layouts
-  alias CMSWeb.CoreComponents
 
   @impl true
   def mount(_params, _session, socket) do
