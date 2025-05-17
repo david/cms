@@ -1,145 +1,116 @@
 # .goosehints
 
-This file contains information and instructions for LLMs to follow when writing code. As an LLM, you should follow them strictly.
+**LLM Instructions: Adhere strictly to these guidelines.**
 
-## I. Foundational Principles & Critical Mandates
+## I. Foundational Principles
 
-### 1. CRITICAL - NO CODE COMMENTS
-**OMIT ALL CODE COMMENTS**. This includes comments explaining rationale, removed code, or historical context. Rely *only* on self-explanatory code and descriptive commit messages (which *can* explain reasoning). This is an inviolable, strict requirement for all code output. **This applies even to comments intended for internal clarification during code generation; the final output must be free of any comments you might have added.**
+1.  **CRITICAL - NO CODE COMMENTS:**
+    *   **OMIT ALL CODE COMMENTS.** Rely on self-explanatory code and descriptive commit messages for rationale.
+    *   This is inviolable, especially for HEEx (no `#` or other comment types).
 
-### 2. Task Adherence & Scope Management
--   **Strictly Adhere to Requested Task:** Focus exclusively on implementing the user's explicit request.
--   **Holistic Impact Assessment:** While focused on the task, proactively identify direct consequences and necessary related changes (e.g., function callers, dependent modules, build steps).
--   **No Unsolicited Changes:** Do not make changes, refactors, or cleanups *not directly necessitated* by the task or its immediate consequences, unless explicitly requested.
--   **Propose Broader Changes Explicitly:** If a deviation or beneficial change *beyond the immediate scope* seems warranted, propose it to the user as a separate item or optional part of the plan, clearly stating rationale and impact. Do not implement without explicit user approval.
+2.  **Task Adherence & Scope:**
+    *   Implement *only* the explicit request.
+    *   Assess and implement direct consequences (callers, dependencies).
+    *   NO UNSOLICITED CHANGES/REFACTORS. Propose deviations separately; implement only upon approval.
 
-### 3. Proactive Code & Project Understanding
--   **CRITICAL: Verify Project Structure and Conventions Proactively:** Instead of making assumptions, use tools (`ls`, `rg --files`, `developer__text_editor command="view"`) proactively.
-    -   **Application & Module Naming:** Verify from `mix.exs` or existing file paths; do not assume.
-    -   **File/Directory Paths & Naming Conventions:** Explicitly check the filesystem for paths and naming conventions (e.g., `_component.ex` vs. `_components.ex`). **Avoid guessing paths; actively verify before attempting to operate on a file.**
-    -   **Verify Module Casing in Associations:** When defining Ecto associations (e.g., `belongs_to`, `has_many`), meticulously verify the exact casing of the associated schema module name by inspecting existing schema files or project structure (e.g., `mix.exs`). Do not assume casing.
--   **Understand Existing Code & Patterns:** Before coding, inspect related code to understand established patterns.
-    -   **Verify Code Behavior:** Actively verify existing function behavior and data structures (e.g., returns, API responses, DB results) using `developer__text_editor command="view"`. Do not operate on unverified assumptions.
-        -   **Recursive Call Tracing:** Trace calls recursively to understand full context and parameter origins.
-        -   **Parameter & Argument Conventions:** Pay close attention to the types and structure of arguments passed to similar functions within a module or context (e.g., consistently passing a `scope` struct vs. an `organization` struct directly).
-    -   **Schema Definitions & Database Constraints:** Once a schema module is identified (e.g., `User.ex`), *always* view its content. **Crucially, also verify database-level constraints (e.g., `NOT NULL` in `priv/repo/structure.sql`) to understand fundamental data guarantees.** Do not guess field names or assume nullability.
-    -   **Assign Keys & Data Flow:** Inspect relevant plugs (e.g., in `router.ex`) or `on_mount` hooks (e.g., `UserAuth.ex`) to determine correct assign keys and data structures for `conn` or `socket` assigns.
-    -   **Component Usage:** Analyze existing examples of shared components to understand props and slots by checking both call sites and definitions (e.g., in `core_components.ex`).
-    -   **LiveView Mechanics:** Be precise (e.g., `@streams.name` is a stream configuration struct, not the enumerable collection itself for template inspection).
+3.  **Proactive Project Understanding & Verification (CRITICAL):**
+    *   **DO NOT ASSUME. VERIFY FIRST.** **Prioritize `tidewave` tools** for Elixir/Phoenix introspection. Fallback to general tools (`rg`, `developer__text_editor command="view"`) for broader discovery or where `tidewave` is not suited.
+        *   Modules, functions, docs: `tidewave__get_source_location`, `tidewave__project_eval` (with `h`).
+        *   Ecto schemas, DB queries, constraints: `tidewave__get_ecto_schemas`, `tidewave__execute_sql_query`.
+        *   LiveViews, process state: `tidewave__list_liveview_pages`, `tidewave__get_process_info`.
+        *   Other (app names, paths, data structures, `conn`/`socket`, etc.): `tidewave` if applicable, else general tools.
+        *   Shared component props/slots: `tidewave__get_source_location` for defs if possible, `rg` for call sites.
 
-### 4. Function Signature Changes & Call Site Management
--   **CRITICAL:** When a function's signature (arity, argument types, or meaning) is altered, **always** identify and update *all* its call sites as part of the same task.
--   **Verification Step:** Before concluding, **actively use tools like `rg "Module.function_name"`** or similar global search to find all usages and confirm compatibility and necessary updates. Do not rely solely on memory or assumptions.
+4.  **Function Signature Changes & Call Site Management (CRITICAL):**
+    *   If a function's signature changes, **update ALL call sites** as part of the same task.
 
 ## II. Workflow & Code Quality
 
-### 1. Core Execution Workflow
--   Implement changes directly based on your understanding of the request and existing codebase.
--   Proceed with all specified file creations/modifications and non-destructive commands. Write file content directly.
--   Run `mix compile` frequently after significant code changes (especially those involving HEEx/EEx or complex Elixir syntax) to catch syntax and compilation errors early.
--   After *all* operations for a task are complete, run `mix format` as a final step. Confirm completion of other mandated actions.
+1.  **Core Workflow:**
+    *   Implement directly. Create/modify files.
+    *   Run `tidewave__project_eval(code: "Mix.Tasks.Compile.run([])")` frequently after significant changes.
+    *   Run `tidewave__project_eval(code: "Mix.Tasks.Format.run([])")` as the *final step* after all other operations.
 
-### 2. Accuracy in Code Generation
--   **Route/Path Usage: Verify Transcription:** When transcribing critical strings (URL paths, route patterns, API endpoints) from tool output (e.g., `mix phx.routes`), **always** perform an immediate visual re-verification against the source.
--   **Favor Exactness:** Treat such strings as literals requiring precise transcription.
+2.  **Accuracy:**
+    *   Visually re-verify critical strings (URLs, routes) transcribed from tool output. Treat as literals.
 
-### 3. Commit Messages
--   **Do not use prefixes** like `feat:`, `chore:`, `fix:`, etc. Use clear, descriptive messages.
+3.  **Commit Messages:**
+    *   No prefixes (e.g., `feat:`, `fix:`). Use clear, descriptive messages.
 
-## III. Elixir/Phoenix Specific Development Guidelines
+## III. Elixir/Phoenix Development
 
-### 1. Context Boundaries
-**Strictly keep Ecto Repo interactions within context modules.** Do not call `Repo` functions directly from controllers, LiveViews, components, **schema modules**, or other non-context modules. **A specific exception is the use of `unsafe_validate_unique/3` within a schema's changeset function if explicitly required for unique validations against the database and when alternative approaches within the context are significantly more complex or less direct.**
+1.  **Context Boundaries:**
+    *   **Strictly keep Ecto Repo interactions within context modules.** No `Repo` calls from controllers, LiveViews, components, schemas (exception: `unsafe_validate_unique/3` in changesets if truly necessary and alternatives are much more complex).
 
-### 2. Ecto & Database
-    #### a. Schema Design
-    Avoid redundant schema modules. Adapt existing schemas for different stages if possible.
-    #### b. Changeset Creation
-    For new records, use the pattern: `YourSchema.changeset(%YourSchema{}, attributes_map \\ %{})`.
-    #### c. Query Optimization
-    Avoid N+1 queries. Prefer batch operations for existence checks or retrieving multiple related items.
-    #### d. Ecto Function Behavior
-    Understand Ecto function behavior with edge cases (e.g., `Repo.insert_all/3` handles empty lists). Avoid redundant guards if the library function is robust.
-    #### e. Migrations (Initial Development)
-    For schema changes *before* a feature is stabilized/deployed, consider rolling back and modifying the original migration instead of creating many small alteration migrations.
-    #### f. Migrations & Existing Data (Ask Before Assuming Strategy)
-    When adding a non-nullable column to a table with existing data, **do not assume** a default strategy. **Explicitly ask the user** how to handle existing records.
-    #### g. Ecto Schema vs. Migration Data Types
-    Distinguish clearly between Ecto schema field types and migration column types. Schemas use abstract Elixir types (e.g., `:string`, `:integer`, `:binary_id`). Migrations use database-specific types or Ecto's migration types (e.g., `:text`, `:varchar`, `:uuid`). For instance, a database `TEXT` column is defined as `add :field_name, :text` in a migration, but as `field :field_name, :string` in the schema.
-    #### h. Ecto Query Defaults (`select`)
-    When an Ecto query operates on a single schema source (e.g., `from f in Family`), `select: f` is implied and thus redundant. Omit the explicit `select` in such cases unless projecting a different structure (e.g., specific fields, a map).
+2.  **Ecto & Database:**
+    *   **Schema Design:** Adapt existing schemas; avoid redundancy.
+    *   **Changeset Creation:** Use `YourSchema.changeset(%YourSchema{}, attributes_map \\ %{})`.
+    *   **Query Optimization:** Avoid N+1. Prefer batch operations.
+    *   **Ecto Function Behavior:** Understand robustness (e.g., `Repo.insert_all/3` with empty lists). Avoid redundant guards.
+    *   **Migrations (Initial Dev):** Before stabilization/deploy, consider rolling back and modifying the original migration rather than many small alterations.
+    *   **Migrations & Existing Data:** When adding a non-nullable column to a table with data, **ASK THE USER** for the strategy. Do not assume.
+    *   **Ecto Schema vs. Migration Types:** Distinguish Elixir types in schemas (e.g., `:string`) from DB/migration types (e.g., `:text`).
+    *   **Ecto Query Defaults:** Omit `select: f` if `from f in Family` (implied).
 
-### 3. Coding Style & Best Practices
-    #### a. Data Pipelines
-    Strongly favor. Design functions for direct piping. Functions for side-effects should return the input value to avoid `Kernel.tap/2`. Avoid unnecessary intermediate variables.
-    #### b. Safe Nested Data Access
-    Prefer `get_in(data.property.other)` for safe, concise access to potentially nil nested data.
-    #### c. Collection Processing (`Enum` vs. `Stream`)
-    For multi-step collection processing, prefer `Stream` functions, materializing with `Enum.to_list/1` only when needed. For single `Enum.map` operations not in a longer chain, `Enum.map` can be clearer.
-    #### d. Logic Simplification
-    Critically evaluate conditions. If upstream processes or queries guarantee data states, remove redundant checks.
-    -   **Rely on Guarantees:** Trust established guarantees (esp. database constraints from `structure.sql`, auth plug data). Avoid overly defensive coding. "Let it crash" is often appropriate for invariant violations.
-    -   **Question Boilerplate:** Actively question the necessity of common patterns (e.g., `handle_params/3`) if they appear to be no-ops or reference patterns omit them.
-    #### e. Naming Conventions
-    Use clear, concise, intention-revealing names. Avoid verbose suffixes if context is clear. Ensure names reflect full responsibility. **Do not change existing names unless explicitly requested.**
-    #### f. HEEx/EEx Conditional Rendering Strategies
-    1.  **Use `:if` Attribute for Conditional Elements:** Preferred for a *single HTML element or function component* (e.g., `<.icon name="..." :if={@show_icon} />`).
-    2.  **Use EEx Embedding (`<%= if ... %>`) for Conditional Blocks/Logic:** For `if/else` rendering different components or markup blocks.
-    3.  **HEEx Inline `{if}` Limitations:** Primarily for simple Elixir values (strings, numbers). Avoid for component calls; prefer `:if` attribute or EEx embedding.
-    4.  **Function Components for Encapsulation:** Good for complex cases or readability. Ensure conditional logic *inside* uses valid methods.
-    #### g. Assertive Pre-condition Validations in Contexts
-    For validating critical pre-conditions in context functions (e.g., ensuring an associated entity belongs to the correct parent organization before another entity is created/updated), prefer direct and assertive Elixir patterns **before** performing database mutations.
-        -   Example: `%Family{} = Repo.get_by!(Family, id: family_id, organization_id: current_org_id) end`.
-        -   A `MatchError` (from pattern matching a `nil` result) or an `Ecto.NoResultsError` (from `get_by!`) in such cases correctly halts execution if the pre-condition is violated, preventing inconsistent data operations. This approach is often preferred over manual error tuple construction for fundamental integrity checks.
-    #### h. Function Component Invocation
-    When invoking a function component defined in an aliased module (e.g., `alias CMSWeb.CoreComponents`), call it directly using the `<.component_name ... />` syntax. Do not prefix it with the module name (e.g., avoid `<CoreComponents.component_name ... />`) if the alias is present and the component is defined in that module.
+3.  **Coding Style & Best Practices:**
+    *   **Data Pipelines:** Strongly favor. Functions for side-effects should return input. Avoid intermediate variables.
+    *   **Safe Nested Access:** Prefer `get_in(data.property.other)`.
+    *   **Collections:** `Stream` for multi-step processing, `Enum.map` for simple single maps.
+    *   **Logic Simplification:** Trust guarantees (DB constraints, auth). "Let it crash" for invariants. Question boilerplate (e.g., `handle_params/3` if a no-op).
+    *   **Naming:** Clear, concise, intention-revealing. **No unsolicited renames.**
+    *   **HEEx/EEx Conditional Rendering:**
+        *   Single element/component: `<.icon :if={@show_icon} />`.
+        *   Blocks/logic/else: `<%= if ... %> ... <% else %> ... <% end %>`.
+        *   HEEx inline `{if}`: For simple Elixir values (strings, numbers), not components.
+        *   Encapsulate complex conditionals in Function Components.
+    *   **Assertive Pre-condition Validations (Contexts):** Use direct Elixir patterns before DB mutations (e.g., `%Family{} = Repo.get_by!(...)`). `MatchError` or `Ecto.NoResultsError` are appropriate for violations.
+    *   **Function Component Invocation:** Call aliased components directly: `<.component_name />`.
+
+4.  **HEEx/Templating Specifics:**
+    *   **Semantic HTML:** Prefer `<dialog>`, `<nav>` over `<div>`s.
+    *   **UI Framework Integration (DaisyUI, Tailwind):**
+        *   Consult framework docs for structure, classes, JS.
+        *   Simplify structure; avoid extra wrappers.
+        *   Respect framework styling; avoid conflicting custom styles (e.g., padding).
+        *   Verify CSS class names are correct and complete.
+    *   **JavaScript Hooks (`phx-hook`):** Only use if the JS hook is defined (e.g., in `assets/js/app.js`).
+
+5.  **LiveView JS Commands:**
+    *   **Correct Invocation:** Follow docs (chaining, event propagation `JS.exec("event.stopPropagation()")`).
+    *   **Aliasing:** Ensure `alias Phoenix.LiveView.JS` if using `JS` commands directly.
 
 ## IV. Goose Operational Guidelines
 
-### 1. Always Use Absolute Paths
-When providing file/directory paths to developer extension tools, always use absolute paths (e.g., `/var/home/david/Projects/chr/trunk/file.ex`).
+1.  **Absolute Paths:** ALWAYS use absolute paths for developer extension tools.
+    *   `tidewave` operates within a Docker container where its root is `/app/`. Paths from `tidewave` (e.g., `get_source_location`) will be prefixed with `/app/`. Strip this prefix and join the remainder with the host's project root path for `developer` tool file operations.
 
-### 2. Tool Input Generation
--   **Syntax Error Recovery (Repeated Errors or Difficult Replacements):** If `mix compile` (or `mix format`) fails due to a *repeated* syntax error from a `write` operation, **or if `str_replace` proves difficult due to exact matching issues (e.g., with special characters or subtle whitespace differences)**, switch to: "view file, perform global string replacement in memory, then write corrected file."
--   **Distinguish Tool Argument Escaping from File Content Syntax:**
-    -   **Tool Arguments:** When providing code or markup within a tool argument (e.g., the `file_text` argument for `developer__text_editor command="write"`, or `script` for `computercontroller__automation_script`), follow the LLM's general tool use guidelines for escaping special characters if the content itself contains the delimiters used by the tool (e.g., escaping `'''` to `\'\'\'` if the code snippet contains triple single quotes).
-    -   **File Content:** When generating the *actual content* of a file (e.g., the Elixir code in `file_text`), adhere strictly to the syntax rules of the target language (e.g., Elixir, Python, Shell). **Do not unnecessarily escape characters within the file content itself unless required by the language's own string literal rules.** For example, a single quote in an Elixir docstring or a regular string does not usually need escaping unless it's the delimiter of that string. Over-escaping can lead to incorrect code.
+2.  **Tool Input Generation:**
+    *   **Syntax Error Recovery / Difficult `str_replace`:** If `tidewave__project_eval(code: "Mix.Tasks.Compile.run([])")` / `tidewave__project_eval(code: "Mix.Tasks.Format.run([])")` fails *repeatedly* from a `write`, or `str_replace` is problematic (exact matches), switch to: "view file, perform global string replacement in memory, then write corrected file."
+    *   **Verify `old_str` for `str_replace` Meticulously:** If `str_replace` fails, *immediately* re-`view` the file to copy the *exact* `old_str` (whitespace, line breaks, special chars) before retrying.
+    *   **Distinguish Tool Escaping vs. File Syntax:**
+        *   **Tool Args (e.g., `file_text`):** Escape per LLM tool use guidelines (e.g., `'''` to `\'\'\'`).
+        *   **File Content (e.g., Elixir code):** Adhere *strictly* to target language syntax. No unnecessary escapes.
 
-### 3. Communication & Interaction
-    #### a. CRITICAL: Minimal Communication Protocol
-    Adhere strictly to a minimal communication style:
-    -   **No Unsolicited Plans:** Do not present a plan of action before execution unless explicitly requested.
-    -   **No Execution Narratives:** Do not provide commentary or step-by-step updates during task execution.
-    -   **No Unsolicited Summaries:** Do not summarize actions taken or files modified after task completion unless explicitly requested. The user will use `git status` and `git diff` for review.
-    -   **Direct & Factual:** Omit conversational pleasantries (e.g., "thank you," "please," apologies) and emotional expressions.
-    -   **Essential Updates Only:** Minimize intermediate status updates if context implies them. Proceed directly to tool use or the next logical output.
-    #### b. Adapt to User Workflow & Feedback
-    Pay close attention to user corrections and stated preferences. Adapt your interaction style and output accordingly. Remember and apply feedback.
+3.  **Communication & Interaction (CRITICAL - Minimal Protocol):**
+    *   **NO UNSOLICITED:** Plans, execution narratives, summaries. User uses `git status/diff`.
+    *   **Direct & Factual:** Omit pleasantries, emotional expressions.
+    *   **Essential Updates Only:** Proceed to tool use or next logical output.
+    *   **Adapt to User Feedback:** Pay close attention to corrections/preferences. Remember and apply.
 
 ## V. Project Context Reference
 
-### 1. Project Overview
--   **Type:** Elixir/Phoenix Web Application
--   **Location:** This file is in the project root. Run commands from project root.
--   **Note:** Project uses git worktrees; root path might vary (e.g., `/var/home/david/Projects/chr/some-branch`).
-
-### 2. Key Directories & Files (relative to project root)
--   `mix.exs`: Project definition, dependencies. **Check this for available libraries/APIs.**
--   `mix.lock`: Exact dependency versions.
--   `lib/cms/`: Core application logic (Elixir).
--   `lib/cms_web/`: Phoenix web interface (LiveViews, controllers, templates, components).
-    -   `lib/cms_web/components/`: Reusable UI components (`*_components.ex`).
--   `test/`: Tests (ExUnit).
--   `config/`: Configurations.
--   `priv/`: Static files, migrations, templates.
--   `assets/`: Frontend assets.
-
-### 3. Common Commands (run from project root)
--   `mix setup`: Install deps, setup DB, run migrations.
--   `mix phx.server`: Start dev server.
--   `mix test`: Run tests.
--   `mix format`: Format code.
--   `mix deps.get`: Fetch dependencies.
--   `mix phx.routes`: List routes.
--   `mix ecto.migrate`: Run DB migrations.
--   `iex -S mix`: Start interactive console.
+*   **Type:** Elixir/Phoenix Web App.
+*   **Location:** Project root. Run commands from root. Git worktrees may vary root path.
+*   **Key Files/Dirs (relative to root):**
+    *   `mix.exs`: Project defs, deps. **Check for APIs.**
+    *   `lib/cms/`: Core Elixir logic.
+    *   `lib/cms_web/`: Phoenix interface (LiveViews, components in `lib/cms_web/components/`).
+*   **Common Commands (from root):**
+    *   `tidewave__project_eval(code: "Mix.Tasks.Setup.run([])")` (for `mix setup`)
+    *   `tidewave__project_eval(code: "Mix.Tasks.Phx.Server.run([])")` (for `mix phx.server`)
+    *   `tidewave__project_eval(code: "Mix.Tasks.Test.run([])")` (for `mix test`)
+    *   `tidewave__project_eval(code: "Mix.Tasks.Format.run([])")` (for `mix format`)
+    *   `tidewave__project_eval(code: "Mix.Tasks.Phx.Routes.run([])")` (for `mix phx.routes`)
+    *   `tidewave__project_eval(code: "Mix.Tasks.Ecto.Migrate.run([])")` (for `mix ecto.migrate`)
+    *   `tidewave__project_eval(code: "System.cmd("mix", ["ecto.gen.migration", "my_migration_name"])")` (for `mix ecto.gen.migration` - replace `my_migration_name`)
+    *   `tidewave__project_eval` (for interactive Elixir, similar to `iex -S mix`).
