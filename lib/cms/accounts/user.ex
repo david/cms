@@ -90,6 +90,10 @@ defmodule CMS.Accounts.User do
     |> validate_email_for_invitation()
     |> put_change(:organization_id, scope.organization.id)
     |> assoc_constraint(:family)
+    |> unique_constraint(:name,
+      name: :users_family_id_name_index,
+      message: "has already been taken in this family"
+    )
   end
 
   @doc """

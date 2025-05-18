@@ -541,6 +541,13 @@ CREATE INDEX users_family_id_index ON public.users USING btree (family_id);
 
 
 --
+-- Name: users_family_id_name_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX users_family_id_name_index ON public.users USING btree (family_id, name);
+
+
+--
 -- Name: users_organization_id_index; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -662,3 +669,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20250513111841);
 INSERT INTO public."schema_migrations" (version) VALUES (20250513184139);
 INSERT INTO public."schema_migrations" (version) VALUES (20250514145059);
 INSERT INTO public."schema_migrations" (version) VALUES (20250514212755);
+INSERT INTO public."schema_migrations" (version) VALUES (20250518112825);
