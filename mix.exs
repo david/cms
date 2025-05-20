@@ -34,6 +34,8 @@ defmodule CMS.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:timex, "~> 3.7.11"},
+      {:nimble_csv, "~> 1.1"},
       {:tidewave, "~> 0.1", only: [:dev]},
       {:igniter, "~> 0.5", only: [:dev, :test]},
       {:bcrypt_elixir, "~> 3.0"},

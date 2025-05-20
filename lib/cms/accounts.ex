@@ -67,12 +67,24 @@ defmodule CMS.Accounts do
     |> Repo.all()
   end
 
+  def create_family(scope, attrs) do
+    %Family{}
+    |> Family.changeset(attrs, scope)
+    |> Repo.insert()
+  end
+
   def list_families(%Scope{organization: %Organization{id: org_id}}) do
     from(f in Family,
       where: f.organization_id == ^org_id,
       order_by: [asc: f.designation]
     )
     |> Repo.all()
+  end
+
+  def update_family(scope, family, attrs) do
+    family
+    |> Family.changeset(attrs, scope)
+    |> Repo.update()
   end
 
   ## User registration and invitation
@@ -93,6 +105,13 @@ defmodule CMS.Accounts do
     %User{}
     |> User.email_changeset(attrs, organization)
     |> Repo.insert()
+  end
+
+  def import_user(scope, attrs) do
+    %User{}
+    |> User.import_changeset(attrs, scope)
+    # TODO: we should set whatever fields we can update when there is a conflict
+    |> Repo.insert(on_conflict: :nothing)
   end
 
   @doc """

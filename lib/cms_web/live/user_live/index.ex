@@ -2,6 +2,7 @@ defmodule CMSWeb.UserLive.Index do
   use CMSWeb, :live_view
 
   alias CMS.Accounts
+  alias CMS.Accounts.Import
   alias CMSWeb.Layouts
   alias Phoenix.LiveView.JS
 
@@ -16,8 +17,8 @@ defmodule CMSWeb.UserLive.Index do
       |> assign(:organization, organization)
       |> assign(:page_title, "Listing Users")
       |> assign(:show_import_users_modal, false)
-      |> assign(:upload_form, to_form(%{}))
-      |> allow_upload(:user_import_file, accept: :any, max_entries: 1, auto_upload: true)
+      |> assign(:uploaded_files, [])
+      |> allow_upload(:user_import_file, accept: ~w(.csv), max_entries: 1)
 
     {:ok, socket}
   end
@@ -35,11 +36,15 @@ defmodule CMSWeb.UserLive.Index do
     {:noreply, socket}
   end
 
+  @impl Phoenix.LiveView
   def handle_event("save_import", _params, socket) do
-    {:noreply,
-     socket
-     |> put_flash(:info, "Import functionality coming soon!")
-     |> assign(:show_import_users_modal, true)}
+    consume_uploaded_entries(socket, :user_import_file, fn %{path: path}, _entry ->
+      Import.import_users_file(socket.assigns.current_scope, path)
+
+      {:ok, true}
+    end)
+
+    {:noreply, socket}
   end
 
   @impl true
@@ -76,28 +81,20 @@ defmodule CMSWeb.UserLive.Index do
         show={@show_import_users_modal}
         on_cancel={JS.push("cancel_import")}
       >
-        <.form for={@upload_form} phx-submit="save_import" phx-change="validate_import">
+        <form phx-submit="save_import" phx-change="validate_import">
           <h2 class="text-lg font-semibold mb-4">Import Users</h2>
           <div class="mb-4">
             <.live_file_input
               upload={@uploads.user_import_file}
               class="file-input input-bordered w-full"
             />
-            <%= for entry <- @uploads.user_import_file.entries do %>
-              <div class="mt-2 text-sm">
-                File: {entry.client_name} ({entry.client_size / 1024}KB)
-                <%= if Map.get(entry, :errors) do %>
-                  <p class="text-error-content">{Enum.join(entry.errors, ", ")}</p>
-                <% end %>
-              </div>
-            <% end %>
           </div>
 
           <footer>
             <.button type="submit" variant="primary" phx-disable-with="Importing...">Import</.button>
             <.button type="button" phx-click="cancel_import" class="btn-ghost">Cancel</.button>
           </footer>
-        </.form>
+        </form>
       </.modal>
     </Layouts.app>
     """
@@ -105,16 +102,8 @@ defmodule CMSWeb.UserLive.Index do
 
   def modal(assigns) do
     ~H"""
-    <dialog
-      :if={@show}
-      id={@id}
-      class="modal"
-      open={@show}
-      phx-window-keydown={@on_cancel}
-      phx-key="escape"
-      phx-click={@on_cancel}
-    >
-      <div class="modal-box relative max-w-lg" phx-click={JS.exec("event.stopPropagation()")}>
+    <dialog :if={@show} id={@id} class="modal" open={@show}>
+      <div class="modal-box relative max-w-lg">
         {render_slot(@inner_block)}
       </div>
     </dialog>

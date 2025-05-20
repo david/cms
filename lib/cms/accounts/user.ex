@@ -2,6 +2,8 @@ defmodule CMS.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias CMS.Accounts.{Organization, Scope}
+
   schema "users" do
     field :name, :string
     field :email, :string
@@ -70,6 +72,14 @@ defmodule CMS.Accounts.User do
     end
   end
 
+  def import_changeset(user, attrs, %Scope{organization: %Organization{id: org_id}}) do
+    user
+    |> cast(attrs, [:birth_date, :family_id, :name])
+    # TODO: need to validate birth date, email, name, phone number
+    |> assoc_constraint(:family)
+    |> put_change(:organization_id, org_id)
+  end
+
   @doc """
   A changeset for inviting a new user.
   It requires an email and name, and associates the user with the given organization.
@@ -90,10 +100,6 @@ defmodule CMS.Accounts.User do
     |> validate_email_for_invitation()
     |> put_change(:organization_id, scope.organization.id)
     |> assoc_constraint(:family)
-    |> unique_constraint(:name,
-      name: :users_family_id_name_index,
-      message: "has already been taken in this family"
-    )
   end
 
   @doc """
