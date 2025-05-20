@@ -62,7 +62,8 @@ defmodule CMS.Accounts do
       when not is_nil(org_id) do
     from(u in User,
       where: u.organization_id == ^org_id,
-      order_by: [asc: u.email]
+      preload: [:family],
+      order_by: [asc: u.name]
     )
     |> Repo.all()
   end

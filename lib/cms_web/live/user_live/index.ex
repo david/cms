@@ -67,6 +67,7 @@ defmodule CMSWeb.UserLive.Index do
 
       <.table id="users" rows={@streams.users}>
         <:col :let={{_id, user}} label="Name">{user.name}</:col>
+        <:col :let={{_id, user}} label="Family">{user.family.designation}</:col>
         <:col :let={{_id, user}} label="Email">{user.email}</:col>
         <:col :let={{_id, user}} label={~H(<div class="text-center">Confirmed?</div>)}>
           <div :if={user.confirmed_at} class="text-center">
