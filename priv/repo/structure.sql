@@ -283,7 +283,7 @@ ALTER SEQUENCE public.songs_id_seq OWNED BY public.songs.id;
 
 CREATE TABLE public.users (
     id bigint NOT NULL,
-    email public.citext NOT NULL,
+    email character varying(255),
     confirmed_at timestamp(0) without time zone,
     inserted_at timestamp(0) without time zone NOT NULL,
     updated_at timestamp(0) without time zone NOT NULL,
@@ -670,3 +670,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20250513184139);
 INSERT INTO public."schema_migrations" (version) VALUES (20250514145059);
 INSERT INTO public."schema_migrations" (version) VALUES (20250514212755);
 INSERT INTO public."schema_migrations" (version) VALUES (20250518112825);
+INSERT INTO public."schema_migrations" (version) VALUES (20250520181113);
