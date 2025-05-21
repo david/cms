@@ -196,6 +196,9 @@ defmodule CMSWeb.UserAuth do
       on user_token.
       Redirects to login page if there's no logged user.
 
+    * `:require_admin_access` - Ensures the user is an admin.
+      Redirects if the user is not an admin.
+
   ## Examples
 
   Use the `on_mount` lifecycle macro in LiveViews to mount or authenticate
@@ -233,6 +236,21 @@ defmodule CMSWeb.UserAuth do
     end
   end
 
+  def on_mount(:require_admin_access, _params, session, socket) do
+    current_user = socket.assigns.current_scope && socket.assigns.current_scope.user
+
+    if current_user && current_user.role == :admin do
+      {:cont, socket}
+    else
+      socket =
+        socket
+        |> Phoenix.LiveView.put_flash(:error, "You are not authorized to access this page.")
+        |> Phoenix.LiveView.redirect(to: ~p"/")
+
+      {:halt, socket}
+    end
+  end
+
   def on_mount(:require_sudo_mode, _params, session, socket) do
     socket = mount_current_scope(socket, session)
 
@@ -252,11 +270,10 @@ defmodule CMSWeb.UserAuth do
     Phoenix.Component.assign_new(socket, :current_scope, fn ->
       if user_token = session["user_token"] do
         {user, _} = Accounts.get_user_by_session_token(user_token)
-
         Scope.for_user(user)
       else
+        # TODO: should be able to determine the proper organization
         org = Accounts.fetch_singleton_organization!()
-
         %Scope{organization: org}
       end
     end)
@@ -281,6 +298,19 @@ defmodule CMSWeb.UserAuth do
       |> put_flash(:error, "You must log in to access this page.")
       |> maybe_store_return_to()
       |> redirect(to: ~p"/users/log-in")
+      |> halt()
+    end
+  end
+
+  def require_admin_user(conn, _opts) do
+    current_user = conn.assigns.current_scope && conn.assigns.current_scope.user
+
+    if current_user && current_user.role == :admin do
+      conn
+    else
+      conn
+      |> put_flash(:error, "You are not authorized to access this page.")
+      |> redirect(to: ~p"/")
       |> halt()
     end
   end

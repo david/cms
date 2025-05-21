@@ -17,6 +17,11 @@ defmodule CMSWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :admin_only_access do
+    plug :require_authenticated_user
+    plug :require_admin_user
+  end
+
   scope "/", CMSWeb do
     pipe_through :browser
 
@@ -53,13 +58,24 @@ defmodule CMSWeb.Router do
     live_session :require_authenticated_session,
       on_mount: [{CMSWeb.UserAuth, :require_authenticated}] do
       live "/users/settings", UserLive.Settings, :edit
-      live "/users", UserLive.Index
-      live "/users/new", UserLive.InviteForm, :new
       live "/users/settings/confirm-email/:token", UserLive.Settings, :confirm_email
 
       live "/liturgies", LiturgyLive.Index, :index
       live "/liturgies/new", LiturgyLive.Form, :new
       live "/liturgies/:id/edit", LiturgyLive.Form, :edit
+    end
+  end
+
+  scope "/", CMSWeb do
+    pipe_through [:browser, :admin_only_access]
+
+    live_session :admin_required_live_session,
+      on_mount: [
+        {CMSWeb.UserAuth, :require_authenticated},
+        {CMSWeb.UserAuth, :require_admin_access}
+      ] do
+      live "/users", UserLive.Index
+      live "/users/new", UserLive.InviteForm, :new
     end
   end
 
