@@ -50,7 +50,7 @@ defmodule CMSWeb.Router do
   scope "/", CMSWeb do
     pipe_through [:browser, :require_authenticated_user]
 
-    live_session :require_authenticated_user,
+    live_session :require_authenticated_session,
       on_mount: [{CMSWeb.UserAuth, :require_authenticated}] do
       live "/users/settings", UserLive.Settings, :edit
       live "/users", UserLive.Index
@@ -66,7 +66,7 @@ defmodule CMSWeb.Router do
   scope "/", CMSWeb do
     pipe_through [:browser]
 
-    live_session :current_user,
+    live_session :current_user_session,
       on_mount: [{CMSWeb.UserAuth, :mount_current_scope}] do
       live "/users/register", UserLive.Registration, :new
       live "/users/log-in", UserLive.Login, :new
