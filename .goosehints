@@ -15,8 +15,9 @@
 
 3.  **Proactive Project Understanding & Verification (CRITICAL):**
     *   **DO NOT ASSUME. VERIFY FIRST.** **Prioritize `tidewave` tools** for Elixir/Phoenix introspection. Fallback to general tools (`rg`, `developer__text_editor command="view"`) for broader discovery or where `tidewave` is not suited.
-        *   Modules, functions, docs: `tidewave__get_source_location`, `tidewave__project_eval` (with `h`).
-        *   Ecto schemas, DB queries, constraints: `tidewave__get_ecto_schemas`, `tidewave__execute_sql_query`.
+        *   Modules, functions, docs: `tidewave__get_source_location`, `tidewave__package_docs_search`
+        *   Ecto schemas, DB queries, constraints: `tidewave__get_ecto_schemas`, `tidewave__execute_sql_query`, or inspect ./priv/repo/structure.sql.
+        *   Logs, errors, stacktraces: `tidewave__get_logs`.
         *   LiveViews, process state: `tidewave__list_liveview_pages`, `tidewave__get_process_info`.
         *   Other (app names, paths, data structures, `conn`/`socket`, etc.): `tidewave` if applicable, else general tools.
         *   Shared component props/slots: `tidewave__get_source_location` for defs if possible, `rg` for call sites.
@@ -28,8 +29,8 @@
 
 1.  **Core Workflow:**
     *   Implement directly. Create/modify files.
-    *   Run `tidewave__project_eval(code: "Mix.Tasks.Compile.run([])")` frequently after significant changes.
-    *   Run `tidewave__project_eval(code: "Mix.Tasks.Format.run([])")` as the *final step* after all other operations.
+    *   Run `mix compile` frequently after significant changes.
+    *   Run `mix format` as the *final step* after all other operations.
 
 2.  **Accuracy:**
     *   Visually re-verify critical strings (URLs, routes) transcribed from tool output. Treat as literals.
@@ -105,12 +106,3 @@
     *   `mix.exs`: Project defs, deps. **Check for APIs.**
     *   `lib/cms/`: Core Elixir logic.
     *   `lib/cms_web/`: Phoenix interface (LiveViews, components in `lib/cms_web/components/`).
-*   **Common Commands (from root):**
-    *   `tidewave__project_eval(code: "Mix.Tasks.Setup.run([])")` (for `mix setup`)
-    *   `tidewave__project_eval(code: "Mix.Tasks.Phx.Server.run([])")` (for `mix phx.server`)
-    *   `tidewave__project_eval(code: "Mix.Tasks.Test.run([])")` (for `mix test`)
-    *   `tidewave__project_eval(code: "Mix.Tasks.Format.run([])")` (for `mix format`)
-    *   `tidewave__project_eval(code: "Mix.Tasks.Phx.Routes.run([])")` (for `mix phx.routes`)
-    *   `tidewave__project_eval(code: "Mix.Tasks.Ecto.Migrate.run([])")` (for `mix ecto.migrate`)
-    *   `tidewave__project_eval(code: "System.cmd("mix", ["ecto.gen.migration", "my_migration_name"])")` (for `mix ecto.gen.migration` - replace `my_migration_name`)
-    *   `tidewave__project_eval` (for interactive Elixir, similar to `iex -S mix`).
