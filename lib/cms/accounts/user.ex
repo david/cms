@@ -18,6 +18,8 @@ defmodule CMS.Accounts.User do
     belongs_to :organization, CMS.Accounts.Organization
     belongs_to :family, CMS.Accounts.Family
 
+    field :role, Ecto.Enum, values: [:admin, :member]
+
     timestamps(type: :utc_datetime)
   end
 

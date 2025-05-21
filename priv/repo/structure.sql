@@ -31,6 +31,16 @@ CREATE EXTENSION IF NOT EXISTS citext WITH SCHEMA public;
 COMMENT ON EXTENSION citext IS 'data type for case-insensitive character strings';
 
 
+--
+-- Name: user_role; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.user_role AS ENUM (
+    'admin',
+    'member'
+);
+
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -291,7 +301,8 @@ CREATE TABLE public.users (
     name character varying(255) NOT NULL,
     phone_number character varying(255),
     family_id bigint NOT NULL,
-    birth_date date
+    birth_date date,
+    role public.user_role
 );
 
 
@@ -672,3 +683,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20250514212755);
 INSERT INTO public."schema_migrations" (version) VALUES (20250518112825);
 INSERT INTO public."schema_migrations" (version) VALUES (20250520181113);
 INSERT INTO public."schema_migrations" (version) VALUES (20250520183623);
+INSERT INTO public."schema_migrations" (version) VALUES (20250521104156);
