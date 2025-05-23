@@ -151,9 +151,11 @@ defmodule CMS.Liturgies do
         %{valid?: true, changes: %{liturgy_blocks: liturgy_blocks}} = liturgy_changeset,
         scope
       ) do
+    block_ids = Enum.filter_map(liturgy_blocks, & &1.block_id)
+
     blocks_index =
       Block
-      |> from(where: [organization_id: ^scope.organization.id])
+      |> from(where: [organization_id: ^scope.organization.id] and id in ^block_ids)
       |> Repo.all()
       |> Enum.map(&{&1.id, &1})
       |> Map.new()
