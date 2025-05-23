@@ -172,7 +172,7 @@ defmodule CMS.Liturgies do
           merged
           |> Map.get(:block_id)
           |> case do
-            nil -> %Block{type: merged.type}
+            nil -> Map.merge(%Block{}, merged)
             id -> Map.get(blocks_index, id)
           end
           |> then(&Block.changeset(&1, changes, scope))

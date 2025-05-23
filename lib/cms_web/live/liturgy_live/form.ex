@@ -244,7 +244,7 @@ defmodule CMSWeb.LiturgyLive.Form do
     {key, Map.put(block_attrs, "body", Bibles.get_verses(block_attrs["title"]))}
   end
 
-  defp normalize_block({key, block_attrs, nil}), do: {key, block_attrs}
+  defp normalize_block({key, block_attrs, nil}), do: {key, Map.put(block_attrs, "block_id", nil)}
 
   defp normalize_block({key, block_attrs, block}),
     do: {key, Map.merge(block_attrs, %{"block_id" => block.id, "body" => block.body})}
