@@ -8,6 +8,9 @@ defmodule CMS.AccountsFixtures do
 
   alias CMS.Accounts
   alias CMS.Accounts.Scope
+  alias CMS.Accounts.Family
+  alias CMS.Accounts.User
+  alias CMS.Repo
 
   def unique_user_email, do: "user#{System.unique_integer()}@example.com"
 
@@ -19,10 +22,17 @@ defmodule CMS.AccountsFixtures do
   end
 
   def unconfirmed_user_fixture(attrs \\ %{}, organization \\ organization_fixture()) do
+    {:ok, family} =
+      Repo.insert(%Family{designation: "Test Family", organization_id: organization.id})
+
     {:ok, user} =
-      attrs
-      |> valid_user_attributes()
-      |> Accounts.register_user(organization)
+      %User{}
+      |> Map.merge(valid_user_attributes())
+      |> Map.merge(attrs)
+      |> Map.put(:organization_id, organization.id)
+      |> Map.put(:family_id, family.id)
+      |> Ecto.Changeset.change(%{})
+      |> Repo.insert()
 
     CMS.Repo.preload(user, [:organization])
   end
