@@ -147,10 +147,10 @@ defmodule CMS.Liturgies do
     end)
   end
 
-  def normalize_blocks(
-        %{valid?: true, changes: %{liturgy_blocks: liturgy_blocks}} = liturgy_changeset,
-        scope
-      ) do
+  defp normalize_blocks(
+         %{valid?: true, changes: %{liturgy_blocks: liturgy_blocks}} = liturgy_changeset,
+         scope
+       ) do
     block_ids = Enum.filter_map(liturgy_blocks, & &1.block_id)
 
     blocks_index =
