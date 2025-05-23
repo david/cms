@@ -116,7 +116,7 @@ defmodule CMS.Liturgies do
     with {:ok, liturgy = %Liturgy{}} <-
            %Liturgy{}
            |> Liturgy.changeset(attrs, scope)
-           |> put_blocks(scope)
+           |> normalize_blocks(scope)
            |> Repo.insert() do
       broadcast(scope, {:created, liturgy})
       {:ok, liturgy}
@@ -147,7 +147,7 @@ defmodule CMS.Liturgies do
     end)
   end
 
-  def put_blocks(
+  def normalize_blocks(
         %{valid?: true, changes: %{liturgy_blocks: liturgy_blocks}} = liturgy_changeset,
         scope
       ) do
@@ -206,7 +206,7 @@ defmodule CMS.Liturgies do
     with {:ok, liturgy = %Liturgy{}} <-
            liturgy
            |> Liturgy.changeset(attrs, scope)
-           |> put_blocks(scope)
+           |> normalize_blocks(scope)
            |> Repo.update() do
       broadcast(scope, {:updated, liturgy})
       {:ok, liturgy}
