@@ -55,7 +55,6 @@ defmodule CMS.Accounts.Import do
         scope,
         Map.put(e, :family_id, loaded_families[e.family_designation].id)
       )
-      |> IO.inspect()
     end
   end
 end
