@@ -32,6 +32,11 @@ RUN apt-get update && \
     apt-get update && \
     apt-get install --no-install-recommends -y inotify-tools postgresql-client-17 && \
     rm -rf /var/lib/apt/lists/* && \
+    curl -sLo /tmp/elixir-ls.zip \
+      https://github.com/elixir-lsp/elixir-ls/releases/download/v0.27.2/elixir-ls-v0.27.2.zip && \
+    mkdir -p /usr/local/lsp/elixir-ls && \
+    unzip /tmp/elixir-ls.zip -d /usr/local/lsp/elixir-ls && \
+    rm -f /tmp/elixir-ls.zip && \
     useradd -mu 1000 -s /bin/bash dev && \
     mkdir -p /app && \
     chown -R dev:dev /app

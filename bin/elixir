@@ -1,3 +1,0 @@
-#!/bin/sh
-
-exec docker compose exec dev elixir "$@"

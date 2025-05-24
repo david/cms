@@ -9,7 +9,8 @@ services:
       - "4000:4000"
     volumes:
       - mix:/home/dev/.mix
-      - .:/app
+      - "${PWD}:${PWD}"
+    working_dir: "${PWD}"
 
   db:
     image: "public.ecr.aws/docker/library/postgres:${POSTGRES_VERSION}"
