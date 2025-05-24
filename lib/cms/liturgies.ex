@@ -116,7 +116,6 @@ defmodule CMS.Liturgies do
     with {:ok, liturgy = %Liturgy{}} <-
            %Liturgy{}
            |> Liturgy.changeset(attrs, scope)
-           |> normalize_blocks(scope)
            |> Repo.insert() do
       broadcast(scope, {:created, liturgy})
       {:ok, liturgy}
@@ -147,44 +146,6 @@ defmodule CMS.Liturgies do
     end)
   end
 
-  defp normalize_blocks(
-         %{valid?: true, changes: %{liturgy_blocks: liturgy_blocks}} = liturgy_changeset,
-         scope
-       ) do
-    block_ids = Enum.filter_map(liturgy_blocks, & &1.block_id)
-
-    blocks_index =
-      Block
-      |> from(where: [organization_id: ^scope.organization.id] and id in ^block_ids)
-      |> Repo.all()
-      |> Enum.map(&{&1.id, &1})
-      |> Map.new()
-
-    Ecto.Changeset.put_assoc(
-      liturgy_changeset,
-      :liturgy_blocks,
-      for %{action: action, changes: changes, data: data} = lb <- liturgy_blocks,
-          data != %{} && action != :replace do
-        merged =
-          data
-          |> Map.take([:type, :block_id, :title, :subtitle, :body])
-          |> Map.merge(changes)
-
-        {:ok, block} =
-          merged
-          |> Map.get(:block_id)
-          |> case do
-            nil -> Map.merge(%Block{}, merged)
-            id -> Map.get(blocks_index, id)
-          end
-          |> then(&Block.changeset(&1, changes, scope))
-          |> Repo.insert_or_update()
-
-        Ecto.Changeset.put_change(lb, :block_id, block.id)
-      end
-    )
-  end
-
   @doc """
   Updates a liturgy.
 
@@ -206,7 +167,6 @@ defmodule CMS.Liturgies do
     with {:ok, liturgy = %Liturgy{}} <-
            liturgy
            |> Liturgy.changeset(attrs, scope)
-           |> normalize_blocks(scope)
            |> Repo.update() do
       broadcast(scope, {:updated, liturgy})
       {:ok, liturgy}

@@ -55,14 +55,14 @@ defmodule CMS.Liturgies.Block do
     |> put_change(:organization_id, scope.organization.id)
   end
 
-  defp song_changeset(block, attrs, %Scope{} = scope) do
+  def song_changeset(block, attrs, %Scope{} = scope) do
     block
     |> cast(attrs, [:title, :body])
     |> put_change(:type, :song)
     |> put_change(:organization_id, scope.organization.id)
   end
 
-  defp passage_changeset(block, attrs, %Scope{} = scope) do
+  def passage_changeset(block, attrs, %Scope{} = scope) do
     block
     |> cast(attrs, [:title, :subtitle])
     |> put_change(:type, :passage)

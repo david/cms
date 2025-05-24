@@ -1,7 +1,6 @@
 defmodule CMSWeb.LiturgyLive.Form do
   use CMSWeb, :live_view
 
-  alias CMS.Bibles
   alias CMS.Liturgies
   alias CMS.Liturgies.Liturgy
 
@@ -177,7 +176,7 @@ defmodule CMSWeb.LiturgyLive.Form do
       Liturgies.change_liturgy(
         socket.assigns.current_scope,
         socket.assigns.liturgy,
-        normalize_params(liturgy_params, %{blocks: socket.assigns.song_blocks})
+        liturgy_params
       )
 
     {:noreply, assign(socket, form: to_form(changeset, action: :validate))}
@@ -224,28 +223,4 @@ defmodule CMSWeb.LiturgyLive.Form do
 
   defp return_path(_scope, "index", _liturgy), do: ~p"/liturgies"
   defp return_path(_scope, "show", liturgy), do: ~p"/liturgies/#{liturgy}"
-
-  defp normalize_params(%{"liturgy_blocks" => _liturgy_blocks} = params, %{blocks: blocks}),
-    do: update_in(params, ["liturgy_blocks"], &normalize_blocks(&1, blocks))
-
-  defp normalize_params(params, _cache), do: params
-
-  defp normalize_blocks(blocks_attrs, blocks) do
-    blocks_attrs
-    |> Enum.map(&(&1 |> match_block(blocks) |> normalize_block()))
-    |> Enum.into(%{})
-  end
-
-  defp match_block({key, %{"title" => title} = block}, cached_blocks),
-    do: {key, block, Enum.find(cached_blocks, &(&1.title == title))}
-
-  defp normalize_block({key, %{"type" => type} = block_attrs, nil})
-       when type in ["passage", :passage] do
-    {key, Map.put(block_attrs, "body", Bibles.get_verses(block_attrs["title"]))}
-  end
-
-  defp normalize_block({key, block_attrs, nil}), do: {key, Map.put(block_attrs, "block_id", nil)}
-
-  defp normalize_block({key, block_attrs, block}),
-    do: {key, Map.merge(block_attrs, %{"block_id" => block.id, "body" => block.body})}
 end
