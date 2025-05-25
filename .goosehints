@@ -1,5 +1,7 @@
 # .goosehints
 
+# File Type: LLM Configuration (NOT an Elixir source file)
+
 **LLM Instructions: Adhere strictly to these guidelines.**
 
 ## I. Foundational Principles
@@ -8,10 +10,12 @@
     *   **OMIT ALL CODE COMMENTS.** Rely on self-explanatory code and descriptive commit messages for rationale.
     *   This is inviolable, especially for HEEx (no `#` or other comment types).
 
-2.  **Task Adherence & Scope:**
+2.  **Task Adherence & Scope (CRITICAL):**
+    *   **Prioritize answering questions first.** If a user asks "how to" or "what is the best way," provide a detailed explanation of the approach before offering to implement.
     *   Implement *only* the explicit request.
     *   Assess and implement direct consequences (callers, dependencies).
-    *   NO UNSOLICITED CHANGES/REFACTORS. Propose deviations separately; implement only upon approval.
+    *   **NO UNSOLICITED CHANGES/REFACTORS OR WARNING FIXES.** Propose deviations or warning fixes separately; implement only upon explicit user approval.
+    *   **CRITICAL:** Before executing any code modifications (e.g., `developer__text_editor` `write`/`str_replace`), or any shell commands that alter files (`git commit`, `git reset`, `rm`, `mv`, etc.), **explicitly state your proposed actions and await clear user confirmation.**
 
 3.  **Proactive Project Understanding & Verification (CRITICAL):**
     *   **DO NOT ASSUME. VERIFY FIRST.** **Prioritize `tidewave` tools** for Elixir/Phoenix introspection. Fallback to general tools (`rg`, `developer__text_editor command="view"`) for broader discovery or where `tidewave` is not suited.
@@ -21,6 +25,7 @@
         *   LiveViews, process state: `tidewave__list_liveview_pages`, `tidewave__get_process_info`.
         *   Other (app names, paths, data structures, `conn`/`socket`, etc.): `tidewave` if applicable, else general tools.
         *   Shared component props/slots: `tidewave__get_source_location` for defs if possible, `rg` for call sites.
+    *   `mix compile` is a diagnostic tool. Run it *after* explicitly approved changes, or when specifically asked to check compilation status. Do not run it as an unsolicited action or as part of an unapproved change.
 
 4.  **Function Signature Changes & Call Site Management (CRITICAL):**
     *   If a function's signature changes, **update ALL call sites** as part of the same task.
@@ -29,13 +34,11 @@
 
 1.  **Core Workflow:**
     *   Implement directly. Create/modify files.
-    *   Run `mix compile` frequently after significant changes.
+    *   Run `mix compile` *after* explicitly approved changes.
     *   Run `mix format` as the *final step* after all other operations.
 
-2.  **Accuracy:**
+2.  **Accuracy & Commit Messages:**
     *   Visually re-verify critical strings (URLs, routes) transcribed from tool output. Treat as literals.
-
-3.  **Commit Messages:**
     *   No prefixes (e.g., `feat:`, `fix:`). Use clear, descriptive messages.
 
 ## III. Elixir/Phoenix Development
@@ -75,6 +78,12 @@
         *   Respect framework styling; avoid conflicting custom styles (e.g., padding).
         *   Verify CSS class names are correct and complete.
     *   **JavaScript Hooks (`phx-hook`):** Only use if the JS hook is defined (e.g., in `assets/js/app.js`).
+    *   **LiveView Form & Nested Associations (CRITICAL):**
+        *   When using `inputs_for` for nested associations (e.g., `has_many`), the `let={item_form_field}` variable is a `Phoenix.HTML.Form` struct for the parent record.
+        *   Its nested association (e.g., `block`) is exposed as a `Phoenix.HTML.FormField` struct (`item_form_field[:block]`).
+        *   To access fields within this nested association for `<.input field={...}>`, use `Phoenix.HTML.Form.field_for(item_form_field[:block], :field_name)`.
+        *   To access raw data values from the underlying struct (e.g., `type`, `body` for display), use `item_form_field.data.nested_association.field_name` (e.g., `block.data.block.type`).
+        *   **Always debug with `IO.inspect` directly in the HEEx template if uncertain of the exact runtime structure of `Phoenix.HTML.Form` or `Phoenix.HTML.FormField` structs.** This is the most reliable way to understand dynamic form data.
 
 5.  **LiveView JS Commands:**
     *   **Correct Invocation:** Follow docs (chaining, event propagation `JS.exec("event.stopPropagation()")`).
@@ -82,21 +91,32 @@
 
 ## IV. Goose Operational Guidelines
 
+0.  **Pre-Execution Self-Check (MANDATORY):**
+    *   **BEFORE** executing *any* tool call that modifies or writes to the file system (e.g., `developer__text_editor` with `write` or `str_replace`), or any shell commands that alter files (`git commit`, `git reset`, `rm`, `mv`, etc.), you **MUST** first output the following exact statement and await explicit user confirmation:
+        `"As per .goosehints (IV.0, I.2.CRITICAL, & IV.3.CRITICAL), I must explicitly state my proposed actions and await clear user confirmation before executing any code modifications or shell commands that alter files. My proposed action is:"`
+    *   After this statement, provide a detailed plan for the specific modification. Proceed *only* upon receiving explicit user confirmation (e.g., "yes", "confirm").
+
 1.  **Absolute Paths:** ALWAYS use absolute paths for developer extension tools.
     *   `tidewave` operates within a Docker container where its root is `/app/`. Paths from `tidewave` (e.g., `get_source_location`) will be prefixed with `/app/`. Strip this prefix and join the remainder with the host's project root path for `developer` tool file operations.
 
 2.  **Tool Input Generation:**
     *   **Syntax Error Recovery / Difficult `str_replace`:** If `tidewave__project_eval(code: "Mix.Tasks.Compile.run([])")` / `tidewave__project_eval(code: "Mix.Tasks.Format.run([])")` fails *repeatedly* from a `write`, or `str_replace` is problematic (exact matches), switch to: "view file, perform global string replacement in memory, then write corrected file."
-    *   **Verify `old_str` for `str_replace` Meticulously:** If `str_replace` fails, *immediately* re-`view` the file to copy the *exact* `old_str` (whitespace, line breaks, special chars) before retrying.
+    *   **Robust File Modification (CRITICAL):** For any multi-line, context-sensitive, or complex code modifications, **ALWAYS propose reading the entire file, performing the full replacement in memory, and then using `write` to overwrite the file.** This bypasses `str_replace`'s brittleness. Present a clear unified diff for review before executing the `write`.
+    *   **Verify `old_str` for `str_replace` Meticulously:** If `str_replace` *must* be used for a small, unique change, *immediately* re-`view` the file to copy the *exact* `old_str` (whitespace, line breaks, special chars) before retrying.
     *   **Distinguish Tool Escaping vs. File Syntax:**
         *   **Tool Args (e.g., `file_text`):** Escape per LLM tool use guidelines (e.g., `'''` to `\'\'\'`).
         *   **File Content (e.g., Elixir code):** Adhere *strictly* to target language syntax. No unnecessary escapes.
+    *   **Presenting Code Changes:** When proposing code modifications, **ALWAYS** present them as a unified diff.
+        *   Use `--- a/path/to/old_file` and `+++ b/path/to/new_file` for clarity.
 
-3.  **Communication & Interaction (CRITICAL - Minimal Protocol):**
+3.  **Communication & Interaction (CRITICAL):**
     *   **NO UNSOLICITED:** Plans, execution narratives, summaries. User uses `git status/diff`.
-    *   **Direct & Factual:** Omit pleasantries, emotional expressions.
-    *   **Essential Updates Only:** Proceed to tool use or next logical output.
+    *   **Direct & Factual; Await Confirmation:** Omit pleasantries, emotional expressions. After stating proposed actions, *wait for explicit confirmation* before proceeding.
+    *   **Manage Expectations & Humility (CRITICAL):** Avoid stating "I am confident" or similar phrases. Instead, use neutral language about expected outcomes. If errors occur, acknowledge them directly, apologize sincerely, and outline clear corrective steps. Never discard user work without explicit consent.
+    *   **Proactive Debugging (CRITICAL):** At the first sign of unexpected runtime behavior or errors related to data structures, **IMMEDIATELY propose adding `IO.inspect` calls** to relevant variables in the code (e.g., LiveView `render` function, context functions) to ascertain their precise runtime state. This is the fastest way to verify assumptions.
+    *   **Address All Warnings Proactively:** After any code modification, run `mix compile` and address *all* warnings. If a warning (e.g., "undefined or private function") implies a missing import or accessibility issue, consult documentation (`tidewave__package_docs_search`) immediately to understand the correct way to make the function available.
     *   **Adapt to User Feedback:** Pay close attention to corrections/preferences. Remember and apply.
+    *   **CRITICAL - Before File System Writes/Deletes:** Before any operation that modifies or deletes files (e.g., `developer__text_editor` with `write`/`str_replace`, `developer__shell` with `rm`, `mv`, `git reset`, `git clean`, `git commit`), **ALWAYS** execute `developer__shell(command='git status')`. If `git status` reports unstaged or uncommitted changes, **STOP** and **ASK THE USER** how they wish to proceed. **NEVER** discard user work without explicit, unambiguous consent.
 
 ## V. Project Context Reference
 
