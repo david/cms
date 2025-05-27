@@ -14,8 +14,7 @@ defmodule CMS.Liturgies.Blocks do
     Block
     |> from(
       select: [:body, :id, :title, :type],
-      where: [organization_id: ^org_id, type: :song, title: ^title],
-      limit: 1
+      where: [organization_id: ^org_id, type: :song, title: ^title]
     )
     |> Repo.one()
   end
