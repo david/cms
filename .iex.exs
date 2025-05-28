@@ -9,4 +9,4 @@ alias CMS.Liturgies.Blocks
 alias CMS.Liturgies.Liturgy
 alias CMS.Liturgies.LiturgyBlock
 
-IEx.configure(inspect: [limit: :infinity])
+IEx.configure(inspect: [charlists: :as_lists, limit: :infinity, structs: true])
