@@ -4,10 +4,6 @@ defmodule CMSWeb.LiturgyLiveTest do
   import Phoenix.LiveViewTest
   import CMS.LiturgiesFixtures
 
-  @create_attrs %{service_on: "2025-04-26"}
-  @update_attrs %{service_on: "2025-04-27"}
-  @invalid_attrs %{service_on: nil}
-
   setup :register_and_log_in_user
 
   defp create_liturgy(%{scope: scope}) do
@@ -36,13 +32,16 @@ defmodule CMSWeb.LiturgyLiveTest do
 
       assert render(form_live) =~ "New Liturgy"
 
+      liturgy_date = Date.utc_today()
+        |> Date.to_string()
+
       assert form_live
-             |> form("#liturgy-form", liturgy: @invalid_attrs)
+             |> form("#liturgy-form", liturgy: %{service_on: nil})
              |> render_change() =~ "can&#39;t be blank"
 
       assert {:ok, index_live, _html} =
                form_live
-               |> form("#liturgy-form", liturgy: @create_attrs)
+               |> form("#liturgy-form", liturgy: %{service_on: liturgy_date})
                |> render_submit()
                |> follow_redirect(conn, ~p"/liturgies")
 
@@ -62,12 +61,12 @@ defmodule CMSWeb.LiturgyLiveTest do
       assert render(form_live) =~ "Edit Liturgy"
 
       assert form_live
-             |> form("#liturgy-form", liturgy: @invalid_attrs)
+             |> form("#liturgy-form", liturgy: %{service_on: nil})
              |> render_change() =~ "can&#39;t be blank"
 
       assert {:ok, index_live, _html} =
                form_live
-               |> form("#liturgy-form", liturgy: @update_attrs)
+               |> form("#liturgy-form", liturgy: %{service_on: "2025-04-27"})
                |> render_submit()
                |> follow_redirect(conn, ~p"/liturgies")
 
@@ -89,7 +88,11 @@ defmodule CMSWeb.LiturgyLiveTest do
     test "displays liturgy", %{conn: conn, liturgy: liturgy} do
       {:ok, _show_live, html} = live(conn, ~p"/liturgies/#{liturgy}")
 
-      assert html =~ "Show Liturgy"
+      assert html =~ "Liturgia"
+      assert html =~ "#{liturgy.service_on}"
+      assert html =~ "Opening Prayer"
+      assert html =~ "Amazing Grace"
+      assert html =~ "John 3:16"
     end
 
     test "updates liturgy and returns to show", %{conn: conn, liturgy: liturgy} do
@@ -104,12 +107,12 @@ defmodule CMSWeb.LiturgyLiveTest do
       assert render(form_live) =~ "Edit Liturgy"
 
       assert form_live
-             |> form("#liturgy-form", liturgy: @invalid_attrs)
+             |> form("#liturgy-form", liturgy: %{service_on: nil})
              |> render_change() =~ "can&#39;t be blank"
 
       assert {:ok, show_live, _html} =
                form_live
-               |> form("#liturgy-form", liturgy: @update_attrs)
+               |> form("#liturgy-form", liturgy: %{service_on: "2025-04-27"})
                |> render_submit()
                |> follow_redirect(conn, ~p"/liturgies/#{liturgy}")
 

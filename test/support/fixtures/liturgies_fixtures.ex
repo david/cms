@@ -11,11 +11,22 @@ defmodule CMS.LiturgiesFixtures do
       "service_on" => ~D[2025-04-26],
       "liturgy_blocks" => [
         %{
-          "title" => "Text Block",
-          "type" => :text
+          "title" => "Opening Prayer",
+          "body" => "O God, our help in ages past...",
+          "type" => "text"
+        },
+        %{
+          "title" => "Amazing Grace",
+          "body" => "Amazing grace, how sweet the sound...",
+          "type" => "song"
+        },
+        %{
+          "title" => "John 3:16",
+          "body" => "For God so loved the world...",
+          "type" => "passage"
         }
       ],
-      "blocks_sort" => [0],
+      "liturgy_blocks_sort" => ["new-text", "new-song", "new-passage"],
       "blocks_drop" => []
     })
   end
