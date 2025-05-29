@@ -3,7 +3,7 @@
 --
 
 -- Dumped from database version 17.5 (Debian 17.5-1.pgdg120+1)
--- Dumped by pg_dump version 17.4 (Debian 17.4-1.pgdg120+2)
+-- Dumped by pg_dump version 17.5 (Debian 17.5-1.pgdg120+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -80,10 +80,10 @@ ALTER SEQUENCE public.bible_verses_id_seq OWNED BY public.bible_verses.id;
 
 
 --
--- Name: blocks; Type: TABLE; Schema: public; Owner: -
+-- Name: shared_contents; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.blocks (
+CREATE TABLE public.shared_contents (
     id bigint NOT NULL,
     title character varying(255) NOT NULL,
     subtitle character varying(255),
@@ -111,7 +111,7 @@ CREATE SEQUENCE public.blocks_id_seq
 -- Name: blocks_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE public.blocks_id_seq OWNED BY public.blocks.id;
+ALTER SEQUENCE public.blocks_id_seq OWNED BY public.shared_contents.id;
 
 
 --
@@ -167,7 +167,7 @@ CREATE TABLE public.liturgies (
 CREATE TABLE public.liturgies_blocks (
     id bigint NOT NULL,
     liturgy_id bigint NOT NULL,
-    block_id bigint NOT NULL,
+    shared_content_id bigint NOT NULL,
     "position" integer NOT NULL,
     organization_id bigint NOT NULL,
     inserted_at timestamp(0) without time zone NOT NULL,
@@ -367,13 +367,6 @@ ALTER TABLE ONLY public.bible_verses ALTER COLUMN id SET DEFAULT nextval('public
 
 
 --
--- Name: blocks id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.blocks ALTER COLUMN id SET DEFAULT nextval('public.blocks_id_seq'::regclass);
-
-
---
 -- Name: families id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -399,6 +392,13 @@ ALTER TABLE ONLY public.liturgies_blocks ALTER COLUMN id SET DEFAULT nextval('pu
 --
 
 ALTER TABLE ONLY public.organizations ALTER COLUMN id SET DEFAULT nextval('public.organizations_id_seq'::regclass);
+
+
+--
+-- Name: shared_contents id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.shared_contents ALTER COLUMN id SET DEFAULT nextval('public.blocks_id_seq'::regclass);
 
 
 --
@@ -431,10 +431,10 @@ ALTER TABLE ONLY public.bible_verses
 
 
 --
--- Name: blocks blocks_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: shared_contents blocks_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.blocks
+ALTER TABLE ONLY public.shared_contents
     ADD CONSTRAINT blocks_pkey PRIMARY KEY (id);
 
 
@@ -580,10 +580,10 @@ CREATE INDEX users_tokens_user_id_index ON public.users_tokens USING btree (user
 
 
 --
--- Name: blocks blocks_organization_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: shared_contents blocks_organization_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.blocks
+ALTER TABLE ONLY public.shared_contents
     ADD CONSTRAINT blocks_organization_id_fkey FOREIGN KEY (organization_id) REFERENCES public.organizations(id) ON DELETE CASCADE;
 
 
@@ -600,7 +600,7 @@ ALTER TABLE ONLY public.families
 --
 
 ALTER TABLE ONLY public.liturgies_blocks
-    ADD CONSTRAINT liturgies_blocks_block_id_fkey FOREIGN KEY (block_id) REFERENCES public.blocks(id) ON DELETE CASCADE;
+    ADD CONSTRAINT liturgies_blocks_block_id_fkey FOREIGN KEY (shared_content_id) REFERENCES public.shared_contents(id) ON DELETE CASCADE;
 
 
 --
@@ -684,3 +684,5 @@ INSERT INTO public."schema_migrations" (version) VALUES (20250518112825);
 INSERT INTO public."schema_migrations" (version) VALUES (20250520181113);
 INSERT INTO public."schema_migrations" (version) VALUES (20250520183623);
 INSERT INTO public."schema_migrations" (version) VALUES (20250521104156);
+INSERT INTO public."schema_migrations" (version) VALUES (20250529143008);
+INSERT INTO public."schema_migrations" (version) VALUES (20250529144128);

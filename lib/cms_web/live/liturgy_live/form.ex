@@ -31,7 +31,11 @@ defmodule CMSWeb.LiturgyLive.Form do
 
           <div class="flex flex-col">
             <fieldset class="flex flex-col">
-              <input name={block[:block_id].name} type="hidden" value={block[:block_id].value} />
+              <input
+                name={block[:shared_content_id].name}
+                type="hidden"
+                value={block[:shared_content_id].value}
+              />
               <input name={block[:type].name} type="hidden" value={block[:type].value} />
 
               <%= case to_string(block[:type].value) do %>
@@ -135,7 +139,10 @@ defmodule CMSWeb.LiturgyLive.Form do
     {:ok,
      socket
      |> assign(:return_to, return_to(params["return_to"]))
-     |> assign(:song_blocks, Liturgies.list_songs(socket.assigns.current_scope))
+     |> assign(
+       :song_blocks,
+       Liturgies.list_shared_content_by_type(socket.assigns.current_scope, :song)
+     )
      |> apply_action(socket.assigns.live_action, params)}
   end
 

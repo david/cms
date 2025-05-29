@@ -1,4 +1,4 @@
-defmodule CMS.Liturgies.Block do
+defmodule CMS.Liturgies.SharedContent do
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -6,7 +6,7 @@ defmodule CMS.Liturgies.Block do
 
   @types [:text, :song, :passage]
 
-  schema "blocks" do
+  schema "shared_contents" do
     field :body, :string
     field :subtitle, :string
     field :title, :string

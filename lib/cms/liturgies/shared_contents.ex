@@ -1,6 +1,6 @@
-defmodule CMS.Liturgies.Blocks do
+defmodule CMS.Liturgies.SharedContents do
   @moduledoc """
-  The Blocks context.
+  The SharedContents context.
   """
 
   import Ecto.Query, warn: false
@@ -8,10 +8,10 @@ defmodule CMS.Liturgies.Blocks do
 
   alias CMS.Accounts.Scope
   alias CMS.Bibles
-  alias CMS.Liturgies.Block
+  alias CMS.Liturgies.SharedContent
 
-  def suggest_block(%Scope{organization: %{id: org_id}}, :song, title) do
-    Block
+  def suggest_shared_content(%Scope{organization: %{id: org_id}}, :song, title) do
+    SharedContent
     |> from(
       select: [:body, :id, :title, :type],
       where: [organization_id: ^org_id, type: :song, title: ^title]
@@ -19,8 +19,8 @@ defmodule CMS.Liturgies.Blocks do
     |> Repo.one()
   end
 
-  def suggest_block(_scope, :passage, title) do
-    %Block{
+  def suggest_shared_content(_scope, :passage, title) do
+    %SharedContent{
       title: title,
       type: :passage,
       body: Bibles.get_verses(title)

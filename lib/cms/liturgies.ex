@@ -8,7 +8,7 @@ defmodule CMS.Liturgies do
 
   alias CMS.Accounts.Scope
   alias CMS.Bibles
-  alias CMS.Liturgies.Block
+  alias CMS.Liturgies.SharedContent
   alias CMS.Liturgies.Liturgy
 
   @doc """
@@ -68,7 +68,7 @@ defmodule CMS.Liturgies do
     query =
       from(l in Liturgy,
         where: l.id == ^id and l.organization_id == ^scope.organization.id,
-        preload: [liturgy_blocks: [:block]]
+        preload: [liturgy_blocks: [:shared_content]]
       )
 
     query
@@ -85,16 +85,16 @@ defmodule CMS.Liturgies do
   end
 
   defp populate_liturgy_block(%{block: %{type: :passage}} = liturgy_block) do
-    block =
-      liturgy_block.block
+    shared_content =
+      liturgy_block.shared_content
       |> Map.take([:title, :subtitle, :body, :type])
       |> then(&Map.put(&1, :body, Bibles.get_verses(&1.title)))
 
-    Map.merge(liturgy_block, block)
+    Map.merge(liturgy_block, shared_content)
   end
 
   defp populate_liturgy_block(liturgy_block) do
-    Map.merge(liturgy_block, Map.take(liturgy_block.block, [:title, :subtitle, :body, :type]))
+    Map.merge(liturgy_block, Map.take(liturgy_block.shared_content, [:title, :subtitle, :body, :type]))
   end
 
   @doc """
@@ -208,9 +208,9 @@ defmodule CMS.Liturgies do
     Liturgy.changeset(liturgy, attrs, scope)
   end
 
-  def list_songs(%Scope{} = scope) do
-    Block
-    |> from(where: [organization_id: ^scope.organization.id, type: :song])
+  def list_shared_content_by_type(%Scope{} = scope, type) do
+    SharedContent
+    |> from(where: [organization_id: ^scope.organization.id, type: ^type])
     |> Repo.all()
   end
 
