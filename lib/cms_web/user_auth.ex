@@ -269,8 +269,15 @@ defmodule CMSWeb.UserAuth do
   defp mount_current_scope(socket, session) do
     Phoenix.Component.assign_new(socket, :current_scope, fn ->
       if user_token = session["user_token"] do
-        {user, _} = Accounts.get_user_by_session_token(user_token)
-        Scope.for_user(user)
+        case Accounts.get_user_by_session_token(user_token) do
+          {user, _} ->
+            Scope.for_user(user)
+
+          # If there is a user token but no user, treat the user as a guest
+          _ ->
+            org = Accounts.fetch_singleton_organization!()
+            %Scope{organization: org}
+        end
       else
         # TODO: should be able to determine the proper organization
         org = Accounts.fetch_singleton_organization!()
