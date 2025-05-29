@@ -14,7 +14,7 @@ defmodule CMS.Liturgies.Block do
     field :title, :string
     field :subtitle, :string
     field :body, :string, virtual: true
-    field :type, Ecto.Enum, values: SharedContent.types(), virtual: true
+    field :type, Ecto.Enum, values: SharedContent.types()
 
     belongs_to :liturgy, Liturgy
     belongs_to :shared_content, SharedContent, on_replace: :nilify
