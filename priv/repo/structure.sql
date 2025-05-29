@@ -589,6 +589,14 @@ ALTER TABLE ONLY public.shared_contents
 
 
 --
+-- Name: blocks blocks_shared_content_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.blocks
+    ADD CONSTRAINT blocks_shared_content_id_fkey FOREIGN KEY (shared_content_id) REFERENCES public.shared_contents(id);
+
+
+--
 -- Name: families families_organization_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -691,3 +699,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20250529151838);
 INSERT INTO public."schema_migrations" (version) VALUES (20250529153711);
 INSERT INTO public."schema_migrations" (version) VALUES (20250529164208);
 INSERT INTO public."schema_migrations" (version) VALUES (20250529165125);
+INSERT INTO public."schema_migrations" (version) VALUES (20250529165416);
