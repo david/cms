@@ -24,64 +24,69 @@ defmodule CMS.Liturgies.LiturgyBlock do
   end
 
   @doc false
-  def changeset(liturgy_block, attrs, user_scope) do
+  def changeset(liturgy_block, attrs, index, liturgy_attrs, user_scope) do
     liturgy_block
-    |> cast(attrs, [:block_id, :position])
-    |> merge(Block.changeset(liturgy_block, attrs, user_scope))
-    |> normalize_block(user_scope)
+    |> cast(attrs, [:block_id, :position, :body, :subtitle, :title, :type])
+    |> put_block(attrs, index, liturgy_attrs, user_scope)
     |> put_change(:organization_id, user_scope.organization.id)
   end
 
-  defp normalize_block(%Ecto.Changeset{changes: %{title: nil}} = changeset, _scope), do: changeset
+  defp put_block(changeset, attrs, index, liturgy_attrs, user_scope) do
+    type =
+      get_field(changeset, :type) ||
+        case Enum.at(liturgy_attrs["liturgy_blocks_sort"], index) do
+          "new-text" -> :text
+          "new-song" -> :song
+          "new-passage" -> :passage
+        end
 
-  defp normalize_block(
-         %Ecto.Changeset{changes: %{title: title}, data: %{type: type}} = changeset,
-         scope
-       )
-       when type in [:passage, :song] do
-    if Regex.match?(~r/^\s*$/, title) do
+    changeset
+    |> build_block(type, attrs, user_scope)
+    |> merge(Block.changeset(type, changeset.data, attrs, user_scope))
+    |> put_change(:position, index)
+  end
+
+  defp build_block(%{data: %{block_id: block_id}} = changeset, _type, _attrs, _user_scope)
+       when not is_nil(block_id),
+       do: changeset
+
+  defp build_block(changeset, type, %{"title" => title}, user_scope)
+       when type in [:song, :passage] do
+    block = Blocks.suggest_block(user_scope, type, title)
+
+    if block do
       changeset
+      |> put_change(:body, block.body)
+      |> put_assoc(:block, block)
     else
-      scope
-      |> Blocks.suggest_block(type, title)
-      |> change_copy(changeset, scope)
+      build_block(changeset, )
+      put_assoc(
+        changeset,
+        :block,
+        %Block{
+          body: get_field(changeset, :body),
+          subtitle: get_field(changeset, :subtitle),
+          title: title,
+          type: type,
+          organization_id: user_scope.organization.id
+        }
+      )
     end
   end
 
-  defp normalize_block(changeset, scope),
-    do: changeset |> cast_assoc(:block, with: &Block.changeset(&1, &2, scope))
-
-  defp change_copy(nil, changeset, _scope),
+  defp build_block(changeset, %{organization: %{id: org_id}} = user_scope),
     do:
-      changeset
-      |> put_change(:block_id, nil)
-      |> put_change(:body, nil)
-      |> put_change(:type, nil)
-      |> cast_assoc(:block, nil)
-
-  defp change_copy(%{id: nil, body: body, title: title, type: :song = type}, changeset, scope),
-    do:
-      changeset
-      |> put_change(:body, body)
-      |> put_change(:type, type)
-      |> put_assoc(:block, %Block{type: type, title: title, body: body})
-      |> cast_assoc(:block, with: &Block.song_changeset(&1, &2, scope))
-
-  defp change_copy(%{id: nil, body: body, title: title, type: :passage = type}, changeset, scope),
-    do:
-      changeset
-      |> put_change(:body, body)
-      |> put_change(:type, type)
-      |> put_assoc(:block, %Block{type: type, title: title})
-      |> cast_assoc(:block, with: &Block.passage_changeset(&1, &2, scope))
-
-  defp change_copy(%{id: id, body: body, type: type} = block, changeset, _scope),
-    do:
-      changeset
-      |> put_change(:block_id, id)
-      |> put_change(:body, body)
-      |> put_change(:type, type)
-      |> put_assoc(:block, block)
+      put_assoc(
+        changeset,
+        :block,
+        %Block{
+          body: get_field(changeset, :body),
+          subtitle: get_field(changeset, :subtitle),
+          title: title,
+          type: type,
+          organization_id: org_id
+        }
+      )
 
   @doc false
   def copy_changeset(%{block_id: block_id, block: %{type: :song}, position: position}, %Scope{
