@@ -91,7 +91,8 @@ CREATE TABLE public.blocks (
     organization_id bigint NOT NULL,
     inserted_at timestamp(0) without time zone NOT NULL,
     updated_at timestamp(0) without time zone NOT NULL,
-    subtitle character varying(255)
+    subtitle character varying(255),
+    title character varying(255)
 );
 
 
@@ -688,3 +689,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20250529143008);
 INSERT INTO public."schema_migrations" (version) VALUES (20250529144128);
 INSERT INTO public."schema_migrations" (version) VALUES (20250529151838);
 INSERT INTO public."schema_migrations" (version) VALUES (20250529153711);
+INSERT INTO public."schema_migrations" (version) VALUES (20250529164208);

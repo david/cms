@@ -11,7 +11,7 @@ defmodule CMS.Liturgies.Block do
   schema "blocks" do
     field :position, :integer
 
-    field :title, :string, virtual: true
+    field :title, :string
     field :subtitle, :string
     field :body, :string, virtual: true
     field :type, Ecto.Enum, values: SharedContent.types(), virtual: true
@@ -46,7 +46,12 @@ defmodule CMS.Liturgies.Block do
     |> put_change(:position, index)
   end
 
-  defp build_shared_content(%{data: %{shared_content_id: shared_content_id}} = changeset, _type, _attrs, _user_scope)
+  defp build_shared_content(
+         %{data: %{shared_content_id: shared_content_id}} = changeset,
+         _type,
+         _attrs,
+         _user_scope
+       )
        when not is_nil(shared_content_id),
        do: changeset
 
@@ -72,23 +77,35 @@ defmodule CMS.Liturgies.Block do
     end
   end
 
-  defp build_shared_content(changeset, type, _attrs, %{organization: %{id: org_id}} = _user_scope),
-    do:
-      put_assoc(
-        changeset,
-        :shared_content,
-        %SharedContent{
-          body: get_field(changeset, :body),
-          title: get_field(changeset, :title),
-          type: type,
-          organization_id: org_id
-        }
-      )
+  defp build_shared_content(
+         changeset,
+         type,
+         _attrs,
+         %{organization: %{id: org_id}} = _user_scope
+       ),
+       do:
+         put_assoc(
+           changeset,
+           :shared_content,
+           %SharedContent{
+             body: get_field(changeset, :body),
+             title: get_field(changeset, :title),
+             type: type,
+             organization_id: org_id
+           }
+         )
 
   @doc false
-  def copy_changeset(%{shared_content_id: shared_content_id, shared_content: %{type: :song}, position: position}, %Scope{
-        organization: %{id: org_id}
-      }) do
+  def copy_changeset(
+        %{
+          shared_content_id: shared_content_id,
+          shared_content: %{type: :song},
+          position: position
+        },
+        %Scope{
+          organization: %{id: org_id}
+        }
+      ) do
     attrs = %{
       shared_content_id: shared_content_id,
       organization_id: org_id,
@@ -110,7 +127,9 @@ defmodule CMS.Liturgies.Block do
     |> cast(attrs, [:organization_id, :position])
     |> put_assoc(
       :shared_content,
-      shared_content |> Map.take([:type, :title, :subtitle, :body]) |> Map.put(:organization_id, org_id)
+      shared_content
+      |> Map.take([:type, :title, :subtitle, :body])
+      |> Map.put(:organization_id, org_id)
     )
   end
 end
