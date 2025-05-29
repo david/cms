@@ -26,8 +26,8 @@ defmodule CMSWeb.LiturgyLive.Form do
 
         <.add_block_button />
 
-        <.inputs_for :let={block} field={@form[:liturgy_blocks]}>
-          <input type="hidden" name="liturgy[liturgy_blocks_sort][]" value={block.index} />
+        <.inputs_for :let={block} field={@form[:blocks]}>
+          <input type="hidden" name="liturgy[blocks_sort][]" value={block.index} />
 
           <div class="flex flex-col">
             <fieldset class="flex flex-col">
@@ -70,7 +70,7 @@ defmodule CMSWeb.LiturgyLive.Form do
           </div>
         </.inputs_for>
 
-        <input type="hidden" name={"#{@form[:liturgy_blocks_drop].name}[]"} />
+        <input type="hidden" name={"#{@form[:blocks_drop].name}[]"} />
 
         <footer>
           <.button phx-disable-with="Saving..." variant="primary">Save Liturgy</.button>
@@ -90,7 +90,7 @@ defmodule CMSWeb.LiturgyLive.Form do
       <span>{@title}</span>
       <button
         type="button"
-        name="liturgy[liturgy_blocks_drop][]"
+        name="liturgy[blocks_drop][]"
         value={@index}
         phx-click={JS.dispatch("change")}
       >
@@ -106,7 +106,7 @@ defmodule CMSWeb.LiturgyLive.Form do
       <button
         type="button"
         class="btn btn-outline btn-primary join-item"
-        name="liturgy[liturgy_blocks_sort][]"
+        name="liturgy[blocks_sort][]"
         value="new-text"
         phx-click={JS.dispatch("change")}
       >
@@ -115,7 +115,7 @@ defmodule CMSWeb.LiturgyLive.Form do
       <button
         type="button"
         class="btn btn-outline btn-primary join-item"
-        name="liturgy[liturgy_blocks_sort][]"
+        name="liturgy[blocks_sort][]"
         value="new-song"
         phx-click={JS.dispatch("change")}
       >
@@ -124,7 +124,7 @@ defmodule CMSWeb.LiturgyLive.Form do
       <button
         type="button"
         class="btn btn-outline btn-primary join-item"
-        name="liturgy[liturgy_blocks_sort][]"
+        name="liturgy[blocks_sort][]"
         value="new-passage"
         phx-click={JS.dispatch("change")}
       >

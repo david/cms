@@ -80,6 +80,21 @@ ALTER SEQUENCE public.bible_verses_id_seq OWNED BY public.bible_verses.id;
 
 
 --
+-- Name: blocks; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.blocks (
+    id bigint NOT NULL,
+    liturgy_id bigint NOT NULL,
+    shared_content_id bigint NOT NULL,
+    "position" integer NOT NULL,
+    organization_id bigint NOT NULL,
+    inserted_at timestamp(0) without time zone NOT NULL,
+    updated_at timestamp(0) without time zone NOT NULL
+);
+
+
+--
 -- Name: shared_contents; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -161,21 +176,6 @@ CREATE TABLE public.liturgies (
 
 
 --
--- Name: liturgies_blocks; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.liturgies_blocks (
-    id bigint NOT NULL,
-    liturgy_id bigint NOT NULL,
-    shared_content_id bigint NOT NULL,
-    "position" integer NOT NULL,
-    organization_id bigint NOT NULL,
-    inserted_at timestamp(0) without time zone NOT NULL,
-    updated_at timestamp(0) without time zone NOT NULL
-);
-
-
---
 -- Name: liturgies_blocks_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -191,7 +191,7 @@ CREATE SEQUENCE public.liturgies_blocks_id_seq
 -- Name: liturgies_blocks_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE public.liturgies_blocks_id_seq OWNED BY public.liturgies_blocks.id;
+ALTER SEQUENCE public.liturgies_blocks_id_seq OWNED BY public.blocks.id;
 
 
 --
@@ -367,6 +367,13 @@ ALTER TABLE ONLY public.bible_verses ALTER COLUMN id SET DEFAULT nextval('public
 
 
 --
+-- Name: blocks id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.blocks ALTER COLUMN id SET DEFAULT nextval('public.liturgies_blocks_id_seq'::regclass);
+
+
+--
 -- Name: families id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -378,13 +385,6 @@ ALTER TABLE ONLY public.families ALTER COLUMN id SET DEFAULT nextval('public.fam
 --
 
 ALTER TABLE ONLY public.liturgies ALTER COLUMN id SET DEFAULT nextval('public.liturgies_id_seq'::regclass);
-
-
---
--- Name: liturgies_blocks id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.liturgies_blocks ALTER COLUMN id SET DEFAULT nextval('public.liturgies_blocks_id_seq'::regclass);
 
 
 --
@@ -447,10 +447,10 @@ ALTER TABLE ONLY public.families
 
 
 --
--- Name: liturgies_blocks liturgies_blocks_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: blocks liturgies_blocks_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.liturgies_blocks
+ALTER TABLE ONLY public.blocks
     ADD CONSTRAINT liturgies_blocks_pkey PRIMARY KEY (id);
 
 
@@ -596,26 +596,26 @@ ALTER TABLE ONLY public.families
 
 
 --
--- Name: liturgies_blocks liturgies_blocks_block_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: blocks liturgies_blocks_block_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.liturgies_blocks
+ALTER TABLE ONLY public.blocks
     ADD CONSTRAINT liturgies_blocks_block_id_fkey FOREIGN KEY (shared_content_id) REFERENCES public.shared_contents(id) ON DELETE CASCADE;
 
 
 --
--- Name: liturgies_blocks liturgies_blocks_liturgy_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: blocks liturgies_blocks_liturgy_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.liturgies_blocks
+ALTER TABLE ONLY public.blocks
     ADD CONSTRAINT liturgies_blocks_liturgy_id_fkey FOREIGN KEY (liturgy_id) REFERENCES public.liturgies(id) ON DELETE CASCADE;
 
 
 --
--- Name: liturgies_blocks liturgies_blocks_organization_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: blocks liturgies_blocks_organization_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.liturgies_blocks
+ALTER TABLE ONLY public.blocks
     ADD CONSTRAINT liturgies_blocks_organization_id_fkey FOREIGN KEY (organization_id) REFERENCES public.organizations(id) ON DELETE CASCADE;
 
 
@@ -686,3 +686,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20250520183623);
 INSERT INTO public."schema_migrations" (version) VALUES (20250521104156);
 INSERT INTO public."schema_migrations" (version) VALUES (20250529143008);
 INSERT INTO public."schema_migrations" (version) VALUES (20250529144128);
+INSERT INTO public."schema_migrations" (version) VALUES (20250529151838);

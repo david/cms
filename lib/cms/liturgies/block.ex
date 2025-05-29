@@ -1,4 +1,4 @@
-defmodule CMS.Liturgies.LiturgyBlock do
+defmodule CMS.Liturgies.Block do
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -8,7 +8,7 @@ defmodule CMS.Liturgies.LiturgyBlock do
   alias CMS.Liturgies.SharedContents
   alias CMS.Liturgies.Liturgy
 
-  schema "liturgies_blocks" do
+  schema "blocks" do
     field :position, :integer
 
     field :title, :string, virtual: true
@@ -24,8 +24,8 @@ defmodule CMS.Liturgies.LiturgyBlock do
   end
 
   @doc false
-  def changeset(liturgy_block, attrs, index, liturgy_attrs, user_scope) do
-    liturgy_block
+  def changeset(block, attrs, index, liturgy_attrs, user_scope) do
+    block
     |> cast(attrs, [:shared_content_id, :position, :body, :subtitle, :title, :type])
     |> put_block(attrs, index, liturgy_attrs, user_scope)
     |> put_change(:organization_id, user_scope.organization.id)
@@ -34,7 +34,7 @@ defmodule CMS.Liturgies.LiturgyBlock do
   defp put_block(changeset, attrs, index, liturgy_attrs, user_scope) do
     type =
       get_field(changeset, :type) ||
-        case Enum.at(liturgy_attrs["liturgy_blocks_sort"], index) do
+        case Enum.at(liturgy_attrs["blocks_sort"], index) do
           "new-text" -> :text
           "new-song" -> :song
           "new-passage" -> :passage
@@ -73,7 +73,7 @@ defmodule CMS.Liturgies.LiturgyBlock do
     end
   end
 
-  defp build_shared_content(changeset, type, %{"title" => title}, %{organization: %{id: org_id}}),
+  defp build_shared_content(changeset, type, _attrs, %{organization: %{id: org_id}} = _user_scope),
     do:
       put_assoc(
         changeset,
@@ -81,7 +81,7 @@ defmodule CMS.Liturgies.LiturgyBlock do
         %SharedContent{
           body: get_field(changeset, :body),
           subtitle: get_field(changeset, :subtitle),
-          title: title,
+          title: get_field(changeset, :title),
           type: type,
           organization_id: org_id
         }

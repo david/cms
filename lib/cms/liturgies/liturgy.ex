@@ -2,30 +2,30 @@ defmodule CMS.Liturgies.Liturgy do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias CMS.Liturgies.LiturgyBlock
+  alias CMS.Liturgies.Block
 
   schema "liturgies" do
     field :service_on, :date
 
     belongs_to :organization, CMS.Accounts.Organization
 
-    has_many :liturgy_blocks, LiturgyBlock, on_replace: :delete
-    has_many :shared_contents, through: [:liturgy_blocks, :shared_content]
+    has_many :blocks, Block, on_replace: :delete
+    has_many :shared_contents, through: [:blocks, :shared_content]
 
     timestamps(type: :utc_datetime)
   end
 
   def new do
-    %__MODULE__{liturgy_blocks: []}
+    %__MODULE__{blocks: []}
   end
 
   def changeset(liturgy, attrs, user_scope) do
     liturgy
     |> cast(attrs, [:service_on])
-    |> cast_assoc(:liturgy_blocks,
-      with: &LiturgyBlock.changeset(&1, &2, &3, attrs, user_scope),
-      sort_param: :liturgy_blocks_sort,
-      drop_param: :liturgy_blocks_drop
+    |> cast_assoc(:blocks,
+      with: &Block.changeset(&1, &2, &3, attrs, user_scope),
+      sort_param: :blocks_sort,
+      drop_param: :blocks_drop
     )
     |> validate_required([:service_on])
     |> put_change(:organization_id, user_scope.organization.id)
@@ -43,8 +43,8 @@ defmodule CMS.Liturgies.Liturgy do
     %__MODULE__{}
     |> cast(attrs, [:service_on, :organization_id])
     |> put_assoc(
-      :liturgy_blocks,
-      Enum.map(source.liturgy_blocks, &LiturgyBlock.copy_changeset(&1, user_scope))
+      :blocks,
+      Enum.map(source.liturgy_blocks, &Block.copy_changeset(&1, user_scope))
     )
   end
 end

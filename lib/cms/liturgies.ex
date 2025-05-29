@@ -68,33 +68,33 @@ defmodule CMS.Liturgies do
     query =
       from(l in Liturgy,
         where: l.id == ^id and l.organization_id == ^scope.organization.id,
-        preload: [liturgy_blocks: [:shared_content]]
+        preload: [blocks: [:shared_content]]
       )
 
     query
     |> Repo.one!()
-    |> populate_liturgy_blocks()
+    |> populate_blocks()
   end
 
-  defp populate_liturgy_blocks(%{liturgy_blocks: liturgy_blocks} = liturgy) do
+  defp populate_blocks(%{blocks: blocks} = liturgy) do
     Map.put(
       liturgy,
-      :liturgy_blocks,
-      liturgy_blocks |> Enum.map(&populate_liturgy_block/1) |> Enum.sort_by(& &1.position)
+      :blocks,
+      blocks |> Enum.map(&populate_block/1) |> Enum.sort_by(& &1.position)
     )
   end
 
-  defp populate_liturgy_block(%{block: %{type: :passage}} = liturgy_block) do
+  defp populate_block(%{shared_content: %{type: :passage}} = block) do
     shared_content =
-      liturgy_block.shared_content
+      block.shared_content
       |> Map.take([:title, :subtitle, :body, :type])
       |> then(&Map.put(&1, :body, Bibles.get_verses(&1.title)))
 
-    Map.merge(liturgy_block, shared_content)
+    Map.merge(block, shared_content)
   end
 
-  defp populate_liturgy_block(liturgy_block) do
-    Map.merge(liturgy_block, Map.take(liturgy_block.shared_content, [:title, :subtitle, :body, :type]))
+  defp populate_block(block) do
+    Map.merge(block, Map.take(block.shared_content, [:title, :subtitle, :body, :type]))
   end
 
   @doc """
@@ -138,7 +138,7 @@ defmodule CMS.Liturgies do
       |> Repo.insert()
       |> case do
         {:ok, new_liturgy} ->
-          Repo.preload(new_liturgy, [:liturgy_blocks])
+          Repo.preload(new_liturgy, [:blocks])
 
         result ->
           result
