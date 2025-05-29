@@ -14,18 +14,23 @@
     *   **Prioritize answering questions first.** If a user asks "how to" or "what is the best way," provide a detailed explanation of the approach before offering to implement.
     *   Implement *only* the explicit request.
     *   Assess and implement direct consequences (callers, dependencies).
-    *   **NO UNSOLICITED CHANGES/REFACTORS OR WARNING FIXES.** Propose deviations or warning fixes separately; implement only upon explicit user approval.
+    *   **NO UNSOLICITED CHANGES/REFACTORS OR WARNING FIXES.** Propose deviations or warning fixes separately; implement only upon explicit user approval. **Even if observed in logs or during compilation, do not attempt to fix errors or warnings outside the explicit task scope unless explicitly instructed to.**
     *   **CRITICAL:** Before executing any code modifications (e.g., `developer__text_editor` `write`/`str_replace`), or any shell commands that alter files (`git commit`, `git reset`, `rm`, `mv`, etc.), **explicitly state your proposed actions and await clear user confirmation.**
 
 3.  **Proactive Project Understanding & Verification (CRITICAL):**
-    *   **DO NOT ASSUME. VERIFY FIRST.** **Prioritize `tidewave` tools** for Elixir/Phoenix introspection. Fallback to general tools (`rg`, `developer__text_editor command="view"`) for broader discovery or where `tidewave` is not suited.
+    *   **DO NOT ASSUME. VERIFY FIRST.** **Especially when dealing with file system operations (creation, modification, deletion) or when a task implicitly involves a new file (e.g., 'add a migration'), always explicitly verify the target path and file existence using shell commands (`ls`, `rg --files`) or appropriate developer tools before proceeding.** Prioritize `tidewave` tools for Elixir/Phoenix introspection. Fallback to general tools (`rg`, `developer__text_editor command="view"`) for broader discovery or where `tidewave` is not suited.
         *   Modules, functions, docs: `tidewave__get_source_location`, `tidewave__package_docs_search`
         *   Ecto schemas, DB queries, constraints: `tidewave__get_ecto_schemas`, `tidewave__execute_sql_query`, or inspect ./priv/repo/structure.sql.
         *   Logs, errors, stacktraces: `tidewave__get_logs`.
         *   LiveViews, process state: `tidewave__list_liveview_pages`, `tidewave__get_process_info`.
         *   Other (app names, paths, data structures, `conn`/`socket`, etc.): `tidewave` if applicable, else general tools.
-        *   Shared component props/slots: `tidewave__get_source_location` for defs if possible, `rg` for call sites.
-    *   `mix compile` is a diagnostic tool. Run it *after* explicitly approved changes, or when specifically asked to check compilation status. Do not run it as an unsolicited action or as part of an unapproved change.
+    *   **Proactive Refactoring Checklist:** When performing renames (schemas, tables, columns), proactively identify all affected:
+        *   Modules and their aliases.
+        *   Ecto associations (e.g., `has_many`, `belongs_to`).
+        *   `Ecto.Changeset.cast` fields and `preload` options.
+        *   LiveView/HEEx form inputs and data access (e.g., `field={@form[:old_id]}`).
+        *   Test fixtures and related assertions.
+    *   `mix compile` is a diagnostic tool. Run it *after* explicitly approved changes or when asked, especially after significant code modifications, to catch *all* compilation errors/warnings at once. Do not run it unsolicited.
 
 4.  **Function Signature Changes & Call Site Management (CRITICAL):**
     *   If a function's signature changes, **update ALL call sites** as part of the same task.
@@ -50,6 +55,17 @@
     *   **Schema Design:** Adapt existing schemas; avoid redundancy.
     *   **Changeset Creation:** Use `YourSchema.changeset(%YourSchema{}, attributes_map \\ %{})`.
     *   **Query Optimization:** Avoid N+1. Prefer batch operations.
+    *   **Precise Migration Syntax (CRITICAL for Existing Columns):**
+        *   When modifying existing tables or columns, carefully distinguish between:
+            *   `add/3`: For adding *new* columns.
+            *   `remove/2`: For removing columns.
+            *   `modify/3`: For changing properties (type, nullability, defaults, **foreign keys**) of *existing* columns.
+                *   **To add/modify a foreign key constraint on an existing column**: Use `modify :column_name, references(:other_table, on_delete: :action)`.
+                *   **Example**: `modify :shared_content_id, references(:shared_contents, on_delete: :nothing)`
+            *   `create constraint/3`: For adding *named* check, unique, or composite foreign key constraints.
+            *   `create foreign_key/4`: For creating a *named* foreign key constraint to an existing column or set of columns.
+        *   **Always verify exact syntax and examples** by consulting `h Module.function/arity` (e.g., `h Ecto.Migration.modify/3`, `h Ecto.Migration.create/2`). Pay extreme attention to the exact function signatures and provided examples for similar scenarios.
+    *   **Proactive Foreign Key Constraint Check**: Before adding any foreign key constraint (new or to existing columns), *always* verify if a similar constraint already exists. Use `developer__shell(command='''cat priv/repo/structure.sql | grep -i "foreign key"''')` or `tidewave__execute_sql_query` to query `information_schema.table_constraints`.
     *   **Ecto Function Behavior:** Understand robustness (e.g., `Repo.insert_all/3` with empty lists). Avoid redundant guards.
     *   **Migrations (Initial Dev):** Before stabilization/deploy, consider rolling back and modifying the original migration rather than many small alterations.
     *   **Migrations & Existing Data:** When adding a non-nullable column to a table with data, **ASK THE USER** for the strategy. Do not assume.
@@ -57,9 +73,9 @@
     *   **Ecto Query Defaults:** Omit `select: f` if `from f in Family` (implied).
 
 3.  **Coding Style & Best Practices:**
-    *   **Data Pipelines:** Strongly favor. Functions for side-effects should return input. Avoid intermediate variables.
-    *   **Safe Nested Access:** Prefer `get_in(data.property.other)`.
-    *   **Collections:** `Stream` for multi-step processing, `Enum.map` for simple single maps.
+    *   **Data Pipelines:** Strongly favor. Functions for side-effects should return input. Avoid intermediate variables.\
+    *   **Safe Nested Access:** Prefer `get_in(data.property.other)`.\
+    *   **Collections:** `Stream` for multi-step processing, `Enum.map` for simple single maps.\
     *   **Logic Simplification:** Trust guarantees (DB constraints, auth). "Let it crash" for invariants. Question boilerplate (e.g., `handle_params/3` if a no-op).
     *   **Naming:** Clear, concise, intention-revealing. **No unsolicited renames.**
     *   **HEEx/EEx Conditional Rendering:**
@@ -92,26 +108,29 @@
 ## IV. Goose Operational Guidelines
 
 0.  **Pre-Execution Self-Check (MANDATORY):**
-    *   **BEFORE** executing *any* tool call that modifies or writes to the file system (e.g., `developer__text_editor` with `write` or `str_replace`), or any shell commands that alter files (`git commit`, `git reset`, `rm`, `mv`, etc.), you **MUST** first output the following exact statement and await explicit user confirmation:
-        `"As per .goosehints (IV.0, I.2.CRITICAL, & IV.3.CRITICAL), I must explicitly state my proposed actions and await clear user confirmation before executing any code modifications or shell commands that alter files. My proposed action is:"`
-    *   After this statement, provide a detailed plan for the specific modification. Proceed *only* upon receiving explicit user confirmation (e.g., "yes", "confirm").
+    *   **BEFORE** executing *any* tool call that modifies or writes to the file system (e.g., `developer__text_editor` with `write` or `str_replace`), or any shell commands that alter files (`git commit`, `git reset`, `rm`, `mv`, etc.), **YOU MUST** first provide an overview of what you plan to do and ask for explicit user confirmation to do it. Proceed *only* upon receiving explicit user confirmation (e.g., "yes", "confirm").
 
 1.  **Absolute Paths:** ALWAYS use absolute paths for developer extension tools.
     *   `tidewave` operates within a Docker container where its root is `/app/`. Paths from `tidewave` (e.g., `get_source_location`) will be prefixed with `/app/`. Strip this prefix and join the remainder with the host's project root path for `developer` tool file operations.
 
 2.  **Tool Input Generation:**
-    *   **Syntax Error Recovery / Difficult `str_replace`:** If `tidewave__project_eval(code: "Mix.Tasks.Compile.run([])")` / `tidewave__project_eval(code: "Mix.Tasks.Format.run([])")` fails *repeatedly* from a `write`, or `str_replace` is problematic (exact matches), switch to: "view file, perform global string replacement in memory, then write corrected file."
     *   **Robust File Modification (CRITICAL):** For any multi-line, context-sensitive, or complex code modifications, **ALWAYS propose reading the entire file, performing the full replacement in memory, and then using `write` to overwrite the file.** This bypasses `str_replace`'s brittleness. Present a clear unified diff for review before executing the `write`.
-    *   **Verify `old_str` for `str_replace` Meticulously:** If `str_replace` *must* be used for a small, unique change, *immediately* re-`view` the file to copy the *exact* `old_str` (whitespace, line breaks, special chars) before retrying.
+    *   **Verify `old_str` for `str_replace` Meticulously:** If `str_replace` *must* be used, ensure `old_str` is an exact, unique match including whitespace and line breaks.
     *   **Distinguish Tool Escaping vs. File Syntax:**
+        *   **CRITICAL - Clean Diff Presentation:** Ensure that proposed code changes in `diff` format are clean and do not contain extraneous characters (e.g., trailing `\` or other formatting artifacts) that are not part of the actual file content.
+        *   **CRITICAL - No Extraneous Characters in Generated Content**: When generating code or documentation (e.g., `@doc` strings, Markdown), ensure there are no unintended or extraneous characters (like trailing `\` characters from multi-line string handling) that are not part of the actual desired content.
         *   **Tool Args (e.g., `file_text`):** Escape per LLM tool use guidelines (e.g., `'''` to `\'\'\'`).
         *   **File Content (e.g., Elixir code):** Adhere *strictly* to target language syntax. No unnecessary escapes.
     *   **Presenting Code Changes:** When proposing code modifications, **ALWAYS** present them as a unified diff.
         *   Use `--- a/path/to/old_file` and `+++ b/path/to/new_file` for clarity.
+    *   **Explicit Shell Command Sequences**: When proposing a sequence of shell commands (e.g., `mix ecto.gen.migration` followed by `developer__text_editor`), present the *entire sequence* and await *single, explicit user confirmation* before executing any part of it. Do not execute commands one-by-one without prior holistic approval for the sequence.
 
 3.  **Communication & Interaction (CRITICAL):**
     *   **NO UNSOLICITED:** Plans, execution narratives, summaries. User uses `git status/diff`.
     *   **Direct & Factual; Await Confirmation:** Omit pleasantries, emotional expressions. After stating proposed actions, *wait for explicit confirmation* before proceeding.
+    *   **Strict Adherence to Negative Constraints:** If the user explicitly states "do not X" or "hold off on Y", prioritize this instruction above all else. Do not attempt to fix unrelated warnings or refactor code outside the immediate scope unless explicitly instructed to do so.
+    *   **Thorough Documentation Application (CRITICAL):** When using `Ecto.Migration` or other complex DSLs, if an initial attempt fails or seems ambiguous, *do not guess*. Re-read relevant `h` documentation examples multiple times, paying extremely close attention to the exact function signatures and provided examples for similar scenarios. If `package_docs_search` is used, carefully analyze all `hits` for the most relevant context.
+    *   **Debugging Tool Outputs**: If the structure or expected behavior of a tool's output is unclear, consider using `IO.inspect` in `tidewave__project_eval` or simply `view`ing files generated by tools to ensure understanding.
     *   **Manage Expectations & Humility (CRITICAL):** Avoid stating "I am confident" or similar phrases. Instead, use neutral language about expected outcomes. If errors occur, acknowledge them directly, apologize sincerely, and outline clear corrective steps. Never discard user work without explicit consent.
     *   **Proactive Debugging (CRITICAL):** At the first sign of unexpected runtime behavior or errors related to data structures, **IMMEDIATELY propose adding `IO.inspect` calls** to relevant variables in the code (e.g., LiveView `render` function, context functions) to ascertain their precise runtime state. This is the fastest way to verify assumptions.
     *   **Address All Warnings Proactively:** After any code modification, run `mix compile` and address *all* warnings. If a warning (e.g., "undefined or private function") implies a missing import or accessibility issue, consult documentation (`tidewave__package_docs_search`) immediately to understand the correct way to make the function available.
