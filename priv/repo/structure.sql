@@ -90,7 +90,8 @@ CREATE TABLE public.blocks (
     "position" integer NOT NULL,
     organization_id bigint NOT NULL,
     inserted_at timestamp(0) without time zone NOT NULL,
-    updated_at timestamp(0) without time zone NOT NULL
+    updated_at timestamp(0) without time zone NOT NULL,
+    subtitle character varying(255)
 );
 
 
@@ -101,7 +102,6 @@ CREATE TABLE public.blocks (
 CREATE TABLE public.shared_contents (
     id bigint NOT NULL,
     title character varying(255) NOT NULL,
-    subtitle character varying(255),
     body text,
     type character varying(255) NOT NULL,
     organization_id bigint NOT NULL,
@@ -687,3 +687,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20250521104156);
 INSERT INTO public."schema_migrations" (version) VALUES (20250529143008);
 INSERT INTO public."schema_migrations" (version) VALUES (20250529144128);
 INSERT INTO public."schema_migrations" (version) VALUES (20250529151838);
+INSERT INTO public."schema_migrations" (version) VALUES (20250529153711);

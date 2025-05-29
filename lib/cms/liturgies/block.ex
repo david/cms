@@ -12,7 +12,7 @@ defmodule CMS.Liturgies.Block do
     field :position, :integer
 
     field :title, :string, virtual: true
-    field :subtitle, :string, virtual: true
+    field :subtitle, :string
     field :body, :string, virtual: true
     field :type, Ecto.Enum, values: SharedContent.types(), virtual: true
 
@@ -64,7 +64,6 @@ defmodule CMS.Liturgies.Block do
         :shared_content,
         %SharedContent{
           body: get_field(changeset, :body),
-          subtitle: get_field(changeset, :subtitle),
           title: title,
           type: type,
           organization_id: user_scope.organization.id
@@ -80,7 +79,6 @@ defmodule CMS.Liturgies.Block do
         :shared_content,
         %SharedContent{
           body: get_field(changeset, :body),
-          subtitle: get_field(changeset, :subtitle),
           title: get_field(changeset, :title),
           type: type,
           organization_id: org_id

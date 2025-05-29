@@ -8,7 +8,7 @@ defmodule CMS.Liturgies.SharedContent do
 
   schema "shared_contents" do
     field :body, :string
-    field :subtitle, :string
+
     field :title, :string
     field :type, Ecto.Enum, values: @types, null: false
 
@@ -21,7 +21,7 @@ defmodule CMS.Liturgies.SharedContent do
 
   def changeset(:text, block, attrs, %Scope{} = scope) do
     block
-    |> cast(attrs, [:title, :body, :subtitle])
+    |> cast(attrs, [:title, :body])
     |> put_change(:type, :text)
     |> put_change(:organization_id, scope.organization.id)
   end
@@ -35,7 +35,7 @@ defmodule CMS.Liturgies.SharedContent do
 
   def changeset(:passage, block, attrs, %Scope{} = scope) do
     block
-    |> cast(attrs, [:title, :subtitle])
+    |> cast(attrs, [:title])
     |> put_change(:type, :passage)
     |> put_change(:organization_id, scope.organization.id)
   end
