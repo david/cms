@@ -59,8 +59,8 @@ defmodule CMSWeb.LiturgyLive.Form do
                 <% "passage" -> %>
                   <.block_bar index={block.index} title="Bible passage" />
 
-                  <.input type="text" field={block[:subtitle]} placeholder="subtitle" />
                   <.input type="text" field={block[:title]} placeholder="verses" />
+                  <.input type="text" field={block[:subtitle]} placeholder="subtitle" />
 
                   <LiturgyComponents.verse_list verses={block[:body].value} />
               <% end %>
