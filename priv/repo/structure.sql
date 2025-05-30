@@ -86,7 +86,7 @@ ALTER SEQUENCE public.bible_verses_id_seq OWNED BY public.bible_verses.id;
 CREATE TABLE public.blocks (
     id bigint NOT NULL,
     liturgy_id bigint NOT NULL,
-    shared_content_id bigint NOT NULL,
+    shared_content_id bigint,
     "position" integer NOT NULL,
     organization_id bigint NOT NULL,
     inserted_at timestamp(0) without time zone NOT NULL,
@@ -702,3 +702,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20250529164208);
 INSERT INTO public."schema_migrations" (version) VALUES (20250529165125);
 INSERT INTO public."schema_migrations" (version) VALUES (20250529165416);
 INSERT INTO public."schema_migrations" (version) VALUES (20250529174600);
+INSERT INTO public."schema_migrations" (version) VALUES (20250530132548);

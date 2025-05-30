@@ -84,17 +84,15 @@ defmodule CMS.Liturgies do
     )
   end
 
-  defp populate_block(%{shared_content: %{type: :passage}} = block) do
-    shared_content =
-      block.shared_content
-      |> Map.take([:title, :subtitle, :body, :type])
-      |> then(&Map.put(&1, :body, Bibles.get_verses(&1.title)))
-
-    Map.merge(block, shared_content)
-  end
-
   defp populate_block(block) do
-    Map.merge(block, Map.take(block.shared_content, [:title, :subtitle, :body, :type]))
+    Map.put(
+      block,
+      :body,
+      case block.type do
+        :passage -> Bibles.get_verses(block.title)
+        _ -> get_in(block.shared_content.body)
+      end
+    )
   end
 
   @doc """

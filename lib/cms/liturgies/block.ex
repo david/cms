@@ -4,6 +4,7 @@ defmodule CMS.Liturgies.Block do
 
   alias CMS.Accounts.Organization
   alias CMS.Accounts.Scope
+  alias CMS.Bibles
   alias CMS.Liturgies.SharedContent
   alias CMS.Liturgies.SharedContents
   alias CMS.Liturgies.Liturgy
@@ -55,45 +56,37 @@ defmodule CMS.Liturgies.Block do
        when not is_nil(shared_content_id),
        do: changeset
 
-  defp build_shared_content(changeset, type, %{"title" => title}, user_scope)
-       when type in [:song, :passage] do
+  defp build_shared_content(changeset, :passage, %{"title" => title}, user_scope) do
+    put_change(changeset, :body, Bibles.get_verses(title))
+  end
+
+  defp build_shared_content(changeset, type, %{"title" => title}, user_scope) do
     shared_content = SharedContents.suggest_shared_content(user_scope, type, title)
 
-    if shared_content do
-      changeset
-      |> put_change(:body, shared_content.body)
-      |> put_assoc(:shared_content, shared_content)
-    else
-      put_assoc(
-        changeset,
-        :shared_content,
-        %SharedContent{
-          body: get_field(changeset, :body),
-          title: title,
-          type: type,
-          organization_id: user_scope.organization.id
-        }
-      )
+    cond do
+      shared_content ->
+        changeset
+        |> put_change(:body, shared_content.body)
+        |> put_assoc(:shared_content, shared_content)
+
+      get_field(changeset, :body) ->
+        put_assoc(
+          changeset,
+          :shared_content,
+          %SharedContent{
+            body: get_field(changeset, :body),
+            title: title,
+            type: type,
+            organization_id: user_scope.organization.id
+          }
+        )
+
+      true ->
+        changeset
     end
   end
 
-  defp build_shared_content(
-         changeset,
-         type,
-         _attrs,
-         %{organization: %{id: org_id}} = _user_scope
-       ),
-       do:
-         put_assoc(
-           changeset,
-           :shared_content,
-           %SharedContent{
-             body: get_field(changeset, :body),
-             title: get_field(changeset, :title),
-             type: type,
-             organization_id: org_id
-           }
-         )
+  defp build_shared_content(changeset, _type, _attrs, _user_scope), do: changeset
 
   @doc false
   def copy_changeset(
