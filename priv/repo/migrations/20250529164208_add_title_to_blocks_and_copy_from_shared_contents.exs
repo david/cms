@@ -1,4 +1,3 @@
-
 defmodule CMS.Repo.Migrations.AddTitleToBlocksAndCopyFromSharedContents do
   use Ecto.Migration
 

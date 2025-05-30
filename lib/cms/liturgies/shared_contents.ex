@@ -19,4 +19,3 @@ defmodule CMS.Liturgies.SharedContents do
     |> Repo.one()
   end
 end
-

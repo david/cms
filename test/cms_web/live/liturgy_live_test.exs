@@ -32,7 +32,8 @@ defmodule CMSWeb.LiturgyLiveTest do
 
       assert render(form_live) =~ "New Liturgy"
 
-      liturgy_date = Date.utc_today()
+      liturgy_date =
+        Date.utc_today()
         |> Date.to_string()
 
       assert form_live
