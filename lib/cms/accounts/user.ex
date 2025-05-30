@@ -38,6 +38,7 @@ defmodule CMS.Accounts.User do
     user
     |> cast(attrs, [:email])
     |> validate_email(opts)
+    |> normalize_email()
     |> put_change(:organization_id, organization.id)
   end
 
@@ -78,8 +79,17 @@ defmodule CMS.Accounts.User do
     user
     |> cast(attrs, [:birth_date, :email, :family_id, :name])
     # TODO: need to validate birth date, email, name, phone number
+    |> normalize_email()
     |> assoc_constraint(:family)
     |> put_change(:organization_id, org_id)
+  end
+
+  defp normalize_email(changeset) do
+    if get_field(changeset, :email) && get_change(changeset, :email) != nil do
+      update_change(changeset, :email, &String.downcase/1)
+    else
+      changeset
+    end
   end
 
   @doc """
@@ -100,6 +110,7 @@ defmodule CMS.Accounts.User do
     ])
     |> validate_required([:name, :email, :family_designation, :family_id])
     |> validate_email_for_invitation()
+    |> normalize_email()
     |> put_change(:organization_id, scope.organization.id)
     |> assoc_constraint(:family)
   end
