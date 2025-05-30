@@ -12,9 +12,10 @@ defmodule CMS.Accounts.Import do
       path
       |> File.stream!()
       |> CSV.parse_stream(headers: true)
-      |> Stream.map(fn [family_designation, family_address, name, birth_date | _] ->
+      |> Stream.map(fn [family_designation, family_address, name, birth_date, email] ->
         %{
           birth_date: Timex.parse!(:binary.copy(birth_date), "{YYYY}/{0M}/{0D}"),
+          email: :binary.copy(email),
           family_address: :binary.copy(family_address),
           family_designation: :binary.copy(family_designation),
           name: :binary.copy(name)

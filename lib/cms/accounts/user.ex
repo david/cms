@@ -76,7 +76,7 @@ defmodule CMS.Accounts.User do
 
   def import_changeset(user, attrs, %Scope{organization: %Organization{id: org_id}}) do
     user
-    |> cast(attrs, [:birth_date, :family_id, :name])
+    |> cast(attrs, [:birth_date, :email, :family_id, :name])
     # TODO: need to validate birth date, email, name, phone number
     |> assoc_constraint(:family)
     |> put_change(:organization_id, org_id)
