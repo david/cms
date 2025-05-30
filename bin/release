@@ -1,4 +1,5 @@
 #!/bin/sh
 
-docker build --push -t ghcr.io/david/cms:latest .
-ansible-playbook deploy/prod-app-deploy.yml
+direnv exec . bin/build
+direnv exec . bin/push
+direnv exec . bin/deploy
