@@ -7,7 +7,6 @@ defmodule CMS.Liturgies.SharedContents do
   alias CMS.Repo
 
   alias CMS.Accounts.Scope
-  alias CMS.Bibles
   alias CMS.Liturgies.SharedContent
 
   def suggest_shared_content(%Scope{organization: %{id: org_id}}, type, title) do

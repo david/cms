@@ -3,7 +3,6 @@ defmodule CMS.Liturgies.Block do
   import Ecto.Changeset
 
   alias CMS.Accounts.Organization
-  alias CMS.Accounts.Scope
   alias CMS.Bibles
   alias CMS.Liturgies.SharedContent
   alias CMS.Liturgies.SharedContents
@@ -56,7 +55,7 @@ defmodule CMS.Liturgies.Block do
        when not is_nil(shared_content_id),
        do: changeset
 
-  defp build_shared_content(changeset, :passage, %{"title" => title}, user_scope) do
+  defp build_shared_content(changeset, :passage, %{"title" => title}, _user_scope) do
     put_change(changeset, :body, Bibles.get_verses(title))
   end
 
@@ -88,41 +87,10 @@ defmodule CMS.Liturgies.Block do
 
   defp build_shared_content(changeset, _type, _attrs, _user_scope), do: changeset
 
+  @copy_fields [:shared_content_id, :organization_id, :position, :title, :subtitle, :type]
+
   @doc false
-  def copy_changeset(
-        %{
-          shared_content_id: shared_content_id,
-          shared_content: %{type: :song},
-          position: position
-        },
-        %Scope{
-          organization: %{id: org_id}
-        }
-      ) do
-    attrs = %{
-      shared_content_id: shared_content_id,
-      organization_id: org_id,
-      position: position
-    }
-
-    cast(%__MODULE__{}, attrs, [:shared_content_id, :organization_id, :position])
-  end
-
-  def copy_changeset(%{position: position, shared_content: shared_content}, %Scope{
-        organization: %{id: org_id}
-      }) do
-    attrs = %{
-      organization_id: org_id,
-      position: position
-    }
-
-    %__MODULE__{}
-    |> cast(attrs, [:organization_id, :position])
-    |> put_assoc(
-      :shared_content,
-      shared_content
-      |> Map.take([:type, :title, :subtitle, :body])
-      |> Map.put(:organization_id, org_id)
-    )
+  def copy_changeset(block) do
+    cast(%__MODULE__{}, Map.take(block, @copy_fields), @copy_fields)
   end
 end

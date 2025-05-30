@@ -42,9 +42,6 @@ defmodule CMS.Liturgies.Liturgy do
 
     %__MODULE__{}
     |> cast(attrs, [:service_on, :organization_id])
-    |> put_assoc(
-      :blocks,
-      Enum.map(source.liturgy_blocks, &Block.copy_changeset(&1, user_scope))
-    )
+    |> put_assoc(:blocks, Enum.map(source.blocks, &Block.copy_changeset(&1)))
   end
 end
