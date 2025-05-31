@@ -100,20 +100,22 @@ if config_env() == :prod do
   # Check `Plug.SSL` for all available options in `force_ssl`.
 
   # ## Configuring the mailer
-  #
-  # In production you need to configure the mailer to use a different adapter.
-  # Also, you may need to configure the Swoosh API client of your choice if you
-  # are not using SMTP. Here is an example of the configuration:
-  #
-  #     config :cms, CMS.Mailer,
-  #       adapter: Swoosh.Adapters.Mailgun,
-  #       api_key: System.get_env("MAILGUN_API_KEY"),
-  #       domain: System.get_env("MAILGUN_DOMAIN")
-  #
-  # For this example you need include a HTTP client required by Swoosh API client.
-  # Swoosh supports Hackney, Req and Finch out of the box:
-  #
-  #     config :swoosh, :api_client, Swoosh.ApiClient.Hackney
-  #
-  # See https://hexdocs.pm/swoosh/Swoosh.html#module-installation for details.
+
+  config :cms, CMS.Mailer,
+    adapter: Swoosh.Adapters.SMTP,
+    relay: File.read!("/run/secrets/chr-app-smtp-server"),
+    username: File.read!("/run/secrets/chr-app-smtp-username"),
+    password: File.read!("/run/secrets/chr-app-smtp-password"),
+    ssl: true,
+    tls: :always,
+    auth: :always,
+    port: 465,
+    # dkim: [
+    #   s: "default", d: "domain.com",
+    #   private_key: {:pem_plain, File.read!("priv/keys/domain.private")}
+    # ],
+    retries: 2,
+    no_mx_lookups: false,
+    default_sender_email: File.read!("/run/secrets/chr-app-email-default-sender-address"),
+    default_sender_name: File.read!("/run/secrets/chr-app-email-default-sender-name")
 end

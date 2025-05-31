@@ -18,6 +18,31 @@
         name: chr-db-url
         data: "{{ lookup('env', 'PROD_DB_URL', default=undef()) }}"
 
+    - name: Add smtp server
+      community.docker.docker_secret:
+        name: chr-app-smtp-server
+        data: "{{ lookup('env', 'PROD_APP_SMTP_SERVER', default=undef()) }}"
+
+    - name: Add smtp username
+      community.docker.docker_secret:
+        name: chr-app-smtp-username
+        data: "{{ lookup('env', 'PROD_APP_SMTP_USERNAME', default=undef()) }}"
+
+    - name: Add smtp password
+      community.docker.docker_secret:
+        name: chr-app-smtp-password
+        data: "{{ lookup('env', 'PROD_APP_SMTP_PASSWORD', default=undef()) }}"
+
+    - name: Add default email sender address
+      community.docker.docker_secret:
+        name: chr-app-email-default-sender-address
+        data: "{{ lookup('env', 'PROD_APP_EMAIL_DEFAULT_SENDER_ADDRESS', default=undef()) }}"
+
+    - name: Add default email sender name
+      community.docker.docker_secret:
+        name: chr-app-email-default-sender-name
+        data: "{{ lookup('env', 'PROD_APP_EMAIL_DEFAULT_SENDER_NAME', default=undef()) }}"
+
     - name: Registry auth
       community.docker.docker_login:
         registry: "{{ lookup('env', 'PROD_REGISTRY_URL', default=undef()) }}"

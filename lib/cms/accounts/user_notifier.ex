@@ -6,10 +6,13 @@ defmodule CMS.Accounts.UserNotifier do
 
   # Delivers the email using the application mailer.
   defp deliver(recipient, subject, body) do
+    sender_email = Application.get_env(:cms, CMS.Mailer)[:default_sender_email]
+    sender_name = Application.get_env(:cms, CMS.Mailer)[:default_sender_name]
+
     email =
       new()
       |> to(recipient)
-      |> from({"CMS", "contact@example.com"})
+      |> from({sender_name, sender_email})
       |> subject(subject)
       |> text_body(body)
 

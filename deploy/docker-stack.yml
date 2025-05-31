@@ -33,6 +33,11 @@ services:
     secrets:
       - chr-app-secret-key-base
       - chr-db-url
+      - chr-app-smtp-server
+      - chr-app-smtp-username
+      - chr-app-smtp-password
+      - chr-app-email-default-sender-address
+      - chr-app-email-default-sender-name
 
   db:
     image: "public.ecr.aws/docker/library/postgres:${POSTGRES_VERSION}"
@@ -51,6 +56,16 @@ secrets:
   chr-db-url:
     external: true
   chr-app-secret-key-base:
+    external: true
+  chr-app-smtp-server:
+    external: true
+  chr-app-smtp-username:
+    external: true
+  chr-app-smtp-password:
+    external: true
+  chr-app-email-default-sender-address:
+    external: true
+  chr-app-email-default-sender-name:
     external: true
 
 volumes:
