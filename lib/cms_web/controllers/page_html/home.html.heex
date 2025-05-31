@@ -1,1 +1,7 @@
 <Layouts.flash_group flash={@flash} />
+
+<div class="flex items-center justify-center h-screen">
+  <.link :if={@liturgy} href={~p"/liturgies/#{@liturgy.id}"} class="btn btn-primary">
+    {gettext("Liturgy")}
+  </.link>
+</div>

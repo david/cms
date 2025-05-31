@@ -227,4 +227,16 @@ defmodule CMS.Liturgies do
     )
     |> Repo.one()
   end
+
+  @doc """
+  Gets a single liturgy by service_on date.
+
+  Returns `nil` if the Liturgy does not exist.
+  """
+  def get_liturgy_by_date(%Scope{} = scope, service_date) do
+    from(l in Liturgy,
+      where: l.organization_id == ^scope.organization.id and l.service_on == ^service_date
+    )
+    |> Repo.one()
+  end
 end
