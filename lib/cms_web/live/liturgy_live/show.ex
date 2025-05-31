@@ -73,6 +73,7 @@ defmodule CMSWeb.LiturgyLive.Show do
      |> assign(:liturgy, liturgy)}
   end
 
+  @impl true
   def handle_params(_params, uri, socket) do
     {:ok, qr_code_svg} = uri |> QRCode.create() |> QRCode.render(:svg)
 
