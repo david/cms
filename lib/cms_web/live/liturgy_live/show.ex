@@ -4,6 +4,7 @@ defmodule CMSWeb.LiturgyLive.Show do
   alias CMS.Liturgies
   alias Earmark
   alias CMSWeb.LiturgyComponents
+  alias Base
 
   @impl true
   def render(assigns) do
@@ -49,21 +50,33 @@ defmodule CMSWeb.LiturgyLive.Show do
           <% end %>
         </div>
       </div>
+      <div class="mt-10 flex flex-col items-center">
+        <img
+          src={"data:image/svg+xml;base64,#{@qr_code_svg}"}
+          alt="QR Code"
+          class="w-48 h-48 rounded"
+        />
+      </div>
     </Layouts.app>
     """
   end
 
   @impl true
   def mount(%{"id" => id}, _session, socket) do
+    liturgy = Liturgies.get_liturgy!(socket.assigns.current_scope, id)
+
     Liturgies.subscribe_liturgies(socket.assigns.current_scope)
 
     {:ok,
      socket
      |> assign(:page_title, gettext("Show Liturgy"))
-     |> assign(
-       :liturgy,
-       Liturgies.get_liturgy!(socket.assigns.current_scope, id)
-     )}
+     |> assign(:liturgy, liturgy)}
+  end
+
+  def handle_params(_params, uri, socket) do
+    {:ok, qr_code_svg} = uri |> QRCode.create() |> QRCode.render(:svg)
+
+    {:noreply, assign(socket, :qr_code_svg, Base.encode64(qr_code_svg))}
   end
 
   @impl true

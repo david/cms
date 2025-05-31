@@ -1,37 +1,42 @@
-## "msgid"s in this file come from POT (.pot) files.
-###
-### Do not add, change, or remove "msgid"s manually here as
-### they're tied to the ones in the corresponding POT file
-### (with the same domain).
-###
-### Use "mix gettext.extract --merge" or "mix gettext.merge"
-### to merge POT files into PO files.
+## This file is a PO file.
+##
+## It is generated automatically by the gettext compilation process.
+##
+##
 msgid ""
 msgstr ""
+"Project-Id-Version: CMS\n"
+"POT-Creation-Date: 2025-05-31 11:57+0000\n"
+"PO-Revision-Date: 2025-05-31 11:57+0000\n"
+"Last-Translator:\n"
+"Language-Team:\n"
 "Language: pt\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: lib/cms_web/components/core_components.ex:331
 #, elixir-autogen, elixir-format
 msgid "Actions"
-msgstr ""
+msgstr "Ações"
 
 #: lib/cms_web/components/layouts.ex:50
 #, elixir-autogen, elixir-format
 msgid "Attempting to reconnect"
-msgstr ""
+msgstr "A tentar reconectar"
 
 #: lib/cms_web/components/layouts.ex:62
 #, elixir-autogen, elixir-format
 msgid "Hang in there while we get back on track"
-msgstr ""
+msgstr "Aguenta, já voltamos ao normal"
 
 #: lib/cms_web/components/layouts.ex:57
 #, elixir-autogen, elixir-format
 msgid "Something went wrong!"
-msgstr ""
+msgstr "Algo correu mal!"
 
-#: lib/cms_web/live/liturgy_live/show.ex:37
+#: lib/cms_web/live/liturgy_live/show.ex:40
 #, elixir-autogen, elixir-format
 msgid "Song"
 msgstr "Hino"
@@ -39,39 +44,44 @@ msgstr "Hino"
 #: lib/cms_web/components/layouts.ex:45
 #, elixir-autogen, elixir-format
 msgid "We can't find the internet"
-msgstr ""
+msgstr "Não conseguimos encontrar a internet"
 
 #: lib/cms_web/components/core_components.ex:74
 #, elixir-autogen, elixir-format
 msgid "close"
-msgstr ""
+msgstr "fechar"
 
-#: lib/cms_web/live/liturgy_live/show.ex:21
+#: lib/cms_web/live/liturgy_live/show.ex:22
 #, elixir-autogen, elixir-format
 msgid "Edit"
 msgstr "Editar"
 
-#: lib/cms_web/live/liturgy_live/show.ex:13
+#: lib/cms_web/live/liturgy_live/show.ex:14
 #, elixir-autogen, elixir-format
 msgid "Liturgy"
 msgstr "Liturgia"
 
-#: lib/cms_web/live/liturgy_live/show.ex:58
+#: lib/cms_web/live/liturgy_live/show.ex:77
 #, elixir-autogen, elixir-format
 msgid "Show Liturgy"
 msgstr "Mostrar Liturgia"
 
-#: lib/cms_web/components/layouts/root.html.heex:84
+#: lib/cms_web/components/layouts/root.html.heex:70
 #, elixir-autogen, elixir-format
 msgid "Do you want to install this app on your device?"
-msgstr "Quer instalar esta aplicação no seu dispositivo?"
+msgstr "Deseja instalar esta aplicação no seu dispositivo?"
 
-#: lib/cms_web/components/layouts/root.html.heex:85
+#: lib/cms_web/components/layouts/root.html.heex:75
+#, elixir-autogen, elixir-format
+msgid "No"
+msgstr "Não"
+
+#: lib/cms_web/components/layouts/root.html.heex:72
 #, elixir-autogen, elixir-format
 msgid "Yes"
 msgstr "Sim"
 
-#: lib/cms_web/components/layouts/root.html.heex:86
+#: lib/cms_web/live/liturgy_live/show.ex:54
 #, elixir-autogen, elixir-format
-msgid "No"
-msgstr "Não"
+msgid "Scan to share this liturgy:"
+msgstr "Digitalize para partilhar esta liturgia:"

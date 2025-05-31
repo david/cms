@@ -21,7 +21,7 @@ defmodule CMS.MixProject do
   def application do
     [
       mod: {CMS.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :qr_code]
     ]
   end
 
@@ -65,7 +65,8 @@ defmodule CMS.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.5"},
-      {:earmark, "~> 1.4"}
+      {:earmark, "~> 1.4"},
+      {:qr_code, "~> 3.2"}
     ]
   end
 
