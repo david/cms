@@ -102,6 +102,81 @@ if (process.env.NODE_ENV === "development") {
   })
 }
 
+let deferredPrompt;
+
+// Function to detect if the device is likely mobile
+function isMobileDevice() {
+  return ('ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0) &&
+         window.innerWidth <= 768; // Adjust max width as needed for your definition of "mobile"
+}
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  console.log("beforeinstallprompt fired");
+  e.preventDefault();
+  deferredPrompt = e;
+
+  if (!isMobileDevice()) {
+    console.log("Not a mobile device, not showing banner.");
+    return;
+  }
+
+  if (window.matchMedia('(display-mode: standalone)').matches) {
+    console.log("App is already installed (standalone mode), not showing banner.");
+    return;
+  }
+
+  // Check if the user has previously dismissed the banner
+  if (localStorage.getItem('pwa-banner-dismissed') === 'true') {
+    console.log("Banner previously dismissed, not showing.");
+    return;
+  }
+
+  showInstallPromotion();
+});
+
+window.addEventListener('appinstalled', () => {
+  console.log("App installed event fired.");
+  hideInstallPromotion();
+  // Clear the deferredPrompt so it can be garbage collected
+  deferredPrompt = null;
+  // Remove the dismissal flag as the app is now installed
+  localStorage.removeItem('pwa-banner-dismissed');
+});
+
+function showInstallPromotion() {
+  console.log("Attempting to show install promotion.");
+  const installBanner = document.getElementById('pwa-install-banner');
+  if (installBanner) {
+    installBanner.classList.remove('hidden');
+    console.log("Install banner shown.");
+  }
+}
+
+function hideInstallPromotion() {
+  console.log("Attempting to hide install promotion.");
+  const installBanner = document.getElementById('pwa-install-banner');
+  if (installBanner) {
+    installBanner.classList.add('hidden');
+    // Set a flag in localStorage to remember the dismissal
+    localStorage.setItem('pwa-banner-dismissed', 'true');
+    console.log("Install banner hidden and dismissal remembered.");
+  }
+}
+
+async function handleInstallClick() {
+  if (deferredPrompt) {
+    // Show the install prompt
+    deferredPrompt.prompt();
+    // Wait for the user to respond to the prompt
+    const { outcome } = await deferredPrompt.userChoice;
+    // Optionally, send analytics event with outcome of user choice
+    console.log(`User response to the install prompt: ${outcome}`);
+    // We've used the prompt, and can't use it again, so clear it
+    deferredPrompt = null;
+    hideInstallPromotion();
+  }
+}
+
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js')
@@ -113,3 +188,7 @@ if ('serviceWorker' in navigator) {
       });
   });
 }
+
+// Expose handleInstallClick to the global scope or a LiveView hook if needed
+window.handleInstallClick = handleInstallClick;
+window.hideInstallPromotion = hideInstallPromotion;

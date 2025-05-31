@@ -63,5 +63,17 @@
       </li>
     </ul>
     {@inner_content}
+    <div
+      id="pwa-install-banner"
+      class="fixed bottom-0 left-0 w-full bg-neutral text-neutral-content p-4 text-center z-[1000] hidden"
+    >
+      <p class="mb-2">{gettext("Do you want to install this app on your device?")}</p>
+      <button onclick="window.handleInstallClick()" class="btn btn-primary mr-2">
+        {gettext("Yes")}
+      </button>
+      <button onclick="window.hideInstallPromotion()" class="btn btn-ghost">
+        {gettext("No")}
+      </button>
+    </div>
   </body>
 </html>
