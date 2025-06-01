@@ -61,6 +61,26 @@
       <li class="flex flex-0 w-[100px]">
         <.theme_toggle />
       </li>
+      <li>
+        <% # FIXME: Works only for liturgies, but is visible everywhere %>
+
+        <button
+          id="liturgy-decrease-font-size"
+          aria-label="Decrease font size"
+          class="btn btn-ghost btn-circle"
+        >
+          <.icon name="hero-magnifying-glass-minus" class="size-5" />
+        </button>
+      </li>
+      <li>
+        <button
+          id="liturgy-increase-font-size"
+          aria-label="Increase font size"
+          class="btn btn-ghost btn-circle"
+        >
+          <.icon name="hero-magnifying-glass-plus" class="size-5" />
+        </button>
+      </li>
     </ul>
     {@inner_content}
     <div

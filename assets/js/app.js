@@ -43,6 +43,51 @@ const Hooks = {
         }
       });
     }
+  },
+
+  LiturgyFontSizeApplier: {
+    mounted() {
+      document.getElementById("liturgy-increase-font-size").
+        addEventListener("click", () => this.applyFontSize(+1));
+
+      document.getElementById("liturgy-decrease-font-size").
+        addEventListener("click", () => this.applyFontSize(-1));
+
+      this.applyFontSize();
+    },
+
+    updated() {
+      this.applyFontSize();
+    },
+
+    applyFontSize(delta) {
+      let fontSize = this.getCurrentFontSize();
+
+      if (!isNaN(delta) && delta != 0) {
+        fontSize += delta;
+
+        this.setCurrentFontSize(fontSize);
+      }
+
+      console.log("Font size is now " + fontSize);
+
+      this.el.style.fontSize = `${fontSize}px`;
+    },
+
+    setCurrentFontSize(currentFontSize) {
+      localStorage.setItem("liturgy-font-size", currentFontSize);
+    },
+
+    getCurrentFontSize() {
+      let currentFontSize = parseInt(localStorage.getItem("liturgy-font-size"));
+
+      if (isNaN(currentFontSize)) {
+        currentFontSize =
+          parseInt(window.getComputedStyle(document.body).getPropertyValue("font-size"));
+      }
+
+      return currentFontSize;
+    }
   }
 };
 

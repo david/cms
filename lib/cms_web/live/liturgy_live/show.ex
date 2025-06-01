@@ -25,7 +25,7 @@ defmodule CMSWeb.LiturgyLive.Show do
         </:actions>
       </.header>
 
-      <div class="space-y-10">
+      <div id="liturgy-content" class="space-y-10" phx-hook="LiturgyFontSizeApplier">
         <div :for={block <- @liturgy.blocks} class="">
           <%= case block.type do %>
             <% :text -> %>
