@@ -34,14 +34,11 @@ defmodule CMS.Liturgies.Liturgy do
     )
   end
 
-  def copy_changeset(source, user_scope) do
-    attrs = %{
-      organization_id: user_scope.organization.id,
-      service_on: Date.add(source.service_on, 7)
+  def make_template(liturgy) do
+    %__MODULE__{
+      service_on: liturgy.service_on,
+      organization_id: liturgy.organization_id,
+      blocks: Enum.map(liturgy.blocks, &Block.make_template/1)
     }
-
-    %__MODULE__{}
-    |> cast(attrs, [:service_on, :organization_id])
-    |> put_assoc(:blocks, Enum.map(source.blocks, &Block.copy_changeset(&1)))
   end
 end

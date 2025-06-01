@@ -23,7 +23,7 @@ defmodule CMSWeb.LiturgyLive.Index do
       >
         <:col :let={{_id, liturgy}} label="Service on">{liturgy.service_on}</:col>
         <:action :let={{_id, liturgy}}>
-          <.link phx-click={JS.push("copy", value: %{id: liturgy.id})}>
+          <.link navigate={~p"/liturgies/new?#{[tid: liturgy.id]}"}>
             Copy
           </.link>
         </:action>
@@ -62,20 +62,6 @@ defmodule CMSWeb.LiturgyLive.Index do
     {:ok, _} = Liturgies.delete_liturgy(socket.assigns.current_scope, liturgy)
 
     {:noreply, stream_delete(socket, :liturgies, liturgy)}
-  end
-
-  @impl true
-  def handle_event("copy", %{"id" => id}, socket) do
-    case Liturgies.copy_liturgy(socket.assigns.current_scope, id) do
-      {:ok, liturgy} ->
-        {
-          :noreply,
-          push_navigate(socket, to: ~p"/liturgies/#{liturgy.id}/edit")
-        }
-
-      {:error, _changeset} ->
-        {:noreply, put_flash(socket, :error, "Failed to copy liturgy.")}
-    end
   end
 
   @impl true

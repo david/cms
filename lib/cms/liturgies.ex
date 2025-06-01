@@ -123,25 +123,16 @@ defmodule CMS.Liturgies do
   @doc """
   Copy a liturgy.
 
-  Creates a new liturgy with the same blocks as the source liturgy, with a service date
+  Returns a new liturgy with the same blocks as the source liturgy, with a service date
   set to the same day on next week, without checking whether there is already a liturgy
   for that day.
   """
-  def copy_liturgy(%Scope{} = scope, id) do
+  def get_copy!(%Scope{} = scope, id) do
     source = get_liturgy!(scope, id)
 
-    Repo.transaction(fn ->
-      source
-      |> Liturgy.copy_changeset(scope)
-      |> Repo.insert()
-      |> case do
-        {:ok, new_liturgy} ->
-          Repo.preload(new_liturgy, [:blocks])
-
-        result ->
-          result
-      end
-    end)
+    source
+    |> Liturgy.make_template()
+    |> Map.put(:service_on, Date.add(source.service_on, 7))
   end
 
   @doc """

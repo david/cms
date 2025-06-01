@@ -87,10 +87,11 @@ defmodule CMS.Liturgies.Block do
 
   defp build_shared_content(changeset, _type, _attrs, _user_scope), do: changeset
 
-  @copy_fields [:shared_content_id, :organization_id, :position, :title, :subtitle, :type]
+  def make_template(%{type: :text, shared_content_id: nil, subtitle: subtitle, title: title}) do
+    %__MODULE__{type: :text, subtitle: subtitle, title: title}
+  end
 
-  @doc false
-  def copy_changeset(block) do
-    cast(%__MODULE__{}, Map.take(block, @copy_fields), @copy_fields)
+  def make_template(%{type: type, subtitle: subtitle}) do
+    %__MODULE__{type: type, subtitle: subtitle}
   end
 end

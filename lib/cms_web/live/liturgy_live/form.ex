@@ -163,6 +163,20 @@ defmodule CMSWeb.LiturgyLive.Form do
     |> assign(:form, form)
   end
 
+  defp apply_action(socket, :new, %{"tid" => template_id}) when not is_nil(template_id) do
+    liturgy = Liturgies.get_copy!(socket.assigns.current_scope, template_id)
+
+    form =
+      socket.assigns.current_scope
+      |> Liturgies.change_liturgy(liturgy)
+      |> to_form()
+
+    socket
+    |> assign(:page_title, "New Liturgy")
+    |> assign(:liturgy, liturgy)
+    |> assign(:form, form)
+  end
+
   defp apply_action(socket, :new, _params) do
     liturgy = Liturgy.new()
 
