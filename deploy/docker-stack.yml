@@ -24,6 +24,11 @@ services:
       PHX_HOST: "${PROD_HOST}"
       DATABASE_URL_FILE: /run/secrets/chr-db-url
       SECRET_KEY_BASE_FILE: /run/secrets/chr-app-secret-key-base
+      EMAIL_SES_REGION_FILE: /run/secrets/email-ses-region
+      EMAIL_SES_ACCESS_KEY_FILE: /run/secrets/email-ses-access-key
+      EMAIL_SES_SECRET_FILE: /run/secrets/email-ses-secret
+      EMAIL_DEFAULT_SENDER_ADDRESS_FILE: /run/secrets/email-default-sender-address
+      EMAIL_DEFAULT_SENDER_NAME_FILE: /run/secrets/email-default-sender-name
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.web.rule=Host(`${PROD_HOST}`)"
@@ -33,6 +38,11 @@ services:
     secrets:
       - chr-app-secret-key-base
       - chr-db-url
+      - email-ses-region
+      - email-ses-access-key
+      - email-ses-secret
+      - email-default-sender-address
+      - email-default-sender-name
 
   db:
     image: "public.ecr.aws/docker/library/postgres:${POSTGRES_VERSION}"
@@ -51,6 +61,16 @@ secrets:
   chr-db-url:
     external: true
   chr-app-secret-key-base:
+    external: true
+  email-ses-region:
+    external: true
+  email-ses-access-key:
+    external: true
+  email-ses-secret:
+    external: true
+  email-default-sender-address:
+    external: true
+  email-default-sender-name:
     external: true
 
 volumes:

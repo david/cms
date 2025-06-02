@@ -3,20 +3,27 @@
   tags: app
 
   tasks:
-    - name: Add secret key base
+    - name: Add secrets
       community.docker.docker_secret:
-        name: chr-app-secret-key-base
-        data: "{{ lookup('env', 'PROD_APP_SECRET_KEY_BASE', default=undef()) }}"
-
-    - name: Add database password
-      community.docker.docker_secret:
-        name: chr-db-password
-        data: "{{ lookup('env', 'PROD_DB_PASSWORD', default=undef()) }}"
-
-    - name: Add database url
-      community.docker.docker_secret:
-        name: chr-db-url
-        data: "{{ lookup('env', 'PROD_DB_URL', default=undef()) }}"
+        name: "{{ item.name }}"
+        data: "{{ lookup('env', item.env_var, default=undef()) }}"
+      loop:
+        - name: chr-app-secret-key-base
+          env_var: PROD_APP_SECRET_KEY_BASE
+        - name: chr-db-password
+          env_var: PROD_DB_PASSWORD
+        - name: chr-db-url
+          env_var: PROD_DB_URL
+        - name: email-ses-region
+          env_var: EMAIL_SES_REGION
+        - name: email-ses-access-key
+          env_var: EMAIL_SES_ACCESS_KEY
+        - name: email-ses-secret
+          env_var: EMAIL_SES_SECRET
+        - name: email-default-sender-address
+          env_var: EMAIL_DEFAULT_SENDER_ADDRESS
+        - name: email-default-sender-name
+          env_var: EMAIL_DEFAULT_SENDER_NAME
 
     - name: Registry auth
       community.docker.docker_login:
