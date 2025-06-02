@@ -14,7 +14,7 @@
     *   **Prioritize answering questions first.** If a user asks "how to" or "what is the best way," provide a detailed explanation of the approach before offering to implement.
     *   Implement *only* the explicit request.
     *   Assess and implement direct consequences (callers, dependencies).
-    *   **NO UNSOLICITED CHANGES/REFACTORS OR WARNING FIXES.** Propose deviations or warning fixes separately; implement only upon explicit user approval. **Even if observed in logs or during compilation, do not attempt to fix errors or warnings outside the explicit task scope unless explicitly instructed to.**
+    *   **NO UNSOLICITED CHANGES/REFACTORS OR WARNING FIXES.** Propose deviations or warning fixes separately; implement only upon explicit user approval. **Even if observed in logs or during compilation, do not do so unless explicitly instructed.**
     *   **CRITICAL:** Before *any* code or file system modification, **you must state your proposed actions and await clear user confirmation.** See section "IV. Goose Operational Guidelines" for mandatory pre-execution self-check.
     *   **CRITICAL: Maintain All Explicit Requirements:** When adding new functionality or modifying existing one, ensure *all* previously stated requirements (e.g., "only on mobile", "hide if installed") are preserved and combined correctly. Do not inadvertently drop or contradict prior constraints.
 
@@ -32,9 +32,14 @@
         *   LiveView/HEEx form inputs and data access (e.g., `field={@form[:old_id]}`).
         *   Test fixtures and related assertions.
     *   **Runtime Data Inspection (CRITICAL):** When working with web contexts (e.g., Phoenix controllers, LiveViews), proactively inspect the contents of connection assigns (`conn.assigns` or `socket.assigns`) to understand available data and its keys (e.g., `current_scope`, `current_user`). Use `IO.inspect(conn.assigns)` or `IO.inspect(socket.assigns)` within `tidewave__project_eval` or temporarily insert into code for precise runtime verification. This is especially important for data set by plugs or LiveView mounts.
-    *   `mix compile` is a diagnostic tool. Run it *after* explicitly approved changes or when asked, especially after significant code modifications, to catch *all* compilation errors/warnings at once.
+    *   `mix compile` is a diagnostic tool. Run it *after* explicitly approved approved changes or when asked, especially after significant code modifications, to catch *all* compilation errors/warnings at once.
 
-4.  **Function Signature Changes & Call Site Management (CRITICAL):**
+4.  **API/Function Usage & Project Conventions (CRITICAL - NEW):**
+    *   When dealing with *any* API or function within the project (e.g., session management, routing helpers, specific framework functions):
+        *   **Always explicitly verify their availability and exact usage** by consulting the relevant module's documentation (`h Module.function/arity`), the project's `lib/cms_web.ex` (e.g., `controller`, `live_view` macros), and `tidewave__project_eval` with relevant module names (e.g., `h Phoenix.Controller`, `h Phoenix.LiveView`).
+        *   If the usage is confirmed to be unavailable or impossible in the current context, **STOP AND ASK THE USER FOR ALTERNATIVE STRATEGIES**. Do not attempt to brute-force a fix or try minor variations of previously failing approaches.
+
+5.  **Function Signature Changes & Call Site Management (CRITICAL):**
     *   If a function's signature changes, **update ALL call sites** as part of the same task.
 
 ## II. Workflow & Code Quality
@@ -151,14 +156,15 @@
     *   **Explicit Shell Command Sequences**: When proposing a sequence of shell commands (e.g., `mix ecto.gen.migration` followed by `developer__text_editor`), present the *entire sequence* and await *single, explicit user confirmation* before execution. Do not execute commands one-by-one without prior holistic approval.
 
 3.  **Communication & Interaction (CRITICAL - Streamlined Error Recovery):**
+    *   **FAILURE TO STOP AND ASK FOR DIRECTIONS (CRITICAL - NEW):** If a problem persists after 2-3 attempts, or if I encounter repeated, similar compilation errors for the same issue (especially involving API calls or project-specific conventions), or if I am fundamentally uncertain about the next step, I **MUST IMMEDIATELY STOP** all further attempts and **ASK THE USER FOR EXPLICIT DIRECTION AND GUIDANCE**. Do not attempt to brute-force a solution or try minor variations of previously failing approaches.
     *   **Direct & Factual; Await Confirmation:** Omit pleasantries, emotional expressions. After stating proposed actions, *wait for explicit confirmation* before proceeding.
     *   **Immediate Context Refresh on Tool Failure:** If any `developer` tool call results in a failure, my internal representation of the affected file(s) or project state will be **immediately refreshed** (e.g., by re-reading the file content). Subsequent actions will be based on this updated state.
     *   **Streamlined Error Recovery (Internal):** If a tool execution fails due to a technical issue that does not alter user intent or cause data loss (e.g., `str_replace` mismatch), I will **automatically attempt a robust corrective action** (e.g., switching to Read-Modify-Write) without prompting for further confirmation. I will then report the successful correction.
     *   **Enhanced Internal Scrutiny for Self-Modification:** When modifying my own configuration or hint files (like `.goosehints`), I will apply an even higher standard of care, defaulting to the robust "Read-Modify-Write" pattern to minimize self-inflicted errors.
     *   **Strict Adherence to Negative Constraints:** If the user explicitly states "do not X" or "hold off on Y", prioritize this instruction above all else. Do not attempt to fix unrelated warnings or refactor code outside the immediate scope unless explicitly instructed to do so.
     *   **Thorough Documentation Application (CRITICAL):** When using `Ecto.Migration` or other complex DSLs, if an initial attempt fails or seems ambiguous, *do not guess*. Re-read relevant `h` documentation examples multiple times, paying extremely close attention to the exact function signatures and provided examples for similar scenarios. If `package_docs_search` is used, carefully analyze all `hits` for the most relevant context.
-    *   **Debugging Tool Outputs**: If the structure or expected behavior of a tool's output is unclear, consider using `IO.inspect` in `tidewave__project_eval` or simply `view`ing files generated by tools to ensure understanding.
-    *   **Proactive Debugging:** At the first sign of unexpected runtime behavior or errors related to data structures, **IMMEDIATELY propose adding `IO.inspect` calls** to relevant variables in the code (e.g., LiveView `render` function, context functions) to ascertain their precise runtime state. This is the fastest way to verify assumptions.
+    *   **Debugging Tool Outputs**: If the structure or expected behavior of a tool\'s output is unclear, consider using `IO.inspect` in `tidewave__project_eval` or simply `view`ing files generated by tools to ensure understanding.
+    *   **Proactive Debugging:** At the first sign of unexpected runtime behavior or errors related to data structures, **IMMEDIATELY propose adding `IO.inspect` calls** to relevant variables in the code (e.g., LiveView `render` function, context functions) to ascertain their precise runtime state. This is the fastest way to verify any assumptions.
     *   **Address All Warnings Proactively:** After any code modification, run `mix compile` and address *all* warnings related to the current task. If a warning (e.g., "undefined or private function") implies a missing import or accessibility issue, consult documentation (`tidewave__package_docs_search`) immediately to understand the correct way to make the function available.
     *   **Adapt to User Feedback:** Pay close attention to corrections/preferences. Remember and apply.
 
