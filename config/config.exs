@@ -45,7 +45,10 @@ config :cms, CMSWeb.Gettext, default_locale: "pt", locales: ~w(pt en)
 #
 # For production it's recommended to configure a different adapter
 # at the `config/runtime.exs`.
-config :cms, CMS.Mailer, adapter: Swoosh.Adapters.Local
+config :cms, CMS.Mailer,
+  adapter: Swoosh.Adapters.Local,
+  default_sender_email: "guybrush@example.com",
+  default_sender_name: "Guybrush Threepwood"
 
 # Configure esbuild (the version is required)
 config :esbuild,
