@@ -6,6 +6,7 @@ set -eu
 [ ! -v OTP_VERSION ] && 2>&1 echo "OTP_VERSION is not set" && exit 1
 
 docker build \
+  --no-cache \
   --tag ghcr.io/david/cms:latest \
   --build-arg ELIXIR_VERSION=${ELIXIR_VERSION} \
   --build-arg OTP_VERSION=${OTP_VERSION} \
