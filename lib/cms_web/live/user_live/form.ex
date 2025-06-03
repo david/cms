@@ -1,4 +1,4 @@
-defmodule CMSWeb.UserLive.InviteForm do
+defmodule CMSWeb.UserLive.Form do
   use CMSWeb, :live_view
 
   alias CMS.Accounts
@@ -8,14 +8,19 @@ defmodule CMSWeb.UserLive.InviteForm do
 
   @impl true
   def mount(_params, _session, socket) do
-    changeset = User.invitation_changeset(%User{}, %{}, socket.assigns.current_scope)
-
     {:ok,
      socket
-     |> assign(:form, to_form(changeset))
      |> assign(:family_suggestions, Accounts.list_families(socket.assigns.current_scope))
      |> assign(:family_address, nil)
-     |> assign(:page_title, "Invite New User")}
+     |> apply_action(socket.assigns.live_action)}
+  end
+
+  defp apply_action(socket, :new) do
+    changeset = User.invitation_changeset(%User{}, %{}, socket.assigns.current_scope)
+
+    socket
+    |> assign(:form, to_form(changeset))
+    |> assign(:page_title, "Invite New User")
   end
 
   @impl true
@@ -29,7 +34,7 @@ defmodule CMSWeb.UserLive.InviteForm do
         </:subtitle>
       </.header>
 
-      <.form for={@form} id="invite-user-form" phx-change="validate" phx-submit="save">
+      <.form for={@form} id="invite-user-form" phx-change="validate" phx-submit="invite">
         <.input field={@form[:name]} type="text" label="Name" required />
         <.input field={@form[:email]} type="email" label="Email" required />
         <.input field={@form[:birth_date]} type="date" label="Birth Date" />
@@ -62,6 +67,11 @@ defmodule CMSWeb.UserLive.InviteForm do
     """
   end
 
+  def handle_params(params, _url, socket) do
+    IO.inspect(params)
+    {:noreply, socket}
+  end
+
   @impl true
   def handle_event("validate", %{"user" => user_params}, socket) do
     current_scope = socket.assigns.current_scope
@@ -85,7 +95,7 @@ defmodule CMSWeb.UserLive.InviteForm do
   end
 
   @impl true
-  def handle_event("save", %{"user" => user_params}, socket) do
+  def handle_event("invite", %{"user" => user_params}, socket) do
     current_scope = socket.assigns.current_scope
 
     magic_link_url_fun = fn token ->

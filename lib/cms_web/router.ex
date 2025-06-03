@@ -75,7 +75,7 @@ defmodule CMSWeb.Router do
         {CMSWeb.UserAuth, :require_admin_access}
       ] do
       live "/users", UserLive.Index
-      live "/users/new", UserLive.InviteForm, :new
+      live "/users/new", UserLive.Form, :new
     end
   end
 
