@@ -4,6 +4,8 @@ defmodule CMS.Accounts.User do
 
   alias CMS.Accounts.{Organization, Scope}
 
+  @roles [:admin, :member]
+
   schema "users" do
     field :name, :string
     field :email, :string
@@ -18,10 +20,12 @@ defmodule CMS.Accounts.User do
     belongs_to :organization, CMS.Accounts.Organization
     belongs_to :family, CMS.Accounts.Family
 
-    field :role, Ecto.Enum, values: [:admin, :member]
+    field :role, Ecto.Enum, values: @roles
 
     timestamps(type: :utc_datetime)
   end
+
+  def roles, do: @roles
 
   @doc """
   A user changeset for registering or changing the email.
@@ -125,7 +129,8 @@ defmodule CMS.Accounts.User do
       :phone_number,
       :family_id,
       :family_designation,
-      :birth_date
+      :birth_date,
+      :role
     ])
     |> validate_required([:name, :family_designation, :family_id])
     |> put_change(:organization_id, scope.organization.id)

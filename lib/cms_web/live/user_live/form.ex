@@ -71,6 +71,8 @@ defmodule CMSWeb.UserLive.Form do
 
         <.input field={@form[:phone_number]} type="tel" label="Phone Number" />
 
+        <.input field={@form[:role]} type="select" label="Role" options={User.roles()} />
+
         <footer>
           <.button phx-disable-with="Saving..." variant="primary">Save User</.button>
           <.button navigate={~p"/users"}>Cancel</.button>
