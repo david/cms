@@ -74,6 +74,9 @@ defmodule CMSWeb.UserLive.Index do
             <.icon name="hero-check-solid" class="size-5 text-success inline-block" />
           </div>
         </:col>
+        <:action :let={{_id, user}}>
+          <.link navigate={~p"/users/#{user}/edit"}>Edit</.link>
+        </:action>
       </.table>
 
       <.modal

@@ -116,6 +116,23 @@ defmodule CMS.Accounts.User do
   end
 
   @doc """
+  A changeset for updating a user.
+  """
+  def update_changeset(user, attrs, scope) do
+    user
+    |> cast(attrs, [
+      :name,
+      :phone_number,
+      :family_id,
+      :family_designation,
+      :birth_date
+    ])
+    |> validate_required([:name, :family_designation, :family_id])
+    |> put_change(:organization_id, scope.organization.id)
+    |> assoc_constraint(:family)
+  end
+
+  @doc """
   Confirms the account by setting `confirmed_at`.
   """
   def confirm_changeset(user) do

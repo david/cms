@@ -76,6 +76,7 @@ defmodule CMSWeb.Router do
       ] do
       live "/users", UserLive.Index
       live "/users/new", UserLive.Form, :new
+      live "/users/:id/edit", UserLive.Form, :edit
     end
   end
 

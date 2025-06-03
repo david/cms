@@ -7,20 +7,32 @@ defmodule CMSWeb.UserLive.Form do
   alias CMSWeb.Layouts
 
   @impl true
-  def mount(_params, _session, socket) do
+  def mount(params, _session, socket) do
     {:ok,
      socket
      |> assign(:family_suggestions, Accounts.list_families(socket.assigns.current_scope))
      |> assign(:family_address, nil)
-     |> apply_action(socket.assigns.live_action)}
+     |> apply_action(socket.assigns.live_action, params)}
   end
 
-  defp apply_action(socket, :new) do
-    changeset = User.invitation_changeset(%User{}, %{}, socket.assigns.current_scope)
+  defp apply_action(socket, :new, _params) do
+    user = %User{}
+    changeset = User.invitation_changeset(user, %{}, socket.assigns.current_scope)
 
     socket
     |> assign(:form, to_form(changeset))
+    |> assign(:user, user)
     |> assign(:page_title, "Invite New User")
+  end
+
+  defp apply_action(socket, :edit, %{"id" => id}) do
+    user = Accounts.get_user!(socket.assigns.current_scope, id)
+    changeset = User.update_changeset(user, %{}, socket.assigns.current_scope)
+
+    socket
+    |> assign(:form, to_form(changeset))
+    |> assign(:user, user)
+    |> assign(:page_title, "Edit User")
   end
 
   @impl true
@@ -34,9 +46,10 @@ defmodule CMSWeb.UserLive.Form do
         </:subtitle>
       </.header>
 
-      <.form for={@form} id="invite-user-form" phx-change="validate" phx-submit="invite">
+      <.form for={@form} id="invite-user-form" phx-change="validate" phx-submit="save">
         <.input field={@form[:name]} type="text" label="Name" required />
-        <.input field={@form[:email]} type="email" label="Email" required />
+        <% # FIXME email is required for invite %>
+        <.input field={@form[:email]} type="email" label="Email" />
         <.input field={@form[:birth_date]} type="date" label="Birth Date" />
 
         <.autocomplete
@@ -59,17 +72,12 @@ defmodule CMSWeb.UserLive.Form do
         <.input field={@form[:phone_number]} type="tel" label="Phone Number" />
 
         <footer>
-          <.button phx-disable-with="Inviting..." variant="primary">Invite User</.button>
+          <.button phx-disable-with="Saving..." variant="primary">Save User</.button>
           <.button navigate={~p"/users"}>Cancel</.button>
         </footer>
       </.form>
     </Layouts.app>
     """
-  end
-
-  def handle_params(params, _url, socket) do
-    IO.inspect(params)
-    {:noreply, socket}
   end
 
   @impl true
@@ -94,8 +102,13 @@ defmodule CMSWeb.UserLive.Form do
     end
   end
 
-  @impl true
-  def handle_event("invite", %{"user" => user_params}, socket) do
+  def handle_event("save", %{"user" => user_params}, socket) do
+    IO.inspect(socket.assigns.live_action, label: "Live action")
+    IO.inspect(user_params, label: "user params")
+    save_user(socket, socket.assigns.live_action, user_params)
+  end
+
+  defp save_user(socket, :new, user_params) do
     current_scope = socket.assigns.current_scope
 
     magic_link_url_fun = fn token ->
@@ -110,8 +123,21 @@ defmodule CMSWeb.UserLive.Form do
          |> push_navigate(to: ~p"/users")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        # If there was a flash from family creation error, it will be overwritten by this assign.
-        # This is generally fine as form errors are more specific.
+        {:noreply, assign(socket, :form, to_form(changeset))}
+    end
+  end
+
+  defp save_user(socket, :edit, user_params) do
+    current_scope = socket.assigns.current_scope
+
+    case Accounts.update_user(current_scope, socket.assigns.user, user_params) do
+      {:ok, _user} ->
+        {:noreply,
+         socket
+         |> put_flash(:info, "User updated successfully.")
+         |> push_navigate(to: ~p"/users")}
+
+      {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, :form, to_form(changeset))}
     end
   end

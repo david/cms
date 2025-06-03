@@ -42,7 +42,15 @@ defmodule CMS.Accounts do
       ** (Ecto.NoResultsError)
 
   """
-  def get_user!(id), do: Repo.get!(User, id)
+  def get_user!(%Scope{organization: %{id: org_id}}, id),
+    do:
+      from(u in User,
+        join: f in assoc(u, :family),
+        select: %{u | family_designation: f.designation},
+        preload: [family: f],
+        where: [organization_id: ^org_id]
+      )
+      |> Repo.get(id)
 
   @doc """
   Gets the single organization presumed to exist in the system.
@@ -199,6 +207,12 @@ defmodule CMS.Accounts do
   """
   def change_user_email(user, attrs \\ %{}, opts \\ []) do
     User.email_changeset(user, attrs, user.organization, opts)
+  end
+
+  def update_user(scope, user, attrs) do
+    user
+    |> User.update_changeset(attrs, scope)
+    |> Repo.update()
   end
 
   @doc """
