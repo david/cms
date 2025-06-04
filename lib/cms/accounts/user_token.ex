@@ -12,6 +12,10 @@ defmodule CMS.Accounts.UserToken do
   @change_email_validity_in_days 7
   @session_validity_in_days 14
 
+  @otp_length 6
+  @otp_validity_in_minutes 5
+  @otp_divisor trunc(:math.pow(10, @otp_length))
+
   schema "users_tokens" do
     field :token, :binary
     field :context, :string
@@ -57,10 +61,11 @@ defmodule CMS.Accounts.UserToken do
   """
   def verify_session_token_query(token) do
     query =
-      from token in by_token_and_context_query(token, "session"),
-        join: user in assoc(token, :user),
-        where: token.inserted_at > ago(@session_validity_in_days, "day"),
-        select: {%{user | authenticated_at: token.authenticated_at}, token.inserted_at}
+      from token_record in by_token_and_context_query(token, "session"),
+        join: user in assoc(token_record, :user),
+        where: token_record.inserted_at > ago(@session_validity_in_days, "day"),
+        select:
+          {%{user | authenticated_at: token_record.authenticated_at}, token_record.inserted_at}
 
     {:ok, query}
   end
@@ -96,6 +101,25 @@ defmodule CMS.Accounts.UserToken do
   end
 
   @doc """
+  Builds a numeric OTP, its hash, and a UserToken struct to be stored.
+  The plaintext OTP is for sending to the user, the hashed part is for DB storage.
+  """
+  def build_otp_token(user, "login_otp" = context) do
+    otp_int = :crypto.strong_rand_bytes(4) |> :binary.decode_unsigned() |> rem(@otp_divisor)
+    otp_string = Integer.to_string(otp_int) |> String.pad_leading(@otp_length, "0")
+
+    hashed_otp_string = :crypto.hash(@hash_algorithm, otp_string)
+
+    {otp_string,
+     %UserToken{
+       token: hashed_otp_string,
+       context: context,
+       sent_to: user.email,
+       user_id: user.id
+     }}
+  end
+
+  @doc """
   Checks if the token is valid and returns its underlying lookup query.
 
   If found, the query returns a tuple of the form `{user, token}`.
@@ -110,17 +134,34 @@ defmodule CMS.Accounts.UserToken do
         hashed_token = :crypto.hash(@hash_algorithm, decoded_token)
 
         query =
-          from token in by_token_and_context_query(hashed_token, "login"),
-            join: user in assoc(token, :user),
-            where: token.inserted_at > ago(^@magic_link_validity_in_minutes, "minute"),
-            where: token.sent_to == user.email,
-            select: {user, token}
+          from token_record in by_token_and_context_query(hashed_token, "login"),
+            join: user in assoc(token_record, :user),
+            where: token_record.inserted_at > ago(^@magic_link_validity_in_minutes, "minute"),
+            where: token_record.sent_to == user.email,
+            select: {user, token_record}
 
         {:ok, query}
 
       :error ->
         :error
     end
+  end
+
+  @doc """
+  Checks if the submitted OTP is valid and returns its underlying lookup query.
+  The context for an OTP token will be "login_otp".
+  """
+  def verify_otp_token_query(submitted_otp_string) when is_binary(submitted_otp_string) do
+    hashed_submitted_otp = :crypto.hash(@hash_algorithm, submitted_otp_string)
+
+    query =
+      from token_record in by_token_and_context_query(hashed_submitted_otp, "login_otp"),
+        join: user in assoc(token_record, :user),
+        where: token_record.inserted_at > ago(^@otp_validity_in_minutes, "minute"),
+        where: token_record.sent_to == user.email,
+        select: {user, token_record}
+
+    {:ok, query}
   end
 
   @doc """
@@ -140,8 +181,8 @@ defmodule CMS.Accounts.UserToken do
         hashed_token = :crypto.hash(@hash_algorithm, decoded_token)
 
         query =
-          from token in by_token_and_context_query(hashed_token, context),
-            where: token.inserted_at > ago(@change_email_validity_in_days, "day")
+          from token_record in by_token_and_context_query(hashed_token, context),
+            where: token_record.inserted_at > ago(@change_email_validity_in_days, "day")
 
         {:ok, query}
 
@@ -153,8 +194,9 @@ defmodule CMS.Accounts.UserToken do
   @doc """
   Returns the token struct for the given token value and context.
   """
-  def by_token_and_context_query(token, context) do
-    from UserToken, where: [token: ^token, context: ^context]
+  def by_token_and_context_query(token_binary, context)
+      when is_binary(token_binary) and is_binary(context) do
+    from UserToken, where: [token: ^token_binary, context: ^context]
   end
 
   @doc """

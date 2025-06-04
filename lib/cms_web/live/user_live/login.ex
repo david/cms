@@ -69,7 +69,7 @@ defmodule CMSWeb.UserLive.Login do
 
   def handle_event("submit_magic", %{"user" => %{"email" => email}}, socket) do
     if user = Accounts.get_user_by_email(email) do
-      Accounts.deliver_login_instructions(
+      Accounts.deliver_otp_login_instructions(
         user,
         &url(~p"/users/log-in/#{&1}")
       )

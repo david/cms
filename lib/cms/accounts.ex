@@ -260,7 +260,7 @@ defmodule CMS.Accounts do
     {:ok, query} = UserToken.verify_session_token_query(token)
 
     case Repo.one(query) do
-      {user, token} -> {Repo.preload(user, :organization), token}
+      {user, token_inserted_at} -> {Repo.preload(user, :organization), token_inserted_at}
       _ -> nil
     end
   end
@@ -270,7 +270,20 @@ defmodule CMS.Accounts do
   """
   def get_user_by_magic_link_token(token) do
     with {:ok, query} <- UserToken.verify_magic_link_token_query(token),
-         {user, _token} <- Repo.one(query) do
+         {user, _token_record} <- Repo.one(query) do
+      user
+    else
+      _ -> nil
+    end
+  end
+
+  @doc """
+  Gets the user with the given OTP string (from URL).
+  This is primarily for the confirmation/login landing page.
+  """
+  def get_user_by_otp_url_token(otp_string) when is_binary(otp_string) do
+    with {:ok, query} <- UserToken.verify_otp_token_query(otp_string),
+         {user, _token_record} <- Repo.one(query) do
       user
     else
       _ -> nil
@@ -296,23 +309,59 @@ defmodule CMS.Accounts do
      `mix help phx.gen.auth`.
   """
   def login_user_by_magic_link(token) do
-    {:ok, query} = UserToken.verify_magic_link_token_query(token)
+    with {:ok, query} <- UserToken.verify_magic_link_token_query(token),
+         result <- Repo.one(query) do
+      case result do
+        {%User{confirmed_at: nil} = u, _token_record} ->
+          {:ok, user, expired_tokens} =
+            u
+            |> User.confirm_changeset()
+            |> update_user_and_delete_all_tokens()
 
-    case Repo.one(query) do
-      {%User{confirmed_at: nil} = u, _token} ->
-        {:ok, user, expired_tokens} =
-          u
-          |> User.confirm_changeset()
-          |> update_user_and_delete_all_tokens()
+          {:ok, Repo.preload(user, [:organization]), expired_tokens}
 
-        {:ok, Repo.preload(user, [:organization]), expired_tokens}
+        {user, token_record} ->
+          # User already confirmed, just delete this magic link token
+          Repo.delete!(token_record)
+          {:ok, Repo.preload(user, [:organization]), []}
 
-      {user, token} ->
-        Repo.delete!(token)
-        {:ok, Repo.preload(user, [:organization]), []}
-
-      nil ->
+        nil ->
+          {:error, :not_found}
+      end
+    else
+      _error ->
         {:error, :not_found}
+    end
+  end
+
+  @doc """
+  Logs the user in by OTP-in-URL.
+  """
+  def login_user_by_otp_url(otp_string) when is_binary(otp_string) do
+    with {:ok, query} <- UserToken.verify_otp_token_query(otp_string),
+         result <- Repo.one(query) do
+      case result do
+        {user_from_token, token_record} ->
+          Repo.delete!(token_record)
+
+          if is_nil(user_from_token.confirmed_at) do
+            case User.confirm_changeset(user_from_token) |> Repo.update() do
+              {:ok, confirmed_user} ->
+                {:ok, Repo.preload(confirmed_user, [:organization]), []}
+
+              {:error, _changeset} ->
+                {:error, :confirmation_failed}
+            end
+          else
+            {:ok, Repo.preload(user_from_token, [:organization]), []}
+          end
+
+        nil ->
+          {:error, :invalid_otp_or_expired}
+      end
+    else
+      _error ->
+        {:error, :invalid_otp_or_expired}
     end
   end
 
@@ -335,12 +384,24 @@ defmodule CMS.Accounts do
 
   @doc ~S"""
   Delivers the magic link login instructions to the given user.
+  This function is used for the standard magic link flow (e.g., for user invitations).
   """
   def deliver_login_instructions(%User{} = user, magic_link_url_fun)
       when is_function(magic_link_url_fun, 1) do
     {encoded_token, user_token} = UserToken.build_email_token(user, "login")
     Repo.insert!(user_token)
     UserNotifier.deliver_login_instructions(user, magic_link_url_fun.(encoded_token))
+  end
+
+  @doc ~S"""
+  Delivers OTP login instructions to the given user for the OTP-in-URL flow.
+  The URL will contain the plaintext OTP.
+  """
+  def deliver_otp_login_instructions(%User{} = user, otp_url_fun)
+      when is_function(otp_url_fun, 1) do
+    {otp_string, user_token_struct} = UserToken.build_otp_token(user, "login_otp")
+    Repo.insert!(user_token_struct)
+    UserNotifier.deliver_login_instructions(user, otp_url_fun.(otp_string))
   end
 
   @doc """
