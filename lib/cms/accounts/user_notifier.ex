@@ -86,4 +86,26 @@ defmodule CMS.Accounts.UserNotifier do
     ==============================
     """)
   end
+
+  @doc """
+  Deliver OTP code for login.
+  """
+  def deliver_otp_code_instructions(%User{} = user, otp_code) when is_binary(otp_code) do
+    deliver(user.email, "Your Login OTP Code", """
+
+    ==============================
+
+    Hi #{user.email},
+
+    Your One-Time Password (OTP) to log in is:
+
+    #{otp_code}
+
+    This code will expire in 5 minutes.
+
+    If you didn't request this OTP, please ignore this email or contact support if you have concerns.
+
+    ==============================
+    """)
+  end
 end

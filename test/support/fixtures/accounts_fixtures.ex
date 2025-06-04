@@ -7,6 +7,7 @@ defmodule CMS.AccountsFixtures do
   import Ecto.Query
 
   alias CMS.Accounts
+  alias CMS.Accounts.Organization
   alias CMS.Accounts.Scope
   alias CMS.Accounts.Family
   alias CMS.Accounts.User
@@ -21,31 +22,38 @@ defmodule CMS.AccountsFixtures do
     })
   end
 
-  def unconfirmed_user_fixture(attrs \\ %{}, organization \\ organization_fixture()) do
+  def family_fixture(attrs \\ %{}) do
     {:ok, family} =
-      Repo.insert(%Family{designation: "Test Family", organization_id: organization.id})
+      %Family{
+        designation: "Test Family #{System.unique_integer()}"
+      }
+      |> Map.merge(attrs)
+      |> Repo.insert()
 
+    family
+  end
+
+  def unconfirmed_user_fixture(attrs \\ %{}, organization \\ organization_fixture()) do
     {:ok, user} =
       %User{}
       |> Map.merge(valid_user_attributes())
       |> Map.merge(attrs)
       |> Map.put(:organization_id, organization.id)
-      |> Map.put(:family_id, family.id)
+      |> Map.put(:family_id, family_fixture(%{organization_id: organization.id}).id)
       |> Ecto.Changeset.change(%{})
       |> Repo.insert()
 
     CMS.Repo.preload(user, [:organization])
   end
 
-  def organization_fixture(attrs \\ %{}) do
-    {:ok, organization} =
-      attrs
-      |> Enum.into(%{
-        name: "Organization #{System.unique_integer()}"
-      })
-      |> Accounts.create_organization()
+  def organization_fixture do
+    if org = Repo.one(Organization) do
+      org
+    else
+      {:ok, organization} = Accounts.create_organization(%{name: "Default Organization"})
 
-    organization
+      organization
+    end
   end
 
   def user_fixture(attrs \\ %{}, organization \\ organization_fixture()) do

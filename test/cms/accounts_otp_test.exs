@@ -5,15 +5,18 @@ defmodule CMS.AccountsOtpTest do
   alias CMS.Accounts.User
   alias CMS.Accounts.UserToken
   alias CMS.Repo
-  # Import the fixtures module
   import CMS.AccountsFixtures
 
   @hash_algorithm :sha256
   @otp_validity_in_minutes 5
 
+  setup do
+    {:ok, organization: organization_fixture()}
+  end
+
   describe "UserToken OTP functions" do
-    test "build_otp_token/2 generates a valid OTP and UserToken struct" do
-      user = unconfirmed_user_fixture(%{email: "otp_builder@example.com"})
+    test "build_otp_token/2 generates a valid OTP and UserToken struct", %{organization: org} do
+      user = unconfirmed_user_fixture(%{email: "otp_builder@example.com"}, org)
       {otp_string, user_token_struct} = UserToken.build_otp_token(user, "login_otp")
 
       assert Regex.match?(~r/^\d{6}$/, otp_string)
@@ -25,19 +28,19 @@ defmodule CMS.AccountsOtpTest do
       assert user_token_struct.token == expected_hash
     end
 
-    test "verify_otp_token_query/1 with valid, unexpired OTP" do
-      user = unconfirmed_user_fixture(%{email: "valid_otp@example.com"})
+    test "verify_otp_token_query/1 with valid, unexpired OTP", %{organization: org} do
+      user = unconfirmed_user_fixture(%{email: "valid_otp@example.com"}, org)
       {otp_string, user_token_struct} = UserToken.build_otp_token(user, "login_otp")
       Repo.insert!(user_token_struct)
 
       {:ok, query} = UserToken.verify_otp_token_query(otp_string)
-      {queried_user, _token_record} = Repo.one(query)
+      {queried_user_from_token_context, _token_record} = Repo.one(query)
 
-      assert queried_user.id == user.id
+      assert queried_user_from_token_context.id == user.id
     end
 
-    test "verify_otp_token_query/1 with expired OTP" do
-      user = unconfirmed_user_fixture(%{email: "expired_otp@example.com"})
+    test "verify_otp_token_query/1 with expired OTP", %{organization: org} do
+      user = unconfirmed_user_fixture(%{email: "expired_otp@example.com"}, org)
       {otp_string, user_token_struct} = UserToken.build_otp_token(user, "login_otp")
 
       expired_inserted_at =
@@ -52,13 +55,13 @@ defmodule CMS.AccountsOtpTest do
       assert Repo.one(query) == nil
     end
 
-    test "verify_otp_token_query/1 with invalid OTP string" do
+    test "verify_otp_token_query/1 with invalid OTP string", _context do
       {:ok, query} = UserToken.verify_otp_token_query("000000")
       assert Repo.one(query) == nil
     end
 
-    test "verify_otp_token_query/1 with OTP for a different context" do
-      user = unconfirmed_user_fixture(%{email: "wrong_context_otp@example.com"})
+    test "verify_otp_token_query/1 with OTP for a different context", %{organization: org} do
+      user = unconfirmed_user_fixture(%{email: "wrong_context_otp@example.com"}, org)
       {otp_string, user_token_struct} = UserToken.build_otp_token(user, "login_otp")
       Repo.insert!(%{user_token_struct | context: "some_other_context"})
 
@@ -67,107 +70,106 @@ defmodule CMS.AccountsOtpTest do
     end
   end
 
-  describe "Accounts OTP delivery and retrieval" do
-    setup do
-      user = unconfirmed_user_fixture(%{email: "accounts_otp_user@example.com"})
+  describe "Accounts.deliver_otp_login_instructions/1" do
+    setup %{organization: org} do
+      user = unconfirmed_user_fixture(%{email: "otp_delivery_user@example.com"}, org)
       {:ok, user: user}
     end
 
-    test "deliver_otp_login_instructions/2 inserts token and initiates delivery", %{user: user} do
-      otp_url_fun = fn otp -> "http://localhost/login/#{otp}" end
-
-      Accounts.deliver_otp_login_instructions(user, otp_url_fun)
+    test "inserts token and initiates OTP code delivery", %{user: user} do
+      {:ok, _email_struct} = Accounts.deliver_otp_login_instructions(user)
 
       hashed_otp_token_record = Repo.get_by(UserToken, user_id: user.id, context: "login_otp")
       assert hashed_otp_token_record
       assert hashed_otp_token_record.sent_to == user.email
     end
-
-    test "get_user_by_otp_url_token/1 returns user for valid OTP", %{user: user} do
-      {otp_string, token_struct} = UserToken.build_otp_token(user, "login_otp")
-      Repo.insert!(token_struct)
-
-      retrieved_user = Accounts.get_user_by_otp_url_token(otp_string)
-      assert retrieved_user.id == user.id
-    end
-
-    test "get_user_by_otp_url_token/1 returns nil for invalid/expired OTP", %{user: _user} do
-      assert Accounts.get_user_by_otp_url_token("000000") == nil
-    end
   end
 
-  describe "Accounts.login_user_by_otp_url/1" do
-    test "with valid OTP for unconfirmed user, confirms and logs in" do
-      unconfirmed_user = unconfirmed_user_fixture(%{email: "unconf_otp_login@example.com"})
+  describe "Accounts.verify_and_log_in_user_by_otp/2" do
+    test "with valid OTP for unconfirmed user, confirms user, logs in, and deletes token", %{
+      organization: org
+    } do
+      unconfirmed_user = unconfirmed_user_fixture(%{email: "unconf_verify_otp@example.com"}, org)
       assert is_nil(unconfirmed_user.confirmed_at)
 
-      {otp_string, token_struct_to_insert} =
-        UserToken.build_otp_token(unconfirmed_user, "login_otp")
+      {otp_string, token_to_insert} = UserToken.build_otp_token(unconfirmed_user, "login_otp")
+      inserted_token = Repo.insert!(token_to_insert)
 
-      inserted_token = Repo.insert!(token_struct_to_insert)
-      original_token_id = inserted_token.id
-
-      {:ok, logged_in_user, []} = Accounts.login_user_by_otp_url(otp_string)
+      {:ok, logged_in_user} =
+        Accounts.verify_and_log_in_user_by_otp(unconfirmed_user.email, otp_string)
 
       assert logged_in_user.id == unconfirmed_user.id
       assert Repo.get!(User, logged_in_user.id).confirmed_at != nil
-      assert Repo.get(UserToken, original_token_id) == nil
+      assert Repo.get(UserToken, inserted_token.id) == nil
     end
 
-    test "with valid OTP for confirmed user, logs in" do
-      confirmed_user = user_fixture(%{email: "conf_otp_login@example.com"})
+    test "with valid OTP for confirmed user, logs in, and deletes token", %{organization: org} do
+      confirmed_user = user_fixture(%{email: "conf_verify_otp@example.com"}, org)
       assert confirmed_user.confirmed_at != nil
 
-      {otp_string, token_struct_to_insert} =
-        UserToken.build_otp_token(confirmed_user, "login_otp")
+      {otp_string, token_to_insert} = UserToken.build_otp_token(confirmed_user, "login_otp")
+      inserted_token = Repo.insert!(token_to_insert)
 
-      inserted_token = Repo.insert!(token_struct_to_insert)
-      original_token_id = inserted_token.id
-
-      {:ok, logged_in_user, []} = Accounts.login_user_by_otp_url(otp_string)
+      {:ok, logged_in_user} =
+        Accounts.verify_and_log_in_user_by_otp(confirmed_user.email, otp_string)
 
       assert logged_in_user.id == confirmed_user.id
-      assert Repo.get(UserToken, original_token_id) == nil
+      assert Repo.get(UserToken, inserted_token.id) == nil
     end
 
-    test "with invalid OTP returns error" do
-      user = unconfirmed_user_fixture(%{email: "invalid_otp_login_user@example.com"})
-      {:error, reason} = Accounts.login_user_by_otp_url("000000")
-      assert reason == :invalid_otp_or_expired
+    test "with invalid (wrong) OTP returns error and does not delete token", %{organization: org} do
+      user = user_fixture(%{email: "invalid_code_verify_otp@example.com"}, org)
+      {_correct_otp, token_to_insert} = UserToken.build_otp_token(user, "login_otp")
+      inserted_token = Repo.insert!(token_to_insert)
 
-      {_otp_string, token_struct_to_insert} = UserToken.build_otp_token(user, "login_otp")
-      inserted_token = Repo.insert!(token_struct_to_insert)
-      {:error, reason_other} = Accounts.login_user_by_otp_url("111111")
-      assert reason_other == :invalid_otp_or_expired
+      {:error, reason} = Accounts.verify_and_log_in_user_by_otp(user.email, "000000")
+      assert reason == :invalid_or_expired_otp
       assert Repo.get(UserToken, inserted_token.id) != nil
     end
 
-    test "with expired OTP returns error" do
-      user = unconfirmed_user_fixture(%{email: "expired_otp_login_user_2@example.com"})
-      {otp_string, token_struct_to_insert} = UserToken.build_otp_token(user, "login_otp")
+    test "with expired OTP returns error", %{organization: org} do
+      user = user_fixture(%{email: "expired_verify_otp@example.com"}, org)
+      {otp_string, token_to_insert} = UserToken.build_otp_token(user, "login_otp")
 
       expired_inserted_at =
         DateTime.utc_now()
         |> DateTime.add(-(@otp_validity_in_minutes + 1), :minute)
         |> DateTime.truncate(:second)
 
-      Repo.insert!(%{token_struct_to_insert | inserted_at: expired_inserted_at})
+      Repo.insert!(%{token_to_insert | inserted_at: expired_inserted_at})
 
-      {:error, reason} = Accounts.login_user_by_otp_url(otp_string)
-      assert reason == :invalid_otp_or_expired
+      {:error, reason} = Accounts.verify_and_log_in_user_by_otp(user.email, otp_string)
+      assert reason == :invalid_or_expired_otp
     end
 
-    test "with already used OTP returns error" do
-      user = unconfirmed_user_fixture(%{email: "used_otp_login_user@example.com"})
-      {otp_string, token_struct_to_insert} = UserToken.build_otp_token(user, "login_otp")
-      inserted_token = Repo.insert!(token_struct_to_insert)
-      original_token_id = inserted_token.id
+    test "with OTP for a different user (but valid OTP string) returns error for the given email",
+         %{organization: org} do
+      user1 = user_fixture(%{email: "user1_verify_otp@example.com"}, org)
+      user2 = user_fixture(%{email: "user2_verify_otp@example.com"}, org)
 
-      {:ok, _, _} = Accounts.login_user_by_otp_url(otp_string)
-      assert Repo.get(UserToken, original_token_id) == nil
+      {otp_string_for_user2, token_for_user2} = UserToken.build_otp_token(user2, "login_otp")
+      Repo.insert!(token_for_user2)
 
-      {:error, reason} = Accounts.login_user_by_otp_url(otp_string)
-      assert reason == :invalid_otp_or_expired
+      {:error, reason} = Accounts.verify_and_log_in_user_by_otp(user1.email, otp_string_for_user2)
+      assert reason == :invalid_or_expired_otp
+    end
+
+    test "with non-existent user email returns error", _context do
+      {:error, reason} =
+        Accounts.verify_and_log_in_user_by_otp("nonexistent@example.com", "123456")
+
+      assert reason == :not_found
+    end
+
+    test "with already used OTP returns error (token deleted)", %{organization: org} do
+      user = user_fixture(%{email: "used_otp_verify@example.com"}, org)
+      {otp_string, token_to_insert} = UserToken.build_otp_token(user, "login_otp")
+      Repo.insert!(token_to_insert)
+
+      {:ok, _logged_in_user} = Accounts.verify_and_log_in_user_by_otp(user.email, otp_string)
+
+      {:error, reason} = Accounts.verify_and_log_in_user_by_otp(user.email, otp_string)
+      assert reason == :invalid_or_expired_otp
     end
   end
 end

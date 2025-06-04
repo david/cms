@@ -12,9 +12,9 @@ defmodule CMSWeb.UserSessionController do
     create(conn, params, "Welcome back!")
   end
 
-  # This function handles login via OTP-in-URL
-  defp create(conn, %{"user" => %{"token" => otp_string} = user_params}, info) do
-    case Accounts.login_user_by_otp_url(otp_string) do
+  # This function handles login via a token (e.g., from a magic link submitted via POST).
+  defp create(conn, %{"user" => %{"token" => token} = user_params}, info) do
+    case Accounts.login_user_by_magic_link(token) do
       {:ok, user, tokens_to_disconnect} ->
         UserAuth.disconnect_sessions(tokens_to_disconnect)
 

@@ -1,0 +1,46 @@
+<.flash_group flash={@flash} />
+<div class="mx-auto max-w-sm space-y-4">
+  <.header class="text-center">
+    <p>Enter OTP</p>
+    <:subtitle :if={@email}>
+      An OTP has been sent to <strong><%= @email %></strong>. Please enter it below.
+    </:subtitle>
+    <:subtitle :if={is_nil(@email)}>
+      Please <.link navigate={~p"/users/log-in"} class="link">log in</.link> to continue.
+    </:subtitle>
+  </.header>
+
+  <div :if={@email}>
+    <form action={~p"/users/verify-otp"} method="post" id="otp_lobby_form">
+      <input type="hidden" name="_csrf_token" value={@csrf_token} />
+      <input type="hidden" name="user[email]" value={@email} />
+
+      <div class="form-control w-full pt-4">
+        <label for="user_otp_code_input" class="label">
+          <span class="label-text">OTP Code</span>
+        </label>
+        <input
+          type="text"
+          name="user[otp_code]"
+          id="user_otp_code_input"
+          class="input input-bordered w-full"
+          inputmode="numeric"
+          pattern="[0-9]*"
+          autocomplete="one-time-code"
+          required
+          maxlength="6"
+          autofocus
+          placeholder="Enter your 6-digit OTP"
+        />
+      </div>
+
+      <.button type="submit" class="btn w-full mt-4" variant="primary">
+        Verify Code
+      </.button>
+    </form>
+  </div>
+
+  <p class="text-center text-sm">
+    Didn't receive an OTP? <.link href={~p"/users/log-in"} class="link">Try sending again</.link>.
+  </p>
+</div>
