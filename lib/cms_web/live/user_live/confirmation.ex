@@ -51,9 +51,9 @@ defmodule CMSWeb.UserLive.Confirmation do
     """
   end
 
-  def mount(%{"token" => otp_from_url}, _session, socket) do
-    if user = Accounts.get_user_by_otp_url_token(otp_from_url) do
-      form = to_form(%{"token" => otp_from_url}, as: "user")
+  def mount(%{"token" => token}, _session, socket) do
+    if user = Accounts.get_user_by_magic_link_token(token) do
+      form = to_form(%{"token" => token}, as: "user")
 
       {:ok, assign(socket, user: user, form: form, trigger_submit: false),
        temporary_assigns: [form: nil]}

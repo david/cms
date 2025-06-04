@@ -11,7 +11,7 @@ defmodule CMSWeb.UserLive.Login do
           <p>Log in</p>
           <:subtitle>
             <%= if @current_scope.user do %>
-              Use the button below to send a new login link to your email.
+              Use the button below to send a new login OTP to your email.
             <% else %>
               Don't have an account? <.link
                 navigate={~p"/users/register"}
@@ -49,7 +49,7 @@ defmodule CMSWeb.UserLive.Login do
             phx-mounted={JS.focus()}
           />
           <.button class="w-full" variant="primary">
-            Log in with email <span aria-hidden="true">→</span>
+            Send OTP <span aria-hidden="true">→</span>
           </.button>
         </.form>
       </div>
@@ -67,21 +67,17 @@ defmodule CMSWeb.UserLive.Login do
     {:ok, assign(socket, form: form)}
   end
 
-  def handle_event("submit_magic", %{"user" => %{"email" => email}}, socket) do
-    if user = Accounts.get_user_by_email(email) do
-      Accounts.deliver_otp_login_instructions(
-        user,
-        &url(~p"/users/log-in/#{&1}")
-      )
-    end
+  def handle_event("submit_magic", %{"user" => %{"email" => email_param}}, socket) do
+    info = "If your email is in our system, you will receive an OTP code shortly."
 
-    info =
-      "If your email is in our system, you will receive instructions for logging in shortly."
+    if user = Accounts.get_user_by_email(email_param) do
+      Accounts.deliver_otp_login_instructions(user)
+    end
 
     {:noreply,
      socket
      |> put_flash(:info, info)
-     |> push_navigate(to: ~p"/users/log-in")}
+     |> push_navigate(to: ~p"/users/lobby?email=#{email_param}")}
   end
 
   defp local_mail_adapter? do

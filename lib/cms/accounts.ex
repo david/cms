@@ -278,19 +278,6 @@ defmodule CMS.Accounts do
   end
 
   @doc """
-  Gets the user with the given OTP string (from URL).
-  This is primarily for the confirmation/login landing page.
-  """
-  def get_user_by_otp_url_token(otp_string) when is_binary(otp_string) do
-    with {:ok, query} <- UserToken.verify_otp_token_query(otp_string),
-         {user, _token_record} <- Repo.one(query) do
-      user
-    else
-      _ -> nil
-    end
-  end
-
-  @doc """
   Logs the user in by magic link.
 
   There are three cases to consider:
@@ -334,37 +321,6 @@ defmodule CMS.Accounts do
     end
   end
 
-  @doc """
-  Logs the user in by OTP-in-URL.
-  """
-  def login_user_by_otp_url(otp_string) when is_binary(otp_string) do
-    with {:ok, query} <- UserToken.verify_otp_token_query(otp_string),
-         result <- Repo.one(query) do
-      case result do
-        {user_from_token, token_record} ->
-          Repo.delete!(token_record)
-
-          if is_nil(user_from_token.confirmed_at) do
-            case User.confirm_changeset(user_from_token) |> Repo.update() do
-              {:ok, confirmed_user} ->
-                {:ok, Repo.preload(confirmed_user, [:organization]), []}
-
-              {:error, _changeset} ->
-                {:error, :confirmation_failed}
-            end
-          else
-            {:ok, Repo.preload(user_from_token, [:organization]), []}
-          end
-
-        nil ->
-          {:error, :invalid_otp_or_expired}
-      end
-    else
-      _error ->
-        {:error, :invalid_otp_or_expired}
-    end
-  end
-
   @doc ~S"""
   Delivers the update email instructions to the given user.
 
@@ -394,14 +350,59 @@ defmodule CMS.Accounts do
   end
 
   @doc ~S"""
-  Delivers OTP login instructions to the given user for the OTP-in-URL flow.
-  The URL will contain the plaintext OTP.
+  Delivers OTP login instructions to the given user.
+  The user will receive an email with the OTP code.
   """
-  def deliver_otp_login_instructions(%User{} = user, otp_url_fun)
-      when is_function(otp_url_fun, 1) do
+  def deliver_otp_login_instructions(%User{} = user) do
     {otp_string, user_token_struct} = UserToken.build_otp_token(user, "login_otp")
     Repo.insert!(user_token_struct)
-    UserNotifier.deliver_login_instructions(user, otp_url_fun.(otp_string))
+    UserNotifier.deliver_otp_code_instructions(user, otp_string)
+  end
+
+  @doc """
+  Verifies an OTP code submitted by a user and logs them in.
+  Returns `{:ok, user}` on success, `{:error, reason}` on failure.
+  Reasons can be `:not_found` (user email not found),
+  `:invalid_or_expired_otp`, or `:confirmation_failed`.
+  """
+  def verify_and_log_in_user_by_otp(email, submitted_otp_code)
+      when is_binary(email) and is_binary(submitted_otp_code) do
+    case get_user_by_email(email) do
+      nil ->
+        {:error, :not_found}
+
+      user_from_email ->
+        with {:ok, query_from_otp_verification} <-
+               UserToken.verify_otp_token_query(submitted_otp_code),
+             token_verification_result <- Repo.one(query_from_otp_verification) do
+          case token_verification_result do
+            {user_associated_with_otp, token_record} ->
+              if user_associated_with_otp.id == user_from_email.id do
+                Repo.delete!(token_record)
+
+                if is_nil(user_associated_with_otp.confirmed_at) do
+                  case User.confirm_changeset(user_associated_with_otp) |> Repo.update() do
+                    {:ok, confirmed_user} ->
+                      {:ok, Repo.preload(confirmed_user, [:organization])}
+
+                    {:error, _changeset} ->
+                      {:error, :confirmation_failed}
+                  end
+                else
+                  {:ok, Repo.preload(user_associated_with_otp, [:organization])}
+                end
+              else
+                {:error, :invalid_or_expired_otp}
+              end
+
+            nil ->
+              {:error, :invalid_or_expired_otp}
+          end
+        else
+          _error_or_unmatched_step ->
+            {:error, :invalid_or_expired_otp}
+        end
+    end
   end
 
   @doc """

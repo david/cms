@@ -91,9 +91,11 @@ defmodule CMSWeb.Router do
       live "/liturgies/:id", LiturgyLive.Show, :show
     end
 
+    get "/users/lobby", UserOTPController, :lobby
     get "/liturgy", LiturgyController, :latest
 
     post "/users/log-in", UserSessionController, :create
+    post "/users/verify-otp", UserOTPController, :verify_and_log_in
     delete "/users/log-out", UserSessionController, :delete
   end
 end
