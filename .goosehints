@@ -1,178 +1,65 @@
 # .goosehints
 
-# File Type: LLM Configuration (Markdown)
+This file contains guidelines for Goose to follow when working on this project.
 
-**LLM Instructions: Adhere strictly to these guidelines.**
+## Guiding Principles
 
-## I. Foundational Principles
+- **Write Minimal, Correct Code**: Write the least amount of code that fulfills the requirements. The code should be easy to read, understand, and maintain—in other words, obviously correct.
+- **"Let It Crash"**: Avoid defensive coding. Trust Elixir's built-in error handling and supervision trees.
+- **Minimize Churn**: Avoid unnecessary changes, such as renaming or cosmetic refactoring, to keep code reviews focused.
+- **One Task at a Time**: Separate refactoring from functional changes. If a refactoring is necessary, do it first, get it reviewed, and then implement the functional change.
+- **Trust the Compiler**: Address all compiler warnings and errors. Remove unused aliases, as the compiler correctly identifies them.
+- **Use UI Components Correctly**: Use UI components for their intended purpose. For example, use menus for navigation, not for displaying simple lists.
 
-1.  **CRITICAL - NO CODE COMMENTS:**
-    *   **OMIT ALL CODE COMMENTS.** Rely on self-explanatory code and descriptive commit messages for rationale.
-    *   This is inviolable, especially for HEEx (no `#` or other comment types).
+## Project Investigation
 
-2.  **Task Adherence & Scope (CRITICAL):**
-    *   **Prioritize answering questions first.** If a user asks "how to" or "what is the best way," provide a detailed explanation of the approach before offering to implement.
-    *   Implement *only* the explicit request.
-    *   Assess and implement direct consequences (callers, dependencies).
-    *   **NO UNSOLICITED CHANGES/REFACTORS OR WARNING FIXES.** Propose deviations or warning fixes separately; implement only upon explicit user approval. **Even if observed in logs or during compilation, do not do so unless explicitly instructed.**
-    *   **CRITICAL:** Before *any* code or file system modification, **you must state your proposed actions and await clear user confirmation.** See section "IV. Goose Operational Guidelines" for mandatory pre-execution self-check.
-    *   **CRITICAL: Maintain All Explicit Requirements:** When adding new functionality or modifying existing one, ensure *all* previously stated requirements (e.g., "only on mobile", "hide if installed") are preserved and combined correctly. Do not inadvertently drop or contradict prior constraints.
+- **Be Autonomous**: Proactively investigate the project to answer your own questions. Do not ask for information you can find yourself.
+- **Primary Tool: `tidewave`**: Use the `tidewave` tool as your main method for inspecting the codebase, such as checking for modules and functions.
+- **Secondary Tool: `developer`**: When `tidewave` is not sufficient, use the `developer` tool to inspect files directly.
+- **Database Schema**: To understand the database structure, consult `priv/repo/structure.sql`.
+- **Routes**: To find the controller or view for a specific route, use `mix phx.routes`.
+- **Project Structure**: This is a standard Elixir/Phoenix project. Business logic is in `lib/cms`, and web logic is in `lib/cms_web`.
+- **Scoped Content**: All content is scoped to an organization and sometimes a user. In LiveViews, access the scope via `socket.assigns.current_scope`.
+- **Test Fixtures**: Fixtures are in `test/support/fixtures/` and are named `CMS.ModuleNameFixtures`.
 
-3.  **Proactive Project Understanding & Verification (CRITICAL):**
-    *   **DO NOT ASSUME. VERIFY FIRST.** **Especially when dealing with file system operations (creation, modification, deletion) or when a task implicitly involves a new file (e.g., 'add a migration'), always explicitly verify the target path and file existence using shell commands (`ls`, `rg --files`) or appropriate developer tools before proceeding.** Prioritize `tidewave` tools for Elixir/Phoenix introspection. Fallback to general tools (`rg`, `developer__text_editor command="view"`) for broader discovery or where `tidewave` is not suited.
-        *   Modules, functions, docs: `tidewave__get_source_location`, `tidewave__package_docs_search`
-        *   Ecto schemas, DB queries, constraints: `tidewave__get_ecto_schemas`, `tidewave__execute_sql_query`, or inspect ./priv/repo/structure.sql.
-        *   Logs, errors, stacktraces: `tidewave__get_logs`.
-        *   LiveViews, process state: `tidewave__list_liveview_pages`, `tidewave__get_process_info`.
-        *   Other (app names, paths, data structures, `conn`/`socket`, etc.): `tidewave` if applicable, else general tools.
-    *   **Proactive Refactoring Checklist:** When performing renames (schemas, tables, columns), proactively identify all affected:
-        *   Modules and their aliases.
-        *   Ecto associations (e.g., `has_many`, `belongs_to`).
-        *   `Ecto.Changeset.cast` fields and `preload` options.
-        *   LiveView/HEEx form inputs and data access (e.g., `field={@form[:old_id]}`).
-        *   Test fixtures and related assertions.
-    *   **Runtime Data Inspection (CRITICAL):** When working with web contexts (e.g., Phoenix controllers, LiveViews), proactively inspect the contents of connection assigns (`conn.assigns` or `socket.assigns`) to understand available data and its keys (e.g., `current_scope`, `current_user`). Use `IO.inspect(conn.assigns)` or `IO.inspect(socket.assigns)` within `tidewave__project_eval` or temporarily insert into code for precise runtime verification. This is especially important for data set by plugs or LiveView mounts.
-    *   `mix compile` is a diagnostic tool. Run it *after* explicitly approved approved changes or when asked, especially after significant code modifications, to catch *all* compilation errors/warnings at once.
+## Development Workflow
 
-4.  **API/Function Usage & Project Conventions (CRITICAL - NEW):**
-    *   When dealing with *any* API or function within the project (e.g., session management, routing helpers, specific framework functions):
-        *   **Always explicitly verify their availability and exact usage** by consulting the relevant module's documentation (`h Module.function/arity`), the project's `lib/cms_web.ex` (e.g., `controller`, `live_view` macros), and `tidewave__project_eval` with relevant module names (e.g., `h Phoenix.Controller`, `h Phoenix.LiveView`).
-        *   If the usage is confirmed to be unavailable or impossible in the current context, **STOP AND ASK THE USER FOR ALTERNATIVE STRATEGIES**. Do not attempt to brute-force a fix or try minor variations of previously failing approaches.
+### Coding
 
-5.  **Function Signature Changes & Call Site Management (CRITICAL):**
-    *   If a function's signature changes, **update ALL call sites** as part of the same task.
+- **Error Handling**: Use `with` statements for complex success paths and `case` statements for simple, explicit pattern matching on tagged tuples (e.g., `{:ok, result}`, `{:error, reason}`).
+- **Tool Paths**: Always use absolute paths with the `developer.text_editor` tool.
 
-## II. Workflow & Code Quality
+### Database Migrations
 
-1.  **Core Workflow:**
-    *   Implement directly (create/modify files).
-    *   Run `mix compile` *after* explicitly approved changes.
-    *   Run `mix format` as the *final step* after all other operations.
+- **Create Migrations**: Use `mix ecto.gen.migration <migration_name>` to create new migration files.
+- **Apply Migrations**: Run `mix ecto.migrate` to apply pending migrations.
+- **Rollback Migrations**: Use `mix ecto.rollback` to revert the last applied migration if necessary.
 
-2.  **Accuracy & Commit Messages:**
-    *   Visually re-verify critical strings (URLs, routes) transcribed from tool output. Treat as literals.
-    *   No prefixes (e.g., `feat:`, `fix:`). Use clear, descriptive messages.
+### Testing
 
-## III. Elixir/Phoenix Development
+- **Test Production Code**: Always write tests for new code. If you modify existing code that lacks tests, mention it and ask for guidance.
+- **Test at the Right Layer**: Test business logic in context tests and UI logic in UI tests.
+- **Simplify Test Setup**:
+    - Use existing fixtures like `user_fixture/0` to implicitly handle default context (e.g., organization).
+    - Do not create more test data than necessary.
+    - Do not use nested `describe` blocks.
 
-1.  **Elixir Dependency & Application Management (CRITICAL):**
-    *   **Always Verify Hex Versions:** Before adding *any* new dependency to `mix.exs`, always use `tidewave__package_search` to verify the latest stable version and its compatibility. Do not assume `~> 1.0` or any other version.
-    *   **Three Steps for New Dependencies:** When adding a new dependency, ensure all three steps are completed:
-        1.  Add to `deps` in `mix.exs`.
-        2.  If `mix deps` or Hex documentation indicates it's an "application" (e.g., `(mix)` in `mix deps` output), add it to the `extra_applications` list in the `application` function within `mix.exs`.
-        3.  **Crucially, explicitly inform the user that the Phoenix server must be restarted** for the new dependency (especially applications) to be fully loaded and recognized by the running BEAM virtual machine. This is a manual step for the user.
-    *   **Clean and Recompile After Dependency Changes:** After modifying `mix.exs` (adding/removing deps or changing `extra_applications`), always run: `mix deps.clean --all && mix deps.get && mix compile`. This ensures a fresh build and correct dependency resolution.
-    *   **Debugging Dependency Loading:** If a module from a dependency is not found (e.g., `UndefinedFunctionError` or "Could not load module"), use `tidewave__project_eval` with `Application.loaded_applications()` to see currently loaded apps, and `Application.info(:my_app)` (replace `:my_app` with the actual app atom, e.g., `:browser`) to get specific app info.
+### Finalizing Changes
 
-2.  **Context Boundaries:**
-    *   **Strictly keep Ecto Repo interactions within context modules.** No `Repo` calls from controllers, LiveViews, components, schemas (exception: `unsafe_validate_unique/3` in changesets if truly necessary and alternatives are much more complex).
+1.  **Test**: Run `mix test` after making changes to catch errors early.
+2.  **Format**: Run `mix format` before finishing to ensure code conforms to style guidelines.
 
-3.  **Ecto & Database:**
-    *   **Schema Design:** Adapt existing schemas; avoid redundancy.
-    *   **Query Optimization:** Avoid N+1. Prefer batch operations.
-    *   **Precise Migration Syntax (CRITICAL):**
-        *   When modifying existing tables or columns, carefully distinguish between:
-            *   `add/3`: For adding *new* columns.
-            *   `remove/2`: For removing columns.
-            *   `modify/3`: For changing properties (type, nullability, defaults, **foreign keys**) of *existing* columns.
-                *   **To add/modify a foreign key constraint on an existing column**: Use `modify :column_name, references(:other_table, on_delete: :action)`.
-                *   **Example**: `modify :shared_content_id, references(:shared_contents, on_delete: :nothing)`
-            *   `create constraint/3`: For adding *named* check, unique, or composite foreign key constraints.
-            *   `create foreign_key/4`: For creating a *named* foreign key constraint on existing columns.
-        *   **Always verify exact syntax and examples** by consulting `h Module.function/arity` (e.g., `h Ecto.Migration.modify/3`, `h Ecto.Migration.create/2`). Pay extreme attention to the exact function signatures and provided examples for similar scenarios.
-    *   **Proactive Foreign Key Constraint Check**: Before adding any foreign key constraint (new or to existing columns), *always* verify if a similar constraint already exists. Use `developer__shell(command='''cat priv/repo/structure.sql | grep -i "foreign key"''')` or `tidewave__execute_sql_query` to query `information_schema.table_constraints`.
-    *   **Ecto Function Behavior:** Understand robustness (e.g., `Repo.insert_all/3` with empty lists). Avoid redundant guards.
-    *   **Migrations (Initial Dev):** Before stabilization/deploy, consider rolling back and modifying the original migration rather than many small alterations.
-    *   **Migrations & Existing Data:** When adding a non-nullable column to a table with data, **ASK THE USER** for the strategy. Do not assume.
-    *   **Ecto Schema vs. Migration Types:** Distinguish Elixir types in schemas (e.g., `:string`) from DB/migration types (e.g., `:text`).
-    *   **Ecto Query Defaults:** Omit `select: f` if `from f in Family` (implied).
+## Communication
 
-4.  **Coding Style & Best Practices:**
-    *   **Data Pipelines:** Strongly favor. Avoid intermediate variables.
-    *   **Safe Nested Access:** Prefer `get_in(data.property.other)`.
-    *   **Collections:** `Stream` for multi-step processing, `Enum.map` for simple single maps.
-    *   **Logic Simplification:** Trust guarantees (DB constraints, auth). "Let it crash" for invariants. Question boilerplate (e.g., `handle_params/3` if a no-op).
-    *   **Naming:** Clear, concise, intention-revealing. **No unsolicited renames.**
-    *   **HEEx/EEx Conditional Rendering:**
-        *   **Single element/component (Prefer `:if` slot):** For conditional rendering of a single component or HTML element, *always* prefer using the `:if` slot for conciseness and clarity (e.g., `<.component :if={@condition} />` or `<div :if={@condition} />`).
-        *   Blocks/logic/else: `<%= if ... %> ... <% else %> ... <% end %>`.
-        *   HEEx inline `{if}`: For simple Elixir values (strings, numbers), not components.
-        *   Encapsulate complex conditionals in Function Components.
-    *   **Assertive Pre-condition Validations (Contexts):** Use direct Elixir patterns before DB mutations (e.g., `%Family{} = Repo.get_by!(...)`). `MatchError` or `Ecto.NoResultsError` are appropriate for violations.
-    *   **Function Component Invocation:** Call aliased components directly: `<.component_name />`.
+- **Be Concise**: Omit pleasantries and unnecessary chatter.
+- **Don't Echo Code**: Do not repeat the code you've generated in your response. The user will review it through other means.
+- **High-Level Plans**: Keep plans concise and high-level. Do not include implementation details like function bodies or HTML.
+- **Include Tests in Plans**: Always list the tests you plan to write.
 
-5.  **HEEx/Templating Specifics:**
-    *   **Semantic HTML:** Prefer `<dialog>`, `<nav>` over `<div>`s.
-    *   **UI Framework Integration (DaisyUI, Tailwind):**
-        *   **CRITICAL: Always prefer Tailwind/DaisyUI classes over inline CSS styles.** If a style can be achieved with existing utility classes, use them. Only use inline styles as a last resort or when specifically instructed.
-        *   Consult framework docs for structure, classes, JS.
-        *   Simplify structure; avoid extra wrappers.
-        *   Respect framework styling; avoid conflicting custom styles (e.g., padding).
-        *   Verify CSS class names are correct and complete.
-    *   **JavaScript Hooks (`phx-hook`):** Only use if the JS hook is defined (e.g., in `assets/js/app.js`).
-    *   **LiveView Form & Nested Associations (CRITICAL):**
-        *   When using `inputs_for` for nested associations (e.g., `has_many`), the `let={item_form_field}` variable is a `Phoenix.HTML.Form` struct for the parent record.
-        *   Its nested association (e.g., `block`) is exposed as a `Phoenix.HTML.FormField` struct (`item_form_field[:block]`).
-        *   To access fields within this nested association for `<.input field={...}>`, use `Phoenix.HTML.Form.field_for(item_form_field[:block], :field_name)`.
-        *   To access raw data values from the underlying struct (e.g., `type`, `body` for display), use `item_form_field.data.nested_association.field_name` (e.g., `block.data.block.type`).
-        *   **Always debug with `IO.inspect` directly in the HEEx template if uncertain of the exact runtime structure of `Phoenix.HTML.Form` or `Phoenix.HTML.FormField` structs.** This is the most reliable way to understand dynamic form data.
+### Code Commenting
 
-6.  **LiveView JS Commands:**
-    *   **Correct Invocation:** Follow docs (chaining, event propagation `JS.exec("event.stopPropagation()")`).
-    *   **Aliasing:** Ensure `alias Phoenix.LiveView.JS` if using `JS` commands directly.
+- **Explain "Why," Not "What"**: Only add comments to explain non-obvious code or complex business logic.
+- **No Redundant Comments**: Do not add comments that restate the code.
+- **No Task-Specific Notes**: Do not leave notes to yourself in the code.
 
-## IV. Goose Operational Guidelines
-
-0.  **Pre-Execution Self-Check (MANDATORY):**
-    *   **BEFORE** executing *any* tool call that modifies or writes to the file system (e.g., `developer__text_editor` `write`/`str_replace`), or any shell commands that alter files (`git commit`, `git reset`, `rm`, `mv`, etc.), **YOU MUST** first:
-        1.  **Check `git status`**: Execute `developer__shell(command='git status')`. If `git status` reports unstaged or uncommitted changes, **STOP** and **ASK THE USER** how they wish to proceed. **NEVER** discard user work without explicit, unambiguous consent.
-        2.  **State Proposed Actions**: Provide an overview of what you plan to do.
-        3.  **Await Confirmation**: Proceed *only* upon receiving explicit user confirmation (e.g., "yes", "confirm").
-
-1.  **Absolute Paths & File System Operations (CRITICAL):**
-    *   **ALWAYS** use absolute paths for developer extension tools.
-    *   When a task implicitly involves a new file (e.g., 'add a migration') or when dealing with file existence: **explicitly verify the target path and file existence.**
-        *   **To verify the path:** Confirm current working directory (`pwd`), then locate the file's precise relative path using `rg --files <filename>`. Concatenate these to construct and **persistently use the exact absolute path** for all subsequent operations on that file within the task (e.g., `$(pwd)/priv/static/site.webmanifest`). This prevents "No such file or directory" errors and ensures consistency.
-
-2.  **Tool Input Generation & Batching (CRITICAL - Improved Reliability):**
-    *   **Prioritize "Read-Modify-Write" for Complex Edits:** For any multi-line, context-sensitive, or complex code modifications, **ALWAYS** follow this pattern to optimize token usage, avoid rate limits, and ensure robustness:
-        1.  **Read** the entire file content using `developer__text_editor(command="view", path=absolute_path)`.
-        2.  **Perform all necessary string manipulations in memory** on the read content.
-        3.  **Write** the modified content back using a single `developer__text_editor(command="write", path=absolute_path, file_text=modified_content)`.
-        *   This bypasses `str_replace`'s brittleness and ensures atomic updates.
-    *   **Pre-validate `str_replace` Usage:** If `str_replace` is chosen for a simple, unambiguous replacement, first read the file content to verify the `old_str` appears **exactly once**. If not, automatically revert to the "Read-Modify-Write" strategy without further prompting.
-    *   **Batching Other Operations:** For other tasks, prefer batching multiple related operations into a single tool call where possible. This includes:
-        *   Chaining multiple shell commands (e.g., `cmd1 && cmd2`) in one `developer__shell` call.
-        *   Crafting more comprehensive SQL queries to retrieve multiple data points in one `tidewave__execute_sql_query` call.
-        *   Combining multiple Elixir evaluations into a single `tidewave__project_eval` call.
-        *   Formulating broader search queries for documentation or packages when looking for related terms.
-    *   **Distinguish Tool Escaping vs. File Syntax:**
-        *   **CRITICAL - Clean Diff Presentation:** Ensure that proposed code changes in `diff` format are clean and do not contain extraneous characters (e.g., trailing `\` or other formatting artifacts) that are not part of the actual file content).
-        *   **CRITICAL - No Extraneous Characters in Generated Content**: When generating code or documentation (e.g., `@doc` strings, Markdown), ensure there are no unintended or extraneous characters (like trailing `\` characters from multi-line string handling) that are not part of the actual desired content).
-        *   **Tool Args (e.g., `file_text`):** Escape per LLM tool use guidelines (e.g., `'''` to `\'\'\'`).
-        *   **File Content (e.g., Elixir code):** Adhere *strictly* to target language syntax; no unnecessary escapes.
-    *   **Presenting Code Changes:** When proposing code modifications, **ALWAYS** present them as a unified diff.
-        *   Use `--- a/path/to/old_file` and `+++ b/path/to/new_file` for clarity.
-    *   **Explicit Shell Command Sequences**: When proposing a sequence of shell commands (e.g., `mix ecto.gen.migration` followed by `developer__text_editor`), present the *entire sequence* and await *single, explicit user confirmation* before execution. Do not execute commands one-by-one without prior holistic approval.
-
-3.  **Communication & Interaction (CRITICAL - Streamlined Error Recovery):**
-    *   **FAILURE TO STOP AND ASK FOR DIRECTIONS (CRITICAL - NEW):** If a problem persists after 2-3 attempts, or if I encounter repeated, similar compilation errors for the same issue (especially involving API calls or project-specific conventions), or if I am fundamentally uncertain about the next step, I **MUST IMMEDIATELY STOP** all further attempts and **ASK THE USER FOR EXPLICIT DIRECTION AND GUIDANCE**. Do not attempt to brute-force a solution or try minor variations of previously failing approaches.
-    *   **Direct & Factual; Await Confirmation:** Omit pleasantries, emotional expressions. After stating proposed actions, *wait for explicit confirmation* before proceeding.
-    *   **Immediate Context Refresh on Tool Failure:** If any `developer` tool call results in a failure, my internal representation of the affected file(s) or project state will be **immediately refreshed** (e.g., by re-reading the file content). Subsequent actions will be based on this updated state.
-    *   **Streamlined Error Recovery (Internal):** If a tool execution fails due to a technical issue that does not alter user intent or cause data loss (e.g., `str_replace` mismatch), I will **automatically attempt a robust corrective action** (e.g., switching to Read-Modify-Write) without prompting for further confirmation. I will then report the successful correction.
-    *   **Enhanced Internal Scrutiny for Self-Modification:** When modifying my own configuration or hint files (like `.goosehints`), I will apply an even higher standard of care, defaulting to the robust "Read-Modify-Write" pattern to minimize self-inflicted errors.
-    *   **Strict Adherence to Negative Constraints:** If the user explicitly states "do not X" or "hold off on Y", prioritize this instruction above all else. Do not attempt to fix unrelated warnings or refactor code outside the immediate scope unless explicitly instructed to do so.
-    *   **Thorough Documentation Application (CRITICAL):** When using `Ecto.Migration` or other complex DSLs, if an initial attempt fails or seems ambiguous, *do not guess*. Re-read relevant `h` documentation examples multiple times, paying extremely close attention to the exact function signatures and provided examples for similar scenarios. If `package_docs_search` is used, carefully analyze all `hits` for the most relevant context.
-    *   **Debugging Tool Outputs**: If the structure or expected behavior of a tool\'s output is unclear, consider using `IO.inspect` in `tidewave__project_eval` or simply `view`ing files generated by tools to ensure understanding.
-    *   **Proactive Debugging:** At the first sign of unexpected runtime behavior or errors related to data structures, **IMMEDIATELY propose adding `IO.inspect` calls** to relevant variables in the code (e.g., LiveView `render` function, context functions) to ascertain their precise runtime state. This is the fastest way to verify any assumptions.
-    *   **Address All Warnings Proactively:** After any code modification, run `mix compile` and address *all* warnings related to the current task. If a warning (e.g., "undefined or private function") implies a missing import or accessibility issue, consult documentation (`tidewave__package_docs_search`) immediately to understand the correct way to make the function available.
-    *   **Adapt to User Feedback:** Pay close attention to corrections/preferences. Remember and apply.
-
-## V. Project Context Reference
-
-*   **Type:** Elixir/Phoenix Web App.
-*   **Location:** Project root. Run commands from root. Git worktrees may vary root path.
-*   **Key Files/Dirs (relative to root):**
-    *   `mix.exs`: Project defs, deps. **Check for APIs.**
-    *   `lib/cms/`: Core Elixir logic.
-    *   `lib/cms_web/`: Phoenix interface (LiveViews, components in `lib/cms_web/components/`).
+# vim: ft=markdown
