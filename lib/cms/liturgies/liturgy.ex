@@ -10,7 +10,7 @@ defmodule CMS.Liturgies.Liturgy do
     belongs_to :organization, CMS.Accounts.Organization
 
     has_many :blocks, Block, on_replace: :delete
-    has_many :shared_contents, through: [:blocks, :shared_content]
+    has_many :songs, through: [:blocks, :song]
 
     timestamps(type: :utc_datetime)
   end

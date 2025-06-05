@@ -8,7 +8,7 @@ defmodule CMS.Liturgies do
 
   alias CMS.Accounts.Scope
   alias CMS.Bibles
-  alias CMS.Liturgies.SharedContent
+  alias CMS.Liturgies.Song
   alias CMS.Liturgies.Liturgy
 
   @doc """
@@ -68,7 +68,7 @@ defmodule CMS.Liturgies do
     query =
       from(l in Liturgy,
         where: l.id == ^id and l.organization_id == ^scope.organization.id,
-        preload: [blocks: [:shared_content]]
+        preload: [blocks: [:song]]
       )
 
     query
@@ -90,7 +90,7 @@ defmodule CMS.Liturgies do
       :resolved_body,
       case block.type do
         :passage -> Bibles.get_verses(block.title)
-        :song -> get_in(block.shared_content.body)
+        :song -> get_in(block.song.body)
         _ -> block.body
       end
     )
@@ -198,9 +198,9 @@ defmodule CMS.Liturgies do
     Liturgy.changeset(liturgy, attrs, scope)
   end
 
-  def list_shared_content_by_type(%Scope{} = scope, type) do
-    SharedContent
-    |> from(where: [organization_id: ^scope.organization.id, type: ^type])
+  def list_songs(%Scope{} = scope) do
+    Song
+    |> from(where: [organization_id: ^scope.organization.id])
     |> Repo.all()
   end
 

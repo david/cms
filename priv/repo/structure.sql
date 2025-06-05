@@ -86,7 +86,7 @@ ALTER SEQUENCE public.bible_verses_id_seq OWNED BY public.bible_verses.id;
 CREATE TABLE public.blocks (
     id bigint NOT NULL,
     liturgy_id bigint NOT NULL,
-    shared_content_id bigint,
+    song_id bigint,
     "position" integer NOT NULL,
     organization_id bigint NOT NULL,
     inserted_at timestamp(0) without time zone NOT NULL,
@@ -99,14 +99,13 @@ CREATE TABLE public.blocks (
 
 
 --
--- Name: shared_contents; Type: TABLE; Schema: public; Owner: -
+-- Name: songs; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.shared_contents (
+CREATE TABLE public.songs (
     id bigint NOT NULL,
     title character varying(255) NOT NULL,
     body text,
-    type character varying(255) NOT NULL,
     organization_id bigint NOT NULL,
     inserted_at timestamp(0) without time zone NOT NULL,
     updated_at timestamp(0) without time zone NOT NULL
@@ -129,7 +128,7 @@ CREATE SEQUENCE public.blocks_id_seq
 -- Name: blocks_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE public.blocks_id_seq OWNED BY public.shared_contents.id;
+ALTER SEQUENCE public.blocks_id_seq OWNED BY public.songs.id;
 
 
 --
@@ -258,39 +257,6 @@ CREATE TABLE public.schema_migrations (
 
 
 --
--- Name: songs; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.songs (
-    id bigint NOT NULL,
-    title character varying(255) NOT NULL,
-    body text NOT NULL,
-    organization_id bigint NOT NULL,
-    inserted_at timestamp(0) without time zone NOT NULL,
-    updated_at timestamp(0) without time zone NOT NULL
-);
-
-
---
--- Name: songs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.songs_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: songs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.songs_id_seq OWNED BY public.songs.id;
-
-
---
 -- Name: users; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -398,17 +364,10 @@ ALTER TABLE ONLY public.organizations ALTER COLUMN id SET DEFAULT nextval('publi
 
 
 --
--- Name: shared_contents id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.shared_contents ALTER COLUMN id SET DEFAULT nextval('public.blocks_id_seq'::regclass);
-
-
---
 -- Name: songs id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.songs ALTER COLUMN id SET DEFAULT nextval('public.songs_id_seq'::regclass);
+ALTER TABLE ONLY public.songs ALTER COLUMN id SET DEFAULT nextval('public.blocks_id_seq'::regclass);
 
 
 --
@@ -434,10 +393,10 @@ ALTER TABLE ONLY public.bible_verses
 
 
 --
--- Name: shared_contents blocks_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: songs blocks_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.shared_contents
+ALTER TABLE ONLY public.songs
     ADD CONSTRAINT blocks_pkey PRIMARY KEY (id);
 
 
@@ -479,14 +438,6 @@ ALTER TABLE ONLY public.organizations
 
 ALTER TABLE ONLY public.schema_migrations
     ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
-
-
---
--- Name: songs songs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.songs
-    ADD CONSTRAINT songs_pkey PRIMARY KEY (id);
 
 
 --
@@ -534,13 +485,6 @@ CREATE UNIQUE INDEX liturgies_organization_id_service_on_index ON public.liturgi
 
 
 --
--- Name: songs_organization_id_index; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX songs_organization_id_index ON public.songs USING btree (organization_id);
-
-
---
 -- Name: users_email_index; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -583,10 +527,10 @@ CREATE INDEX users_tokens_user_id_index ON public.users_tokens USING btree (user
 
 
 --
--- Name: shared_contents blocks_organization_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: songs blocks_organization_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.shared_contents
+ALTER TABLE ONLY public.songs
     ADD CONSTRAINT blocks_organization_id_fkey FOREIGN KEY (organization_id) REFERENCES public.organizations(id) ON DELETE CASCADE;
 
 
@@ -595,7 +539,7 @@ ALTER TABLE ONLY public.shared_contents
 --
 
 ALTER TABLE ONLY public.blocks
-    ADD CONSTRAINT blocks_shared_content_id_fkey FOREIGN KEY (shared_content_id) REFERENCES public.shared_contents(id);
+    ADD CONSTRAINT blocks_shared_content_id_fkey FOREIGN KEY (song_id) REFERENCES public.songs(id);
 
 
 --
@@ -611,7 +555,7 @@ ALTER TABLE ONLY public.families
 --
 
 ALTER TABLE ONLY public.blocks
-    ADD CONSTRAINT liturgies_blocks_block_id_fkey FOREIGN KEY (shared_content_id) REFERENCES public.shared_contents(id) ON DELETE CASCADE;
+    ADD CONSTRAINT liturgies_blocks_block_id_fkey FOREIGN KEY (song_id) REFERENCES public.songs(id) ON DELETE CASCADE;
 
 
 --
@@ -636,14 +580,6 @@ ALTER TABLE ONLY public.blocks
 
 ALTER TABLE ONLY public.liturgies
     ADD CONSTRAINT liturgies_organization_id_fkey FOREIGN KEY (organization_id) REFERENCES public.organizations(id);
-
-
---
--- Name: songs songs_organization_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.songs
-    ADD CONSTRAINT songs_organization_id_fkey FOREIGN KEY (organization_id) REFERENCES public.organizations(id) ON DELETE CASCADE;
 
 
 --
@@ -705,3 +641,5 @@ INSERT INTO public."schema_migrations" (version) VALUES (20250529165416);
 INSERT INTO public."schema_migrations" (version) VALUES (20250529174600);
 INSERT INTO public."schema_migrations" (version) VALUES (20250530132548);
 INSERT INTO public."schema_migrations" (version) VALUES (20250605171914);
+INSERT INTO public."schema_migrations" (version) VALUES (20250605173012);
+INSERT INTO public."schema_migrations" (version) VALUES (20250605175322);

@@ -4,9 +4,13 @@ defmodule CMS.Liturgies.Block do
 
   alias CMS.Accounts.Organization
   alias CMS.Bibles
-  alias CMS.Liturgies.SharedContent
-  alias CMS.Liturgies.SharedContents
+  alias CMS.Liturgies.Song
+  alias CMS.Liturgies.Songs
   alias CMS.Liturgies.Liturgy
+
+  defmodule Types do
+    def types, do: [:text, :song, :passage]
+  end
 
   schema "blocks" do
     field :position, :integer
@@ -14,12 +18,12 @@ defmodule CMS.Liturgies.Block do
     field :title, :string
     field :subtitle, :string
     field :body, :string
-    field :type, Ecto.Enum, values: SharedContent.types()
+    field :type, Ecto.Enum, values: Types.types()
 
     field :resolved_body, :string, virtual: true
 
     belongs_to :liturgy, Liturgy
-    belongs_to :shared_content, SharedContent, on_replace: :nilify
+    belongs_to :song, Song, on_replace: :nilify
     belongs_to :organization, Organization
 
     timestamps(type: :utc_datetime)
@@ -28,7 +32,7 @@ defmodule CMS.Liturgies.Block do
   @doc false
   def changeset(block, attrs, index, liturgy_attrs, user_scope) do
     block
-    |> cast(attrs, [:shared_content_id, :position, :body, :subtitle, :title, :type])
+    |> cast(attrs, [:song_id, :position, :body, :subtitle, :title, :type])
     |> put_block(attrs, index, liturgy_attrs, user_scope)
     |> put_change(:organization_id, user_scope.organization.id)
   end
@@ -43,43 +47,41 @@ defmodule CMS.Liturgies.Block do
         end
 
     changeset
-    |> build_shared_content(type, attrs, user_scope)
-    |> merge(SharedContent.changeset(type, changeset.data, attrs, user_scope))
+    |> build_song(type, attrs, user_scope)
     |> put_change(:position, index)
   end
 
-  defp build_shared_content(changeset, :text, _attrs, _scope), do: changeset
+  defp build_song(changeset, :text, _attrs, _scope), do: changeset
 
-  defp build_shared_content(
-         %{data: %{shared_content_id: shared_content_id}} = changeset,
-         _type,
-         _attrs,
-         _user_scope
-       )
-       when not is_nil(shared_content_id),
-       do: changeset
-
-  defp build_shared_content(changeset, :passage, %{"title" => title}, _user_scope) do
+  defp build_song(changeset, :passage, %{"title" => title}, _user_scope) do
     put_change(changeset, :body, Bibles.get_verses(title))
   end
 
-  defp build_shared_content(changeset, type, %{"title" => title}, user_scope) do
-    shared_content = SharedContents.suggest_shared_content(user_scope, type, title)
+  defp build_song(
+         %{data: %{song_id: song_id}} = changeset,
+         :song,
+         _attrs,
+         _user_scope
+       )
+       when not is_nil(song_id),
+       do: changeset
+
+  defp build_song(changeset, :song, %{"title" => title}, user_scope) do
+    song = Songs.suggest(user_scope, title)
 
     cond do
-      shared_content ->
+      song ->
         changeset
-        |> put_change(:body, shared_content.body)
-        |> put_assoc(:shared_content, shared_content)
+        |> put_change(:body, song.body)
+        |> put_assoc(:song, song)
 
       get_field(changeset, :body) ->
         put_assoc(
           changeset,
-          :shared_content,
-          %SharedContent{
+          :song,
+          %Song{
             body: get_field(changeset, :body),
             title: title,
-            type: type,
             organization_id: user_scope.organization.id
           }
         )
@@ -89,11 +91,7 @@ defmodule CMS.Liturgies.Block do
     end
   end
 
-  defp build_shared_content(changeset, _type, _attrs, _user_scope), do: changeset
-
-  def make_template(%{type: :text, shared_content_id: nil, subtitle: subtitle, title: title}) do
-    %__MODULE__{type: :text, subtitle: subtitle, title: title}
-  end
+  defp build_song(changeset, _type, _attrs, _user_scope), do: changeset
 
   def make_template(%{type: type, subtitle: subtitle}) do
     %__MODULE__{type: type, subtitle: subtitle}
