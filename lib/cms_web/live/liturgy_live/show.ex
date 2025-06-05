@@ -33,20 +33,20 @@ defmodule CMSWeb.LiturgyLive.Show do
                 {block.subtitle}
               </span>
               <h3 :if={block.title} class="text-lg font-medium">{block.title}</h3>
-              <div :if={block.body} class="mt-4 prose max-w-none [&_p]:mb-6">
-                {raw(Earmark.as_html!(block.body))}
+              <div :if={block.resolved_body} class="mt-4 prose max-w-none [&_p]:mb-6">
+                {raw(Earmark.as_html!(block.resolved_body))}
               </div>
             <% :song -> %>
               <span class="text-xs uppercase text-gray-500">{gettext("Song")}</span>
               <h3 :if={block.title} class="text-lg font-medium">{block.title}</h3>
-              <div :if={block.body} class="mt-4 prose max-w-none [&_p]:mb-6">
-                {raw(Earmark.as_html!(block.body, breaks: true))}
+              <div :if={block.resolved_body} class="mt-4 prose max-w-none [&_p]:mb-6">
+                {raw(Earmark.as_html!(block.resolved_body, breaks: true))}
               </div>
             <% :passage -> %>
               <span class="text-xs uppercase text-gray-500">{block.subtitle}</span>
               <h3 class="text-lg font-medium">{block.title}</h3>
 
-              <LiturgyComponents.verse_list verses={block.body} />
+              <LiturgyComponents.verse_list verses={block.resolved_body} />
           <% end %>
         </div>
       </div>

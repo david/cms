@@ -87,10 +87,11 @@ defmodule CMS.Liturgies do
   defp populate_block(block) do
     Map.put(
       block,
-      :body,
+      :resolved_body,
       case block.type do
         :passage -> Bibles.get_verses(block.title)
-        _ -> get_in(block.shared_content.body)
+        :song -> get_in(block.shared_content.body)
+        _ -> block.body
       end
     )
   end

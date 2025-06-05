@@ -13,8 +13,10 @@ defmodule CMS.Liturgies.Block do
 
     field :title, :string
     field :subtitle, :string
-    field :body, :string, virtual: true
+    field :body, :string
     field :type, Ecto.Enum, values: SharedContent.types()
+
+    field :resolved_body, :string, virtual: true
 
     belongs_to :liturgy, Liturgy
     belongs_to :shared_content, SharedContent, on_replace: :nilify
@@ -45,6 +47,8 @@ defmodule CMS.Liturgies.Block do
     |> merge(SharedContent.changeset(type, changeset.data, attrs, user_scope))
     |> put_change(:position, index)
   end
+
+  defp build_shared_content(changeset, :text, _attrs, _scope), do: changeset
 
   defp build_shared_content(
          %{data: %{shared_content_id: shared_content_id}} = changeset,

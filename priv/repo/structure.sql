@@ -93,7 +93,8 @@ CREATE TABLE public.blocks (
     updated_at timestamp(0) without time zone NOT NULL,
     subtitle character varying(255),
     title character varying(255),
-    type character varying(255) NOT NULL
+    type character varying(255) NOT NULL,
+    body text
 );
 
 
@@ -703,3 +704,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20250529165125);
 INSERT INTO public."schema_migrations" (version) VALUES (20250529165416);
 INSERT INTO public."schema_migrations" (version) VALUES (20250529174600);
 INSERT INTO public."schema_migrations" (version) VALUES (20250530132548);
+INSERT INTO public."schema_migrations" (version) VALUES (20250605171914);
