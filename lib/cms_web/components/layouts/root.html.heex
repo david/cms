@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content={get_csrf_token()} />
-    <.live_title default="CMS" suffix=" · Phoenix Framework">
+    <.live_title default="CMS">
       {assigns[:page_title]}
     </.live_title>
     <link phx-track-static rel="stylesheet" href={~p"/assets/css/app.css"} />
@@ -29,59 +29,63 @@
     </script>
   </head>
   <body>
-    <ul class="menu menu-horizontal w-full relative z-10 flex items-center gap-4 px-4 sm:px-6 lg:px-8 justify-end">
-      <%= if @current_scope.user do %>
-        <li>
-          <.link :if={@current_scope.user.role == :admin} href={~p"/users"}>Users</.link>
-        </li>
-        <li>
-          <.link href={~p"/liturgies"}>Liturgies</.link>
-        </li>
-        <li class="dropdown dropdown-end">
-          <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar placeholder">
-            <div class="bg-neutral text-neutral-content rounded-full w-10">
-              <span class="text-xl">
-                {@current_scope.user.name |> String.first() |> String.upcase()}
-              </span>
-            </div>
-          </div>
-          <ul
-            tabindex="0"
-            class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 mt-4 z-[1]"
-          >
-            <li><.link href={~p"/users/settings"}>Settings</.link></li>
-            <li><.link href={~p"/users/log-out"} method="delete">Log out</.link></li>
-          </ul>
-        </li>
-      <% else %>
-        <li>
-          <.link href={~p"/users/log-in"}>Log in</.link>
-        </li>
-      <% end %>
-      <li class="flex flex-0 w-[100px]">
-        <.theme_toggle />
-      </li>
-      <li>
-        <% # FIXME: Works only for liturgies, but is visible everywhere %>
+    <div class="navbar">
+      <div class="navbar-start"></div>
+      <div class="navbar-center">
+        {assigns[:page_title]}
+      </div>
+      <div class="navbar-end">
+        <ul class="menu menu-horizontal">
+          <li>
+            <% # FIXME: Works only for liturgies, but is visible everywhere %>
 
-        <button
-          id="liturgy-decrease-font-size"
-          aria-label="Decrease font size"
-          class="btn btn-ghost btn-circle"
-        >
-          <.icon name="hero-magnifying-glass-minus" class="size-5" />
-        </button>
-      </li>
-      <li>
-        <button
-          id="liturgy-increase-font-size"
-          aria-label="Increase font size"
-          class="btn btn-ghost btn-circle"
-        >
-          <.icon name="hero-magnifying-glass-plus" class="size-5" />
-        </button>
-      </li>
-    </ul>
+            <button
+              id="liturgy-decrease-font-size"
+              aria-label="Decrease font size"
+              class="btn btn-ghost btn-circle"
+            >
+              <.icon name="hero-magnifying-glass-minus" class="size-5" />
+            </button>
+          </li>
+          <li>
+            <button
+              id="liturgy-increase-font-size"
+              aria-label="Increase font size"
+              class="btn btn-ghost btn-circle"
+            >
+              <.icon name="hero-magnifying-glass-plus" class="size-5" />
+            </button>
+          </li>
+          <%= if @current_scope.user do %>
+            <li class="dropdown dropdown-end">
+              <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar placeholder">
+                <div class="bg-neutral text-neutral-content rounded-full w-10">
+                  <span class="text-xl">
+                    {@current_scope.user.name |> String.first() |> String.upcase()}
+                  </span>
+                </div>
+              </div>
+              <ul
+                tabindex="0"
+                class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 mt-4 z-[1]"
+              >
+                <li><.theme_toggle /></li>
+                <li :if={@current_scope.user.role == :admin}>
+                  <.link href={~p"/users"}>Users</.link>
+                </li>
+                <li><.link href={~p"/liturgies"}>Liturgies</.link></li>
+                <li><.link href={~p"/users/settings"}>Settings</.link></li>
+                <li><.link href={~p"/users/log-out"} method="delete">Log out</.link></li>
+              </ul>
+            </li>
+          <% else %>
+            <li>
+              <.link href={~p"/users/log-in"}>Log in</.link>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
     {@inner_content}
     <div
       id="pwa-install-banner"
