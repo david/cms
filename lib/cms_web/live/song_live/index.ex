@@ -25,7 +25,7 @@ defmodule CMSWeb.SongLive.Index do
           <ul class="list-none p-0 bg-base-200 rounded-box shadow-xl w-full divide-y divide-base-300">
             <%= for song <- @songs do %>
               <li class="p-4">
-                {song.title}
+                <.link href={~p"/songs/#{song.id}"}>{song.title}</.link>
               </li>
             <% end %>
           </ul>

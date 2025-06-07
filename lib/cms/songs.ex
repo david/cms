@@ -21,6 +21,24 @@ defmodule CMS.Songs do
   end
 
   @doc """
+  Gets a single song.
+
+  Raises `Ecto.NoResultsError` if the song does not exist.
+
+  ## Examples
+
+      iex> get_song!(scope, 123)
+      %song{}
+
+      iex> get_song!(scope, 456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_song!(%Scope{} = scope, id) do
+    Repo.get_by!(Song, id: id, organization_id: scope.organization.id)
+  end
+
+  @doc """
   Suggests an existing song by title within the given scope's organization.
   Returns the song if found, otherwise nil.
   """
