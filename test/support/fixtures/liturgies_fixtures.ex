@@ -5,6 +5,7 @@ defmodule CMS.LiturgiesFixtures do
   """
 
   alias CMS.Liturgies.Block
+  alias CMS.Repo
 
   def liturgy_attrs(attrs \\ %{}) do
     Enum.into(attrs, %{
@@ -46,7 +47,7 @@ defmodule CMS.LiturgiesFixtures do
     {:ok, block} =
       %Block{organization_id: scope.organization.id}
       |> Ecto.Changeset.change(attrs)
-      |> CMS.Repo.insert()
+      |> Repo.insert()
 
     block
   end

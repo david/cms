@@ -4,8 +4,8 @@ defmodule CMS.Liturgies.Block do
 
   alias CMS.Accounts.Organization
   alias CMS.Bibles
-  alias CMS.Liturgies.Song
-  alias CMS.Liturgies.Songs
+  alias CMS.Songs.Song
+  alias CMS.Songs
   alias CMS.Liturgies.Liturgy
 
   defmodule Types do

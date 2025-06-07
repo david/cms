@@ -8,7 +8,6 @@ defmodule CMS.Liturgies do
 
   alias CMS.Accounts.Scope
   alias CMS.Bibles
-  alias CMS.Liturgies.Song
   alias CMS.Liturgies.Liturgy
 
   @doc """
@@ -196,12 +195,6 @@ defmodule CMS.Liturgies do
   """
   def change_liturgy(%Scope{} = scope, %Liturgy{} = liturgy, attrs \\ %{}) do
     Liturgy.changeset(liturgy, attrs, scope)
-  end
-
-  def list_songs(%Scope{} = scope) do
-    Song
-    |> from(where: [organization_id: ^scope.organization.id])
-    |> Repo.all()
   end
 
   @doc """

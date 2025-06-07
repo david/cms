@@ -3,6 +3,7 @@ defmodule CMSWeb.LiturgyLive.Form do
 
   alias CMS.Liturgies
   alias CMS.Liturgies.Liturgy
+  alias CMS.Songs
 
   alias CMSWeb.LiturgyComponents
 
@@ -31,11 +32,7 @@ defmodule CMSWeb.LiturgyLive.Form do
 
           <div class="flex flex-col">
             <fieldset class="flex flex-col">
-              <input
-                name={block[:song_id].name}
-                type="hidden"
-                value={block[:song_id].value}
-              />
+              <input name={block[:song_id].name} type="hidden" value={block[:song_id].value} />
               <input name={block[:type].name} type="hidden" value={block[:type].value} />
 
               <%= case to_string(block[:type].value) do %>
@@ -141,7 +138,7 @@ defmodule CMSWeb.LiturgyLive.Form do
      |> assign(:return_to, return_to(params["return_to"]))
      |> assign(
        :song_blocks,
-       Liturgies.list_songs(socket.assigns.current_scope)
+       Songs.list_songs(socket.assigns.current_scope)
      )
      |> apply_action(socket.assigns.live_action, params)}
   end

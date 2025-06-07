@@ -63,6 +63,7 @@ defmodule CMSWeb.Router do
       live "/liturgies", LiturgyLive.Index, :index
       live "/liturgies/new", LiturgyLive.Form, :new
       live "/liturgies/:id/edit", LiturgyLive.Form, :edit
+      live "/songs", SongLive.Index, :index
     end
   end
 
