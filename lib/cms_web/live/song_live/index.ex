@@ -6,14 +6,16 @@ defmodule CMSWeb.SongLive.Index do
   @impl true
   def mount(_params, _session, socket) do
     songs = Songs.list_songs(socket.assigns.current_scope)
-    {:ok, assign(socket, :songs, songs)}
+
+    socket = socket |> assign(:page_title, "Songs") |> assign(:songs, songs)
+
+    {:ok, socket}
   end
 
   @impl true
   def render(assigns) do
     ~H"""
     <div class="container mx-auto p-4">
-      <h1 class="text-3xl font-semibold mb-6">Songs</h1>
       <div class="w-full md:w-3/4 lg:w-1/2 mx-auto">
         <%= if Enum.empty?(@songs) do %>
           <div class="card bg-base-200 shadow-xl">
