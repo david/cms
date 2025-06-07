@@ -14,6 +14,20 @@ defmodule CMSWeb.LiturgyLive.Show do
         {gettext("Liturgy")}
         <p title="Service date" class="text-sm font-normal">{@liturgy.service_on}</p>
         <:actions>
+          <button
+            id="liturgy-decrease-font-size"
+            aria-label="Decrease font size"
+            class="btn btn-ghost btn-circle"
+          >
+            <.icon name="hero-magnifying-glass-minus" class="size-5" />
+          </button>
+          <button
+            id="liturgy-increase-font-size"
+            aria-label="Increase font size"
+            class="btn btn-ghost btn-circle"
+          >
+            <.icon name="hero-magnifying-glass-plus" class="size-5" />
+          </button>
           <.button navigate={~p"/liturgies"}>
             <.icon name="hero-arrow-left" />
           </.button>

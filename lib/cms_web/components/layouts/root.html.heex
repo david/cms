@@ -36,26 +36,6 @@
       </div>
       <div class="navbar-end">
         <ul class="menu menu-horizontal">
-          <li>
-            <% # FIXME: Works only for liturgies, but is visible everywhere %>
-
-            <button
-              id="liturgy-decrease-font-size"
-              aria-label="Decrease font size"
-              class="btn btn-ghost btn-circle"
-            >
-              <.icon name="hero-magnifying-glass-minus" class="size-5" />
-            </button>
-          </li>
-          <li>
-            <button
-              id="liturgy-increase-font-size"
-              aria-label="Increase font size"
-              class="btn btn-ghost btn-circle"
-            >
-              <.icon name="hero-magnifying-glass-plus" class="size-5" />
-            </button>
-          </li>
           <%= if @current_scope.user do %>
             <li class="dropdown dropdown-end">
               <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar placeholder">
