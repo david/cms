@@ -2,9 +2,6 @@ import Config
 
 # Configure your database
 config :cms, CMS.Repo,
-  username: "postgres",
-  password: "postgres",
-  hostname: "db",
   database: "cms_dev",
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
