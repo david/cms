@@ -267,6 +267,29 @@ defmodule CMSWeb.CoreComponents do
   end
 
   @doc """
+  Renders the navbar.
+  """
+  slot :left
+  slot :center
+  slot :right
+
+  def navbar(assigns) do
+    ~H"""
+    <div class="navbar">
+      <div :if={@left != []} class="navbar-start">
+        {render_slot(@left)}
+      </div>
+      <div class="navbar-center">
+        {render_slot(@center)}
+      </div>
+      <div class="navbar-end">
+        {render_slot(@right)}
+      </div>
+    </div>
+    """
+  end
+
+  @doc """
   Renders a header with title.
   """
   attr :class, :string, default: nil

@@ -29,12 +29,10 @@
     </script>
   </head>
   <body>
-    <div class="navbar">
-      <div class="navbar-start"></div>
-      <div class="navbar-center">
-        {assigns[:page_title]}
-      </div>
-      <div class="navbar-end">
+    <.navbar>
+      <:left></:left>
+      <:center>{assigns[:page_title]}</:center>
+      <:right>
         <ul class="menu menu-horizontal">
           <%= if @current_scope.user do %>
             <li class="dropdown dropdown-end">
@@ -64,8 +62,8 @@
             </li>
           <% end %>
         </ul>
-      </div>
-    </div>
+      </:right>
+    </.navbar>
     {@inner_content}
     <div
       id="pwa-install-banner"
