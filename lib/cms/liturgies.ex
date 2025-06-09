@@ -198,29 +198,15 @@ defmodule CMS.Liturgies do
   end
 
   @doc """
-  Returns the id of the latest liturgy on or before today.
-  Returns `nil` if no such liturgy is found.
-  """
-  def get_latest_liturgy_id(%Scope{} = scope) do
-    today = Date.utc_today()
-
-    from(l in Liturgy,
-      select: l.id,
-      where: l.organization_id == ^scope.organization.id and l.service_on <= ^today,
-      order_by: [desc: l.service_on],
-      limit: 1
-    )
-    |> Repo.one()
-  end
-
-  @doc """
   Gets a single liturgy by service_on date.
 
   Returns `nil` if the Liturgy does not exist.
   """
-  def get_liturgy_by_date(%Scope{} = scope, service_date) do
+  def get_last(%Scope{} = scope, service_date) do
     from(l in Liturgy,
-      where: l.organization_id == ^scope.organization.id and l.service_on == ^service_date
+      where: l.organization_id == ^scope.organization.id and l.service_on <= ^service_date,
+      order_by: [desc: l.service_on],
+      limit: 1
     )
     |> Repo.one()
   end

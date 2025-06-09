@@ -7,7 +7,7 @@ defmodule CMSWeb.PageController do
     # so skip the default app layout.
     scope = conn.assigns.current_scope
     today = Date.utc_today()
-    liturgy = Liturgies.get_liturgy_by_date(scope, today)
+    liturgy = Liturgies.get_last(scope, today)
     render(conn, :home, liturgy: liturgy, layout: false)
   end
 end
