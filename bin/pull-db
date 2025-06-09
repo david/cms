@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# TODO: There must be a better way to do this
+
+NAME="chr_db"
+ID=$(
+  docker --host ssh://chr-prod-app stack ps --format json --filter desired-state=running chr |
+    jq "select(.Name | startswith(\"$NAME\")) | .ID"
+)
+IMAGE=$(
+  docker --host ssh://chr-prod-app service ps --format json $NAME |
+    jq "select(.ID == $ID) | .Image"
+)
+
+if [[ -z "$IMAGE" ]]; then
+  echo "Image not found: $IMAGE"
+  exit 1
+fi
+
+CONTAINER=$(
+  docker --host ssh://chr-prod-app container ls --format json |
+    jq -r "select(.Image == $IMAGE) | .ID"
+)
+
+if [[ -z "$CONTAINER" ]]; then
+  echo "Container not found: $CONTAINER"
+  exit 1
+fi
+
+docker --host ssh://chr-prod-app container exec $CONTAINER \
+  pg_dump -U app chr_prod > /tmp/chr_prod.sql
+
+psql cms_dev -f /tmp/chr_prod.sql
