@@ -105,8 +105,6 @@ defmodule CMSWeb.UserLive.Form do
   end
 
   def handle_event("save", %{"user" => user_params}, socket) do
-    IO.inspect(socket.assigns.live_action, label: "Live action")
-    IO.inspect(user_params, label: "user params")
     save_user(socket, socket.assigns.live_action, user_params)
   end
 
