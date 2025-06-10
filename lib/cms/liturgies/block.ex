@@ -35,6 +35,7 @@ defmodule CMS.Liturgies.Block do
     |> cast(attrs, [:song_id, :position, :body, :subtitle, :title, :type])
     |> put_block(attrs, index, liturgy_attrs, user_scope)
     |> put_change(:organization_id, user_scope.organization.id)
+    |> put_change(:position, index)
   end
 
   defp put_block(changeset, attrs, index, liturgy_attrs, user_scope) do
@@ -48,7 +49,6 @@ defmodule CMS.Liturgies.Block do
 
     changeset
     |> build_song(type, attrs, user_scope)
-    |> put_change(:position, index)
   end
 
   defp build_song(changeset, :text, _attrs, _scope), do: changeset
