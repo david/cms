@@ -33,22 +33,25 @@ defmodule CMS.Liturgies.Block do
   def changeset(block, attrs, index, liturgy_attrs, user_scope) do
     block
     |> cast(attrs, [:song_id, :position, :body, :subtitle, :title, :type])
-    |> put_block(attrs, index, liturgy_attrs, user_scope)
+    |> put_change(:type, get_type(block, attrs, liturgy_attrs, index))
     |> put_change(:organization_id, user_scope.organization.id)
     |> put_change(:position, index)
+    |> put_block(attrs, index, liturgy_attrs, user_scope)
+  end
+
+  defp get_type(block, attrs, liturgy_attrs, index) do
+    block
+    |> cast(attrs, [:type])
+    |> get_field(:type) ||
+      case Enum.at(liturgy_attrs["blocks_sort"], index) do
+        "new-text" -> :text
+        "new-song" -> :song
+        "new-passage" -> :passage
+      end
   end
 
   defp put_block(changeset, attrs, index, liturgy_attrs, user_scope) do
-    type =
-      get_field(changeset, :type) ||
-        case Enum.at(liturgy_attrs["blocks_sort"], index) do
-          "new-text" -> :text
-          "new-song" -> :song
-          "new-passage" -> :passage
-        end
-
-    changeset
-    |> build_song(type, attrs, user_scope)
+    build_song(changeset, get_field(changeset, :type), attrs, user_scope)
   end
 
   defp build_song(changeset, :text, _attrs, _scope), do: changeset
