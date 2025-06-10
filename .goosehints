@@ -27,7 +27,6 @@ This file contains guidelines for Goose to follow when working on this project.
 ### Coding
 
 - **Error Handling**: Use `with` statements for complex success paths and `case` statements for simple, explicit pattern matching on tagged tuples (e.g., `{:ok, result}`, `{:error, reason}`).
-- **Tool Paths**: Always use absolute paths with the `developer.text_editor` tool.
 
 ### Database Migrations
 
@@ -61,5 +60,9 @@ This file contains guidelines for Goose to follow when working on this project.
 - **Explain "Why," Not "What"**: Only add comments to explain non-obvious code or complex business logic.
 - **No Redundant Comments**: Do not add comments that restate the code.
 - **No Task-Specific Notes**: Do not leave notes to yourself in the code.
+
+### Tool use
+
+- **Use absolute paths**: Always use absolute paths with the `developer__text_editor` tool.
 
 # vim: ft=markdown
