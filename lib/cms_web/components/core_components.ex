@@ -545,4 +545,16 @@ defmodule CMSWeb.CoreComponents do
   def translate_errors(errors, field) when is_list(errors) do
     for {^field, {msg, opts}} <- errors, do: translate_error({msg, opts})
   end
+
+  attr :title, :string, default: nil
+  attr :body, :string, default: nil
+
+  def song(assigns) do
+    ~H"""
+    <h3 :if={@title} class="text-lg font-medium">{@title}</h3>
+    <div :if={@body} class="mt-4 prose max-w-none [&_p]:mb-6">
+      {Phoenix.HTML.raw(Earmark.as_html!(@body, breaks: true))}
+    </div>
+    """
+  end
 end
