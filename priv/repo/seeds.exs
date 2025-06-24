@@ -23,11 +23,10 @@ org =
 
 family = Repo.insert!(%Family{designation: "Administrator", organization: org})
 
-user =
-  Repo.insert!(%User{
-    email: "admin@example.com",
-    family: family,
-    name: "Admin",
-    confirmed_at: DateTime.utc_now() |> DateTime.truncate(:second),
-    organization: org
-  })
+Repo.insert!(%User{
+  email: "admin@example.com",
+  family: family,
+  name: "Admin",
+  confirmed_at: DateTime.utc_now() |> DateTime.truncate(:second),
+  organization: org
+})
