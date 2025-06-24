@@ -23,18 +23,9 @@ defmodule CMSWeb.SongLive.Show do
   @impl true
   def render(assigns) do
     ~H"""
-    <.header>
-      {@song.title}
-      <:actions>
-        <.link href={~p"/songs"}>
-          <.button>
-            <.icon name="hero-arrow-u-turn-left-square" class="w-5 h-5" /> Back to songs
-          </.button>
-        </.link>
-      </:actions>
-    </.header>
-
-    <pre class="prose prose-xl">{@song.body}</pre>
+    <Layouts.app flash={@flash} current_scope={@current_scope}>
+      <.song title={@song.title} body={@song.body} />
+    </Layouts.app>
     """
   end
 end
