@@ -11,7 +11,7 @@ msgstr ""
 "Language: en\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: lib/cms_web/components/core_components.ex:331
+#: lib/cms_web/components/core_components.ex:354
 #, elixir-autogen, elixir-format
 msgid "Actions"
 msgstr ""
@@ -31,7 +31,7 @@ msgstr ""
 msgid "Something went wrong!"
 msgstr ""
 
-#: lib/cms_web/live/liturgy_live/show.ex:37
+#: lib/cms_web/live/liturgy_live/show.ex:54
 #, elixir-autogen, elixir-format
 msgid "Song"
 msgstr "Song"
@@ -46,17 +46,33 @@ msgstr ""
 msgid "close"
 msgstr ""
 
-#: lib/cms_web/live/liturgy_live/show.ex:21
+#: lib/cms_web/live/liturgy_live/show.ex:36
 #, elixir-autogen, elixir-format
 msgid "Edit"
 msgstr "Edit"
 
-#: lib/cms_web/live/liturgy_live/show.ex:13
+#: lib/cms_web/controllers/page_html/home.html.heex:5
+#: lib/cms_web/live/liturgy_live/show.ex:14
 #, elixir-autogen, elixir-format
 msgid "Liturgy"
 msgstr "Liturgy"
 
-#: lib/cms_web/live/liturgy_live/show.ex:58
+#: lib/cms_web/live/liturgy_live/show.ex:83
 #, elixir-autogen, elixir-format
 msgid "Show Liturgy"
 msgstr "Show Liturgy"
+
+#: lib/cms_web/components/layouts/root.html.heex:72
+#, elixir-autogen, elixir-format
+msgid "Do you want to install this app on your device?"
+msgstr ""
+
+#: lib/cms_web/components/layouts/root.html.heex:77
+#, elixir-autogen, elixir-format
+msgid "No"
+msgstr ""
+
+#: lib/cms_web/components/layouts/root.html.heex:74
+#, elixir-autogen, elixir-format
+msgid "Yes"
+msgstr ""
