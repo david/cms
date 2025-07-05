@@ -236,7 +236,7 @@ defmodule CMSWeb.UserAuth do
     end
   end
 
-  def on_mount(:require_admin_access, _params, session, socket) do
+  def on_mount(:require_admin_access, _params, _session, socket) do
     current_user = socket.assigns.current_scope && socket.assigns.current_scope.user
 
     if current_user && current_user.role == :admin do
