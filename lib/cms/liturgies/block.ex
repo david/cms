@@ -55,7 +55,7 @@ defmodule CMS.Liturgies.Block do
   defp put_block(changeset, :text, _attrs, _scope), do: changeset
 
   defp put_block(changeset, :passage, %{"title" => title}, _user_scope) do
-    put_change(changeset, :body, Bibles.get_verses(title))
+    put_change(changeset, :resolved_body, Bibles.get_verses(title))
   end
 
   defp put_block(
