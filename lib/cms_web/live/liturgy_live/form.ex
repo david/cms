@@ -59,7 +59,7 @@ defmodule CMSWeb.LiturgyLive.Form do
                   <.input type="text" field={block[:title]} placeholder="verses" />
                   <.input type="text" field={block[:subtitle]} placeholder="subtitle" />
 
-                  <LiturgyComponents.verse_list verses={block[:body].value} />
+                  <LiturgyComponents.verse_list verses={block[:resolved_body].value} />
               <% end %>
             </fieldset>
 
