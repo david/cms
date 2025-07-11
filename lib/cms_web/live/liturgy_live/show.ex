@@ -14,9 +14,6 @@ defmodule CMSWeb.LiturgyLive.Show do
         {gettext("Liturgy")}
         <p title="Service date" class="text-sm font-normal">{@liturgy.service_on}</p>
         <:actions>
-          <.button navigate={~p"/liturgies"}>
-            <.icon name="hero-arrow-left" />
-          </.button>
           <%= if @current_scope.user && @current_scope.organization.id == @liturgy.organization_id do %>
             <.button variant="primary" navigate={~p"/liturgies/#{@liturgy}/edit?return_to=show"}>
               <.icon name="hero-pencil-square" /> {gettext("Edit")}
