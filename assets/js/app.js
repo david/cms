@@ -45,7 +45,7 @@ const Hooks = {
     }
   },
 
-  LiturgyFontSizeApplier: {
+  FontSizeApplier: {
     mounted() {
       document.getElementById("liturgy-increase-font-size").
         addEventListener("click", () => this.applyFontSize(+1));
