@@ -65,5 +65,4 @@ defmodule CMSWeb.Layouts do
     </div>
     """
   end
-
-  end
+end

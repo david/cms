@@ -141,9 +141,21 @@
               <.icon name="hero-magnifying-glass-plus" class="size-5" />
             </button>
           </li>
+
+          <li class="flex-grow bg-transparent"></li>
+
+          <li
+            :if={assigns[:liturgy] && assigns[:qr_code_svg]}
+            class="mt-6 flex flex-col items-center"
+          >
+            <img
+              src={"data:image/svg+xml;base64,#{assigns.qr_code_svg}"}
+              alt="QR Code"
+              class="w-48 h-48 rounded"
+            />
+          </li>
         </ul>
       </div>
     </div>
   </body>
 </html>
-

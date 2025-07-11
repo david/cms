@@ -47,13 +47,6 @@ defmodule CMSWeb.LiturgyLive.Show do
           <% end %>
         </div>
       </div>
-      <div class="mt-10 flex flex-col items-center">
-        <img
-          src={"data:image/svg+xml;base64,#{@qr_code_svg}"}
-          alt="QR Code"
-          class="w-48 h-48 rounded"
-        />
-      </div>
     </Layouts.app>
     """
   end
