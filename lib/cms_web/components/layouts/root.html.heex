@@ -58,7 +58,6 @@
                     tabindex="0"
                     class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 mt-4 z-[1]"
                   >
-                    <li><.theme_toggle /></li>
                     <li :if={@current_scope.user.role == :admin}>
                       <.link href={~p"/users"}>Users</.link>
                     </li>
