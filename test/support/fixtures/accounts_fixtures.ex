@@ -69,6 +69,10 @@ defmodule CMS.AccountsFixtures do
     user
   end
 
+  def admin_fixture(attrs \\ %{}) do
+    user_fixture(Map.merge(attrs, %{role: :admin}))
+  end
+
   def user_scope_fixture do
     user = user_fixture()
 
