@@ -27,6 +27,7 @@ Repo.insert!(%User{
   email: "admin@example.com",
   family: family,
   name: "Admin",
+  role: :admin,
   confirmed_at: DateTime.utc_now() |> DateTime.truncate(:second),
   organization: org
 })
