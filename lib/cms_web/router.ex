@@ -59,10 +59,6 @@ defmodule CMSWeb.Router do
       on_mount: [{CMSWeb.UserAuth, :require_authenticated}] do
       live "/users/settings", UserLive.Settings, :edit
       live "/users/settings/confirm-email/:token", UserLive.Settings, :confirm_email
-
-      live "/liturgies", LiturgyLive.Index, :index
-      live "/liturgies/new", LiturgyLive.Form, :new
-      live "/liturgies/:id/edit", LiturgyLive.Form, :edit
     end
   end
 
@@ -74,6 +70,10 @@ defmodule CMSWeb.Router do
         {CMSWeb.UserAuth, :require_authenticated},
         {CMSWeb.UserAuth, :require_admin_access}
       ] do
+      live "/admin/liturgies", LiturgyLive.Admin.Index, :index
+      live "/admin/liturgies/new", LiturgyLive.Admin.Form, :new
+      live "/admin/liturgies/:id/edit", LiturgyLive.Admin.Form, :edit
+
       live "/users", UserLive.Index
       live "/users/new", UserLive.Form, :new
       live "/users/:id/edit", UserLive.Form, :edit

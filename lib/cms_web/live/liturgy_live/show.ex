@@ -15,7 +15,7 @@ defmodule CMSWeb.LiturgyLive.Show do
         <p title="Service date" class="text-sm font-normal">{@liturgy.service_on}</p>
         <:actions>
           <%= if @current_scope.user && @current_scope.organization.id == @liturgy.organization_id do %>
-            <.button variant="primary" navigate={~p"/liturgies/#{@liturgy}/edit?return_to=show"}>
+            <.button variant="primary" navigate={~p"/admin/liturgies/#{@liturgy}/edit?return_to=show"}>
               <.icon name="hero-pencil-square" /> {gettext("Edit")}
             </.button>
           <% end %>
@@ -82,7 +82,7 @@ defmodule CMSWeb.LiturgyLive.Show do
     {:noreply,
      socket
      |> put_flash(:error, "The current liturgy was deleted.")
-     |> push_navigate(to: ~p"/liturgies")}
+     |> push_navigate(to: ~p"/admin/liturgies")}
   end
 
   def handle_info({type, %CMS.Liturgies.Liturgy{}}, socket)

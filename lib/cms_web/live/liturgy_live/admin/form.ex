@@ -1,4 +1,4 @@
-defmodule CMSWeb.LiturgyLive.Form do
+defmodule CMSWeb.LiturgyLive.Admin.Form do
   use CMSWeb, :live_view
 
   alias CMS.Liturgies
@@ -239,6 +239,6 @@ defmodule CMSWeb.LiturgyLive.Form do
     end
   end
 
-  defp return_path(_scope, "index", _liturgy), do: ~p"/liturgies"
+  defp return_path(_scope, "index", _liturgy), do: ~p"/admin/liturgies"
   defp return_path(_scope, "show", liturgy), do: ~p"/liturgies/#{liturgy}"
 end

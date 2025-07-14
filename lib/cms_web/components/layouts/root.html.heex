@@ -63,7 +63,9 @@
                     <li :if={@current_scope.user.role == :admin}>
                       <.link href={~p"/users"}>Users</.link>
                     </li>
-                    <li><.link href={~p"/liturgies"}>Liturgies</.link></li>
+                    <li :if={@current_scope.user.role == :admin}>
+                      <.link href={~p"/admin/liturgies"}>Liturgies</.link>
+                    </li>
                     <li><.link href={~p"/users/settings"}>Settings</.link></li>
                     <li><.link href={~p"/users/log-out"} method="delete">Log out</.link></li>
                   </ul>
