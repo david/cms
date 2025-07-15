@@ -4,12 +4,11 @@ defmodule CMSWeb.LiturgyLive.Show do
   alias CMS.Liturgies
   alias Earmark
   alias CMSWeb.LiturgyComponents
-  alias Base
 
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} current_scope={@current_scope}>
+    <.main_layout flash={@flash} current_scope={@current_scope}>
       <.header>
         {gettext("Liturgy")}
         <p title="Service date" class="text-sm font-normal">{@liturgy.service_on}</p>
@@ -44,7 +43,7 @@ defmodule CMSWeb.LiturgyLive.Show do
           <% end %>
         </div>
       </div>
-    </Layouts.app>
+    </.main_layout>
     """
   end
 

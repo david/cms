@@ -6,7 +6,7 @@ defmodule CMSWeb.LiturgyLive.Admin.Index do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} current_scope={@current_scope}>
+    <.main_layout flash={@flash} current_scope={@current_scope}>
       <.header>
         Listing Liturgies
         <:actions>
@@ -42,7 +42,7 @@ defmodule CMSWeb.LiturgyLive.Admin.Index do
           </.link>
         </:action>
       </.table>
-    </Layouts.app>
+    </.main_layout>
     """
   end
 

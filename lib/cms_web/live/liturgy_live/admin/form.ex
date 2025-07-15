@@ -10,7 +10,7 @@ defmodule CMSWeb.LiturgyLive.Admin.Form do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} current_scope={@current_scope}>
+    <.main_layout flash={@flash} current_scope={@current_scope}>
       <.header>
         {@page_title}
         <:subtitle>Use this form to manage liturgy records in your database.</:subtitle>
@@ -74,7 +74,7 @@ defmodule CMSWeb.LiturgyLive.Admin.Form do
           <.button navigate={return_path(@current_scope, @return_to, @liturgy)}>Cancel</.button>
         </footer>
       </.form>
-    </Layouts.app>
+    </.main_layout>
     """
   end
 

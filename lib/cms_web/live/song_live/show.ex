@@ -23,9 +23,9 @@ defmodule CMSWeb.SongLive.Show do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} current_scope={@current_scope}>
+    <.main_layout flash={@flash} current_scope={@current_scope}>
       <.song title={@song.title} body={@song.body} />
-    </Layouts.app>
+    </.main_layout>
     """
   end
 end

@@ -3,7 +3,6 @@ defmodule CMSWeb.UserLive.Index do
 
   alias CMS.Accounts
   alias CMS.Accounts.Import
-  alias CMSWeb.Layouts
   alias Phoenix.LiveView.JS
 
   @impl true
@@ -50,7 +49,7 @@ defmodule CMSWeb.UserLive.Index do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} current_scope={@current_scope} page_title={@page_title}>
+    <.main_layout flash={@flash} current_scope={@current_scope} page_title={@page_title}>
       <.header>
         Users
         for {@organization.name}
@@ -103,7 +102,7 @@ defmodule CMSWeb.UserLive.Index do
           </footer>
         </form>
       </.modal>
-    </Layouts.app>
+    </.main_layout>
     """
   end
 

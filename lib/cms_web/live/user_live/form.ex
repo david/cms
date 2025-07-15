@@ -4,8 +4,6 @@ defmodule CMSWeb.UserLive.Form do
   alias CMS.Accounts
   alias CMS.Accounts.User
 
-  alias CMSWeb.Layouts
-
   @impl true
   def mount(params, _session, socket) do
     {:ok,
@@ -38,7 +36,7 @@ defmodule CMSWeb.UserLive.Form do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} current_scope={@current_scope} page_title={@page_title}>
+    <.main_layout flash={@flash} current_scope={@current_scope} page_title={@page_title}>
       <.header>
         {@page_title}
         <:subtitle>
@@ -78,7 +76,7 @@ defmodule CMSWeb.UserLive.Form do
           <.button navigate={~p"/users"}>Cancel</.button>
         </footer>
       </.form>
-    </Layouts.app>
+    </.main_layout>
     """
   end
 
