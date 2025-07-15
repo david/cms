@@ -1,6 +1,5 @@
 defmodule Cms.Repo.Migrations.CreateFamiliesAndMigrateUsersFamilyDesignation do
   use Ecto.Migration
-  import Ecto.Query
 
   def up do
     create table(:families) do
