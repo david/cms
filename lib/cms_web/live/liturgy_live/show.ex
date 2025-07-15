@@ -9,6 +9,15 @@ defmodule CMSWeb.LiturgyLive.Show do
   def render(assigns) do
     ~H"""
     <.main_layout flash={@flash} current_scope={@current_scope}>
+      <:sidebar_bottom>
+        <li :if={@qr_code_svg} class="mt-6 flex flex-col items-center">
+          <img
+            src={"data:image/svg+xml;base64,#{@qr_code_svg}"}
+            alt="QR Code"
+            class="w-48 h-48 rounded"
+          />
+        </li>
+      </:sidebar_bottom>
       <.header>
         {gettext("Liturgy")}
         <p title="Service date" class="text-sm font-normal">{@liturgy.service_on}</p>

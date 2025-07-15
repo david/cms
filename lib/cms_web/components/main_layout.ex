@@ -17,6 +17,7 @@ defmodule CMSWeb.MainLayout do
   attr :qr_code_svg, :string, default: nil
 
   slot :inner_block, required: true
+  slot :sidebar_bottom, required: false
 
   def main_layout(assigns) do
     ~H"""
@@ -36,7 +37,11 @@ defmodule CMSWeb.MainLayout do
       </div>
       <div class="drawer-side">
         <label for="sidebar-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
-        <.sidebar liturgy={@liturgy} qr_code_svg={@qr_code_svg} />
+        <.sidebar liturgy={@liturgy} qr_code_svg={@qr_code_svg}>
+          <:sidebar_bottom>
+            {render_slot(@sidebar_bottom)}
+          </:sidebar_bottom>
+        </.sidebar>
       </div>
     </div>
     """
@@ -121,6 +126,7 @@ defmodule CMSWeb.MainLayout do
 
   attr :liturgy, :map, default: nil
   attr :qr_code_svg, :string, default: nil
+  slot :sidebar_bottom, required: false
 
   defp sidebar(assigns) do
     ~H"""
@@ -167,13 +173,7 @@ defmodule CMSWeb.MainLayout do
 
       <li class="flex-grow bg-transparent"></li>
 
-      <li :if={@liturgy && @qr_code_svg} class="mt-6 flex flex-col items-center">
-        <img
-          src={"data:image/svg+xml;base64,#{@qr_code_svg}"}
-          alt="QR Code"
-          class="w-48 h-48 rounded"
-        />
-      </li>
+      {render_slot(@sidebar_bottom)}
     </ul>
     """
   end
