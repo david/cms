@@ -94,7 +94,18 @@ defmodule CMS.Liturgies.Block do
 
   defp normalize_block(changeset, _type, _attrs, _user_scope), do: changeset
 
+  def make_template(%{type: :text, title: title, subtitle: subtitle}) do
+    %__MODULE__{
+      type: :text,
+      title: title,
+      subtitle: subtitle
+    }
+  end
+
   def make_template(%{type: type, subtitle: subtitle}) do
-    %__MODULE__{type: type, subtitle: subtitle}
+    %__MODULE__{
+      type: type,
+      subtitle: subtitle
+    }
   end
 end
