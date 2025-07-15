@@ -31,8 +31,6 @@ defmodule CMSWeb.CoreComponents do
 
   alias Phoenix.LiveView.JS
 
-  alias CMSWeb.Layouts
-
   @doc """
   Renders flash notices.
 
@@ -557,23 +555,6 @@ defmodule CMSWeb.CoreComponents do
     <div :if={@body} class="mt-4 prose max-w-none [&_p]:mb-6">
       {Phoenix.HTML.raw(Earmark.as_html!(@body, breaks: true))}
     </div>
-    """
-  end
-
-  @doc """
-  Renders the main layout.
-  """
-  attr :flash, :map, default: %{}
-  attr :current_scope, :map, required: true
-  attr :page_title, :string, default: nil
-
-  slot :inner_block, required: true
-
-  def main_layout(assigns) do
-    ~H"""
-    <Layouts.app flash={@flash} current_scope={@current_scope} page_title={@page_title}>
-      {render_slot(@inner_block)}
-    </Layouts.app>
     """
   end
 end

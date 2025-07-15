@@ -87,6 +87,7 @@ defmodule CMSWeb do
       import Phoenix.HTML
       # Core UI components
       import CMSWeb.CoreComponents
+      import CMSWeb.MainLayout
 
       # Common modules used in templates
       alias Phoenix.LiveView.JS
