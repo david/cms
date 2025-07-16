@@ -26,10 +26,21 @@ defmodule CMS.Liturgies do
     Phoenix.PubSub.subscribe(CMS.PubSub, "user:#{key}:liturgies")
   end
 
+  @doc """
+  Subscribes to public notifications for a single liturgy.
+  """
+  def subscribe(%Liturgy{} = liturgy) do
+    Phoenix.PubSub.subscribe(CMS.PubSub, "liturgy:#{liturgy.id}")
+  end
+
   defp broadcast(%Scope{organization: org}, message) do
     key = org.id
 
     Phoenix.PubSub.broadcast(CMS.PubSub, "user:#{key}:liturgies", message)
+  end
+
+  defp broadcast_public(%Liturgy{} = liturgy, message) do
+    Phoenix.PubSub.broadcast(CMS.PubSub, "liturgy:#{liturgy.id}", message)
   end
 
   @doc """
@@ -67,6 +78,23 @@ defmodule CMS.Liturgies do
     query =
       from(l in Liturgy,
         where: l.id == ^id and l.organization_id == ^scope.organization.id,
+        preload: [blocks: [:song]]
+      )
+
+    query
+    |> Repo.one!()
+    |> populate_blocks()
+  end
+
+  @doc """
+  Gets a single liturgy without scope checks for public viewing.
+
+  Raises `Ecto.NoResultsError` if the Liturgy does not exist.
+  """
+  def get_public_liturgy!(id) do
+    query =
+      from(l in Liturgy,
+        where: l.id == ^id,
         preload: [blocks: [:song]]
       )
 
@@ -158,6 +186,7 @@ defmodule CMS.Liturgies do
            |> Liturgy.changeset(attrs, scope)
            |> Repo.update() do
       broadcast(scope, {:updated, liturgy})
+      broadcast_public(liturgy, {:updated, %{id: liturgy.id}})
       {:ok, liturgy}
     end
   end
@@ -170,7 +199,7 @@ defmodule CMS.Liturgies do
       iex> delete_liturgy(liturgy)
       {:ok, %Liturgy{}}
 
-      iex> delete_liturgy(liturgy)
+      iex> delete_liturgy( liturgy)
       {:error, %Ecto.Changeset{}}
 
   """

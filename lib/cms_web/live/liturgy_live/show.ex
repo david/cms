@@ -58,9 +58,9 @@ defmodule CMSWeb.LiturgyLive.Show do
 
   @impl true
   def mount(%{"id" => id}, _session, socket) do
-    liturgy = Liturgies.get_liturgy!(socket.assigns.current_scope, id)
+    liturgy = Liturgies.get_public_liturgy!(id)
 
-    Liturgies.subscribe_liturgies(socket.assigns.current_scope)
+    Liturgies.subscribe(liturgy)
 
     {:ok,
      socket
@@ -77,14 +77,16 @@ defmodule CMSWeb.LiturgyLive.Show do
 
   @impl true
   def handle_info(
-        {:updated, %CMS.Liturgies.Liturgy{id: id} = liturgy},
-        %{assigns: %{liturgy: %{id: id}}} = socket
+        {:updated, %{id: liturgy_id}},
+        %{assigns: %{liturgy: %{id: liturgy_id}}} = socket
       ) do
+    # Re-fetch the liturgy to get all populated fields
+    liturgy = Liturgies.get_public_liturgy!(liturgy_id)
     {:noreply, assign(socket, :liturgy, liturgy)}
   end
 
   def handle_info(
-        {:deleted, %CMS.Liturgies.Liturgy{id: id}},
+        {:deleted, %{id: id}},
         %{assigns: %{liturgy: %{id: id}}} = socket
       ) do
     {:noreply,
