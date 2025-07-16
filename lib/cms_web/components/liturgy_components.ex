@@ -25,7 +25,7 @@ defmodule CMSWeb.LiturgyComponents do
 
   def liturgy_sidebar_nav(assigns) do
     ~H"""
-    <ul class="menu menu-sm">
+    <ul class="menu menu-md">
       <li :for={block <- @liturgy.blocks}>
         <.link
           href={"#block-#{block.id}"}
