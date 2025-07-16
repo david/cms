@@ -25,6 +25,16 @@ import {LiveSocket} from "phoenix_live_view"
 import topbar from "../vendor/topbar"
 
 const Hooks = {
+  Sidebar: {
+    mounted() {
+      this.el.addEventListener("click", (e) => {
+        if (e.target.closest("a")) {
+          this.el.parentElement.querySelector(".drawer-toggle").checked = false
+        }
+      })
+    }
+  },
+
   DatalistPopulator: {
     mounted() {
       this.el.addEventListener("input", (event) => {

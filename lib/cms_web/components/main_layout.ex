@@ -19,6 +19,8 @@ defmodule CMSWeb.MainLayout do
   slot :inner_block, required: true
   slot :sidebar_bottom, required: false
 
+  alias CMSWeb.LiturgyComponents
+
   def main_layout(assigns) do
     ~H"""
     <div class="drawer">
@@ -35,7 +37,7 @@ defmodule CMSWeb.MainLayout do
         </CMSWeb.Layouts.app>
         <.pwa_install_banner />
       </div>
-      <div class="drawer-side">
+      <div id="sidebar-container" class="drawer-side" phx-hook="Sidebar">
         <label for="sidebar-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
         <.sidebar liturgy={@liturgy} qr_code_svg={@qr_code_svg}>
           <:sidebar_bottom>
@@ -169,8 +171,16 @@ defmodule CMSWeb.MainLayout do
       </li>
 
       <li>
-        <.link href={~p"/liturgy"}>
-          Liturgia <span :if={@liturgy} class="text-sm">({@liturgy.service_on})</span>
+        <details :if={@liturgy} open>
+          <summary>
+            <.link href={~p"/liturgy"}>
+              Liturgia <span class="text-sm">({@liturgy.service_on})</span>
+            </.link>
+          </summary>
+          <LiturgyComponents.liturgy_sidebar_nav liturgy={@liturgy} />
+        </details>
+        <.link :if={is_nil(@liturgy)} href={~p"/liturgy"}>
+          Liturgia
         </.link>
       </li>
       <li><.link navigate={~p"/songs"}>Hinos</.link></li>

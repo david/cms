@@ -31,7 +31,7 @@ defmodule CMSWeb.LiturgyLive.Show do
       </.header>
 
       <div class="space-y-10">
-        <div :for={block <- @liturgy.blocks} class="">
+        <div :for={block <- @liturgy.blocks} id={"block-#{block.id}"} class="">
           <%= case block.type do %>
             <% :text -> %>
               <span :if={block.subtitle} class="text-xs uppercase text-gray-500">

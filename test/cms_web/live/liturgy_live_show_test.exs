@@ -29,4 +29,16 @@ defmodule CMSWeb.LiturgyLive.ShowTest do
     # Re-render and check for the updated content
     assert render(view) =~ "2025-04-21"
   end
+
+  test "displays block titles in the sidebar", %{conn: conn, scope: scope} do
+    liturgy = liturgy_fixture(scope)
+    {:ok, view, _html} = live(conn, ~p"/liturgies/#{liturgy}")
+
+    html = render(view)
+
+    for block <- liturgy.blocks do
+      assert html =~ "href=\"#block-#{block.id}\""
+      assert html =~ block.title
+    end
+  end
 end
