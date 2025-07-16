@@ -168,7 +168,11 @@ defmodule CMSWeb.MainLayout do
         </button>
       </li>
 
-      <li><.link href={~p"/liturgy"}>Liturgia</.link></li>
+      <li>
+        <.link href={~p"/liturgy"}>
+          Liturgia <span :if={@liturgy} class="text-sm">({@liturgy.service_on})</span>
+        </.link>
+      </li>
       <li><.link navigate={~p"/songs"}>Hinos</.link></li>
 
       <li class="flex-grow bg-transparent"></li>

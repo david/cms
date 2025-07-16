@@ -8,7 +8,7 @@ defmodule CMSWeb.LiturgyLive.Show do
   @impl true
   def render(assigns) do
     ~H"""
-    <.main_layout flash={@flash} current_scope={@current_scope}>
+    <.main_layout flash={@flash} current_scope={@current_scope} liturgy={@liturgy}>
       <:sidebar_bottom>
         <li :if={@qr_code_svg} class="mt-6 flex flex-col items-center">
           <img
