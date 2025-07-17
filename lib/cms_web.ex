@@ -18,7 +18,8 @@ defmodule CMSWeb do
   """
 
   def static_paths,
-    do: ~w(assets fonts images favicon.ico robots.txt cache_manifest.json sw.js site.webmanifest)
+    do:
+      ~w(assets fonts images favicon.ico robots.txt cache_manifest.json sw.js site.webmanifest offline.html)
 
   def router do
     quote do
