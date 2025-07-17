@@ -24,7 +24,7 @@ defmodule CMS.Liturgies do
     Phoenix.PubSub.subscribe(CMS.PubSub, "liturgy:#{liturgy.id}")
   end
 
-  defp broadcast_public(%Liturgy{} = liturgy, message) do
+  defp broadcast(%Liturgy{} = liturgy, message) do
     Phoenix.PubSub.broadcast(CMS.PubSub, "liturgy:#{liturgy.id}", message)
   end
 
@@ -168,7 +168,7 @@ defmodule CMS.Liturgies do
            liturgy
            |> Liturgy.changeset(attrs, scope)
            |> Repo.update() do
-      broadcast_public(liturgy, {:updated, %{id: liturgy.id}})
+      broadcast(liturgy, {:updated, %{id: liturgy.id}})
       {:ok, liturgy}
     end
   end
