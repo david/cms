@@ -23,7 +23,7 @@ defmodule CMSWeb.MainLayout do
 
   def main_layout(assigns) do
     ~H"""
-    <div class="drawer">
+    <div class="drawer" id="content-wrapper" phx-hook="FontSizeApplier">
       <input id="sidebar-drawer" type="checkbox" class="drawer-toggle" />
       <div class="drawer-content flex flex-col h-screen">
         <.navbar
@@ -33,7 +33,7 @@ defmodule CMSWeb.MainLayout do
           qr_code_svg={@qr_code_svg}
         />
         <div class="flex-grow overflow-y-auto">
-          <CMSWeb.Layouts.app flash={@flash} id="main-content" phx-hook="FontSizeApplier">
+          <CMSWeb.Layouts.app flash={@flash}>
             {render_slot(@inner_block)}
           </CMSWeb.Layouts.app>
         </div>
