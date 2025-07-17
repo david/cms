@@ -159,6 +159,11 @@ if (process.env.NODE_ENV === "development") {
 
 let deferredPrompt;
 
+function isIos() {
+  const userAgent = window.navigator.userAgent.toLowerCase();
+  return /iphone|ipad|ipod/.test(userAgent);
+}
+
 // Function to detect if the device is likely mobile
 function isMobileDevice() {
   return ('ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0) &&
@@ -218,6 +223,26 @@ function hideInstallPromotion() {
   }
 }
 
+function showIosInstallPromotion() {
+  console.log("Attempting to show iOS install promotion.");
+  const installBanner = document.getElementById('pwa-ios-install-banner');
+  if (installBanner) {
+    installBanner.classList.remove('hidden');
+    console.log("iOS Install banner shown.");
+  }
+}
+
+function hideIosInstallPromotion() {
+  console.log("Attempting to hide iOS install promotion.");
+  const installBanner = document.getElementById('pwa-ios-install-banner');
+  if (installBanner) {
+    installBanner.classList.add('hidden');
+    // Set a flag in localStorage to remember the dismissal
+    localStorage.setItem('pwa-banner-dismissed', 'true');
+    console.log("iOS Install banner hidden and dismissal remembered.");
+  }
+}
+
 async function handleInstallClick() {
   if (deferredPrompt) {
     // Show the install prompt
@@ -234,6 +259,12 @@ async function handleInstallClick() {
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
+    if (isIos() && !window.matchMedia('(display-mode: standalone)').matches) {
+      if (localStorage.getItem('pwa-banner-dismissed') !== 'true') {
+        showIosInstallPromotion();
+      }
+    }
+
     navigator.serviceWorker.register('/sw.js')
       .then(registration => {
         console.log('ServiceWorker registration successful with scope: ', registration.scope);
@@ -247,3 +278,4 @@ if ('serviceWorker' in navigator) {
 // Expose handleInstallClick to the global scope or a LiveView hook if needed
 window.handleInstallClick = handleInstallClick;
 window.hideInstallPromotion = hideInstallPromotion;
+window.hideIosInstallPromotion = hideIosInstallPromotion;

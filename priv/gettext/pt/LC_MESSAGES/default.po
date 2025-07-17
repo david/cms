@@ -81,3 +81,13 @@ msgstr "Não"
 #, elixir-autogen, elixir-format
 msgid "Yes"
 msgstr "Sim"
+
+#: lib/cms_web/components/main_layout.ex:141
+#, elixir-autogen, elixir-format
+msgid "Dismiss"
+msgstr "Ignorar"
+
+#: lib/cms_web/components/main_layout.ex:138
+#, elixir-autogen, elixir-format
+msgid "To install this app on your device, tap the Share button and then 'Add to Home Screen'."
+msgstr "Para instalar esta aplicação no seu dispositivo, toque no botão Partilhar e de seguida em 'Adicionar ao ecrã principal'."

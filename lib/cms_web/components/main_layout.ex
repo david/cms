@@ -38,6 +38,7 @@ defmodule CMSWeb.MainLayout do
           </CMSWeb.Layouts.app>
         </div>
         <.pwa_install_banner />
+        <.pwa_ios_install_banner />
       </div>
       <div id="sidebar-container" class="drawer-side z-80" phx-hook="Sidebar">
         <label for="sidebar-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
@@ -118,12 +119,30 @@ defmodule CMSWeb.MainLayout do
       id="pwa-install-banner"
       class="fixed bottom-0 left-0 w-full bg-neutral text-neutral-content p-4 text-center z-[1000] hidden"
     >
-      <p class="mb-2">{gettext("Do you want to install this app on your device?")}</p>
+      <p class="mb-2">{gettext("Deseja instalar esta aplicação no seu dispositivo?")}</p>
       <button onclick="window.handleInstallClick()" class="btn btn-primary mr-2">
-        {gettext("Yes")}
+        {gettext("Sim")}
       </button>
       <button onclick="window.hideInstallPromotion()" class="btn btn-ghost">
-        {gettext("No")}
+        {gettext("Não")}
+      </button>
+    </div>
+    """
+  end
+
+  defp pwa_ios_install_banner(assigns) do
+    ~H"""
+    <div
+      id="pwa-ios-install-banner"
+      class="fixed bottom-0 left-0 w-full bg-neutral text-neutral-content p-4 text-center z-[1000] hidden"
+    >
+      <p class="mb-2">
+        {gettext(
+          "Para instalar esta aplicação no seu dispositivo, toque no botão Partilhar e de seguida em 'Adicionar ao ecrã principal'."
+        )}
+      </p>
+      <button onclick="window.hideIosInstallPromotion()" class="btn btn-ghost">
+        {gettext("Ignorar")}
       </button>
     </div>
     """
