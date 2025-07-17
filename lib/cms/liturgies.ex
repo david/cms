@@ -20,23 +20,8 @@ defmodule CMS.Liturgies do
     * {:deleted, %Liturgy{}}
 
   """
-  def subscribe_liturgies(%Scope{organization: org}) do
-    key = org.id
-
-    Phoenix.PubSub.subscribe(CMS.PubSub, "user:#{key}:liturgies")
-  end
-
-  @doc """
-  Subscribes to public notifications for a single liturgy.
-  """
   def subscribe(%Liturgy{} = liturgy) do
     Phoenix.PubSub.subscribe(CMS.PubSub, "liturgy:#{liturgy.id}")
-  end
-
-  defp broadcast(%Scope{organization: org}, message) do
-    key = org.id
-
-    Phoenix.PubSub.broadcast(CMS.PubSub, "user:#{key}:liturgies", message)
   end
 
   defp broadcast_public(%Liturgy{} = liturgy, message) do
@@ -45,7 +30,6 @@ defmodule CMS.Liturgies do
 
   @doc """
   Returns the list of liturgies.
-
   ## Examples
 
       iex> list_liturgies(scope)
@@ -143,7 +127,6 @@ defmodule CMS.Liturgies do
            %Liturgy{}
            |> Liturgy.changeset(attrs, scope)
            |> Repo.insert() do
-      broadcast(scope, {:created, liturgy})
       {:ok, liturgy}
     end
   end
@@ -185,7 +168,6 @@ defmodule CMS.Liturgies do
            liturgy
            |> Liturgy.changeset(attrs, scope)
            |> Repo.update() do
-      broadcast(scope, {:updated, liturgy})
       broadcast_public(liturgy, {:updated, %{id: liturgy.id}})
       {:ok, liturgy}
     end
@@ -206,11 +188,7 @@ defmodule CMS.Liturgies do
   def delete_liturgy(%Scope{} = scope, %Liturgy{} = liturgy) do
     true = liturgy.organization_id == scope.organization.id
 
-    with {:ok, liturgy = %Liturgy{}} <-
-           Repo.delete(liturgy) do
-      broadcast(scope, {:deleted, liturgy})
-      {:ok, liturgy}
-    end
+    Repo.delete(liturgy)
   end
 
   @doc """

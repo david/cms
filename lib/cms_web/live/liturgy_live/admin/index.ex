@@ -48,8 +48,6 @@ defmodule CMSWeb.LiturgyLive.Admin.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    Liturgies.subscribe_liturgies(socket.assigns.current_scope)
-
     {:ok,
      socket
      |> assign(:page_title, "Listing Liturgies")
@@ -62,14 +60,5 @@ defmodule CMSWeb.LiturgyLive.Admin.Index do
     {:ok, _} = Liturgies.delete_liturgy(socket.assigns.current_scope, liturgy)
 
     {:noreply, stream_delete(socket, :liturgies, liturgy)}
-  end
-
-  @impl true
-  def handle_info({type, %CMS.Liturgies.Liturgy{}}, socket)
-      when type in [:created, :updated, :deleted] do
-    {:noreply,
-     stream(socket, :liturgies, Liturgies.list_liturgies(socket.assigns.current_scope),
-       reset: true
-     )}
   end
 end
