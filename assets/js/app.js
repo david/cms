@@ -257,7 +257,7 @@ async function handleInstallClick() {
   }
 }
 
-if ('serviceWorker' in navigator) {
+if (process.env.NODE_ENV === "production" && 'serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     if (isIos() && !window.matchMedia('(display-mode: standalone)').matches) {
       if (localStorage.getItem('pwa-banner-dismissed') !== 'true') {
