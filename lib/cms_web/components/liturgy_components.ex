@@ -5,6 +5,7 @@ defmodule CMSWeb.LiturgyComponents do
     endpoint: CMSWeb.Endpoint,
     router: CMSWeb.Router
 
+  import CMSWeb.CoreComponents
   alias Phoenix.LiveView.JS
   alias CMS.Liturgies.Liturgy
 
@@ -33,6 +34,7 @@ defmodule CMSWeb.LiturgyComponents do
           data-tip={block.title}
           phx-click={JS.dispatch("close-sidebar")}
         >
+          <.icon name={block_icon(block.type)} />
           <span class="text-ellipsis overflow-hidden">
             {block.title}
           </span>
@@ -41,4 +43,8 @@ defmodule CMSWeb.LiturgyComponents do
     </ul>
     """
   end
+
+  defp block_icon(:passage), do: "hero-book-open"
+  defp block_icon(:song), do: "hero-musical-note"
+  defp block_icon(:text), do: "hero-document-text"
 end
