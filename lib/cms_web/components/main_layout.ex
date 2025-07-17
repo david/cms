@@ -118,6 +118,7 @@ defmodule CMSWeb.MainLayout do
     <div
       id="pwa-install-banner"
       class="fixed bottom-0 left-0 w-full bg-neutral text-neutral-content p-4 text-center z-[1000] hidden"
+      phx-update="ignore"
     >
       <p class="mb-2">{gettext("Deseja instalar esta aplicação no seu dispositivo?")}</p>
       <button onclick="window.handleInstallClick()" class="btn btn-primary mr-2">
@@ -135,6 +136,7 @@ defmodule CMSWeb.MainLayout do
     <div
       id="pwa-ios-install-banner"
       class="fixed bottom-0 left-0 w-full bg-neutral text-neutral-content p-4 text-center z-[1000] hidden"
+      phx-update="ignore"
     >
       <p class="mb-2">
         {gettext(
