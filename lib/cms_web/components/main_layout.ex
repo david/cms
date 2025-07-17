@@ -25,19 +25,21 @@ defmodule CMSWeb.MainLayout do
     ~H"""
     <div class="drawer">
       <input id="sidebar-drawer" type="checkbox" class="drawer-toggle" />
-      <div class="drawer-content flex flex-col">
+      <div class="drawer-content flex flex-col h-screen">
         <.navbar
           current_scope={@current_scope}
           page_title={@page_title}
           liturgy={@liturgy}
           qr_code_svg={@qr_code_svg}
         />
-        <CMSWeb.Layouts.app flash={@flash} id="main-content" phx-hook="FontSizeApplier">
-          {render_slot(@inner_block)}
-        </CMSWeb.Layouts.app>
+        <div class="flex-grow overflow-y-auto">
+          <CMSWeb.Layouts.app flash={@flash} id="main-content" phx-hook="FontSizeApplier">
+            {render_slot(@inner_block)}
+          </CMSWeb.Layouts.app>
+        </div>
         <.pwa_install_banner />
       </div>
-      <div id="sidebar-container" class="drawer-side" phx-hook="Sidebar">
+      <div id="sidebar-container" class="drawer-side z-80" phx-hook="Sidebar">
         <label for="sidebar-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
         <.sidebar liturgy={@liturgy} qr_code_svg={@qr_code_svg}>
           <:sidebar_bottom>
@@ -56,19 +58,20 @@ defmodule CMSWeb.MainLayout do
 
   defp navbar(assigns) do
     ~H"""
-    <div class="navbar">
-      <div class="navbar-start">
-        <label for="sidebar-drawer" class="btn btn-ghost z-[51]">
-          <.icon name="hero-bars-3" class="h-5 w-5" />
-        </label>
-      </div>
-      <div class="navbar-center">
-        {@page_title}
-      </div>
-      <div class="navbar-end">
-        <ul class="menu menu-horizontal">
-          <.user_menu current_scope={@current_scope} />
-        </ul>
+    <div class="sticky top-0 z-80 px-4 flex items-center flex-shrink-0 bg-base-100 shadow-md">
+      <label for="sidebar-drawer" class="btn btn-ghost z-100">
+        <.icon name="hero-bars-3" class="h-5 w-5" />
+      </label>
+      <div class="navbar z-50">
+        <div class="navbar-start"></div>
+        <div class="navbar-center">
+          {@page_title}
+        </div>
+        <div class="navbar-end">
+          <ul class="menu menu-horizontal">
+            <.user_menu current_scope={@current_scope} />
+          </ul>
+        </div>
       </div>
     </div>
     """
@@ -135,6 +138,9 @@ defmodule CMSWeb.MainLayout do
     <ul class="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
       <!-- Sidebar content here -->
       <li class="flex flex-row justify-end">
+        <label for="sidebar-drawer" class="btn btn-ghost z-100">
+          <.icon name="hero-bars-3" class="h-5 w-5" />
+        </label>
         <div class="flex flex-1">&nbsp;</div>
         <div class="relative flex-0 flex flex-row items-center border-2 border-base-300 bg-base-300 rounded-full p-0 w-full gap-0">
           <div class="absolute w-[33%] h-full rounded-full border-1 border-base-200 bg-base-100 brightness-200 left-0 [[data-theme=light]_&]:left-[33%] [[data-theme=dark]_&]:left-[66%] transition-[left]" />
