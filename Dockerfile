@@ -18,35 +18,6 @@ ARG DEBIAN_VERSION=bookworm-20250428-slim
 ARG BUILDER_IMAGE="docker.io/hexpm/elixir:${ELIXIR_VERSION}-erlang-${OTP_VERSION}-debian-${DEBIAN_VERSION}"
 ARG RUNNER_IMAGE="docker.io/debian:${DEBIAN_VERSION}"
 
-### Dev
-
-FROM elixir:${ELIXIR_VERSION} AS dev
-
-WORKDIR /tmp
-
-RUN apt-get update && \
-    apt-get install --no-install-recommends -y lsb-release && \
-    echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > \
-      /etc/apt/sources.list.d/pgdg.list && \
-    curl -so - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \
-    apt-get update && \
-    apt-get install --no-install-recommends -y inotify-tools postgresql-client-17 && \
-    rm -rf /var/lib/apt/lists/* && \
-    curl -sLo /tmp/elixir-ls.zip \
-      https://github.com/elixir-lsp/elixir-ls/releases/download/v0.28.0/elixir-ls-v0.28.0.zip && \
-    mkdir -p /usr/local/lsp/elixir-ls && \
-    unzip /tmp/elixir-ls.zip -d /usr/local/lsp/elixir-ls && \
-    rm -f /tmp/elixir-ls.zip && \
-    useradd -mu 1000 -s /bin/bash dev && \
-    mkdir -p /app && \
-    chown -R dev:dev /app
-
-USER dev
-
-WORKDIR /app
-
-RUN mkdir -p /home/dev/.mix
-
 ### Builder
 
 FROM ${BUILDER_IMAGE} AS builder

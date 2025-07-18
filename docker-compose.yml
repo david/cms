@@ -1,8 +1,11 @@
 services:
   dev:
     build:
+      dockerfile: dev.dockerfile
       context: .
-      target: dev
+      args:
+        ELIXIR_VERSION: ${ELIXIR_VERSION}
+        OTP_VERSION: ${OTP_VERSION}
     command: ["sleep", "infinity"]
     restart: unless-stopped
     ports:
