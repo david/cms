@@ -91,6 +91,7 @@ defmodule CMSWeb.Router do
       live "/liturgies/:id", LiturgyLive.Show, :show
       live "/songs", SongLive.Index, :index
       live "/songs/:id", SongLive.Show, :show
+      live "/prayers", PrayerLive.Index, :index
     end
 
     get "/users/lobby", UserOTPController, :lobby
