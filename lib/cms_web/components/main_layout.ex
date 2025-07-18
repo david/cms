@@ -60,9 +60,7 @@ defmodule CMSWeb.MainLayout do
   defp navbar(assigns) do
     ~H"""
     <div class="sticky top-0 z-80 px-2 flex items-center flex-shrink-0 bg-base-100 shadow-md">
-      <label for="sidebar-drawer" class="btn btn-ghost mx-1 px-2 z-100">
-        <.icon name="hero-bars-3" class="h-5 w-5" />
-      </label>
+      <.hamburger_button />
       <div class="navbar z-50">
         <div class="navbar-start"></div>
         <div class="navbar-center">
@@ -159,9 +157,7 @@ defmodule CMSWeb.MainLayout do
     <ul class="menu py-4 px-2 w-80 min-h-full bg-base-200 text-base-content">
       <!-- Sidebar content here -->
       <li class="flex flex-row justify-end">
-        <label for="sidebar-drawer" class="btn btn-ghost mx-1 px-2 z-100">
-          <.icon name="hero-bars-3" class="h-5 w-5" />
-        </label>
+        <.hamburger_button />
         <div class="flex flex-1">&nbsp;</div>
         <div class="relative flex-0 flex flex-row items-center border-2 border-base-300 bg-base-300 rounded-full p-0 w-full gap-0 mx-2">
           <div class="absolute w-[33%] h-full rounded-full border-1 border-base-200 bg-base-100 brightness-200 left-0 [[data-theme=light]_&]:left-[33%] [[data-theme=dark]_&]:left-[66%] transition-[left]" />
@@ -216,6 +212,14 @@ defmodule CMSWeb.MainLayout do
 
       {render_slot(@sidebar_bottom)}
     </ul>
+    """
+  end
+
+  defp hamburger_button(assigns) do
+    ~H"""
+    <label for="sidebar-drawer" class="btn btn-ghost mx-1 px-2 z-100">
+      <.icon name="hero-bars-3" class="h-5 w-5" />
+    </label>
     """
   end
 end
