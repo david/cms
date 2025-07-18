@@ -74,9 +74,9 @@ defmodule CMSWeb.Router do
       live "/admin/liturgies/new", LiturgyLive.Admin.Form, :new
       live "/admin/liturgies/:id/edit", LiturgyLive.Admin.Form, :edit
 
-      live "/users", UserLive.Index
-      live "/users/new", UserLive.Form, :new
-      live "/users/:id/edit", UserLive.Form, :edit
+      live "/admin/users", UserLive.Admin.Index, :index
+      live "/admin/users/new", UserLive.Admin.Form, :new
+      live "/admin/users/:id/edit", UserLive.Admin.Form, :edit
     end
   end
 

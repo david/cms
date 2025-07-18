@@ -96,7 +96,7 @@ defmodule CMSWeb.MainLayout do
           class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 mt-4 z-[1]"
         >
           <li :if={@current_scope.user.role == :admin}>
-            <.link href={~p"/users"}>Users</.link>
+            <.link href={~p"/admin/users"}>Users</.link>
           </li>
           <li :if={@current_scope.user.role == :admin}>
             <.link href={~p"/admin/liturgies"}>Liturgies</.link>

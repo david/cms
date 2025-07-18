@@ -1,4 +1,4 @@
-defmodule CMSWeb.UserLive.Index do
+defmodule CMSWeb.UserLive.Admin.Index do
   use CMSWeb, :live_view
 
   alias CMS.Accounts
@@ -58,7 +58,7 @@ defmodule CMSWeb.UserLive.Index do
           <.button variant="primary" phx-click="show_import_modal" class="ml-2">
             <.icon name="hero-arrow-up-tray" /> Import
           </.button>
-          <.button variant="primary" navigate={~p"/users/new"}>
+          <.button variant="primary" navigate={~p"/admin/users/new"}>
             <.icon name="hero-plus" /> Invite User
           </.button>
         </:actions>
@@ -77,7 +77,7 @@ defmodule CMSWeb.UserLive.Index do
           </div>
         </:col>
         <:action :let={{_id, user}} :if={{@current_scope.user.role == :admin}}>
-          <.link navigate={~p"/users/#{user}/edit"}>Edit</.link>
+          <.link navigate={~p"/admin/users/#{user}/edit"}>Edit</.link>
         </:action>
       </.table>
 

@@ -1,4 +1,4 @@
-defmodule CMSWeb.UserLive.Form do
+defmodule CMSWeb.UserLive.Admin.Form do
   use CMSWeb, :live_view
 
   alias CMS.Accounts
@@ -73,7 +73,7 @@ defmodule CMSWeb.UserLive.Form do
 
         <footer>
           <.button phx-disable-with="Saving..." variant="primary">Save User</.button>
-          <.button navigate={~p"/users"}>Cancel</.button>
+          <.button navigate={~p"/admin/users"}>Cancel</.button>
         </footer>
       </.form>
     </.main_layout>
@@ -118,7 +118,7 @@ defmodule CMSWeb.UserLive.Form do
         {:noreply,
          socket
          |> put_flash(:info, "User invited successfully.")
-         |> push_navigate(to: ~p"/users")}
+         |> push_navigate(to: ~p"/admin/users")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, :form, to_form(changeset))}
@@ -133,7 +133,7 @@ defmodule CMSWeb.UserLive.Form do
         {:noreply,
          socket
          |> put_flash(:info, "User updated successfully.")
-         |> push_navigate(to: ~p"/users")}
+         |> push_navigate(to: ~p"/admin/users")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, :form, to_form(changeset))}
