@@ -7,7 +7,6 @@ defmodule CMS.AccountsFixtures do
   import Ecto.Query
 
   alias CMS.Accounts
-  alias CMS.Accounts.Organization
   alias CMS.Accounts.Scope
   alias CMS.Accounts.Family
   alias CMS.Accounts.User
@@ -33,7 +32,7 @@ defmodule CMS.AccountsFixtures do
     family
   end
 
-  def unconfirmed_user_fixture(attrs \\ %{}, organization \\ organization_fixture()) do
+  def unconfirmed_user_fixture(attrs \\ %{}, organization) do
     {:ok, user} =
       %User{}
       |> Map.merge(valid_user_attributes())
@@ -46,17 +45,23 @@ defmodule CMS.AccountsFixtures do
     CMS.Repo.preload(user, [:organization])
   end
 
-  def organization_fixture do
-    if org = Repo.one(Organization) do
-      org
-    else
-      {:ok, organization} = Accounts.create_organization(%{name: "Default Organization"})
+  def organization_fixture(attrs \\ %{}) do
+    uint = System.unique_integer()
+    name = "Organization #{uint}"
+    hostname = "www#{uint}.example.com"
 
-      organization
-    end
+    {:ok, organization} =
+      %{
+        name: name,
+        hostname: hostname
+      }
+      |> Map.merge(attrs)
+      |> Accounts.create_organization()
+
+    organization
   end
 
-  def user_fixture(attrs \\ %{}, organization \\ organization_fixture()) do
+  def user_fixture(attrs, organization) do
     user = unconfirmed_user_fixture(attrs, organization)
 
     token =
@@ -69,18 +74,18 @@ defmodule CMS.AccountsFixtures do
     user
   end
 
-  def admin_fixture(attrs \\ %{}) do
-    user_fixture(Map.merge(attrs, %{role: :admin}))
+  def admin_fixture(attrs \\ %{}, organization) do
+    user_fixture(Map.merge(attrs, %{role: :admin}), organization)
   end
 
   def user_scope_fixture do
-    user = user_fixture()
+    user = user_fixture(%{}, organization_fixture())
 
     user_scope_fixture(user)
   end
 
   def user_scope_fixture(user) do
-    Scope.for_user(user)
+    Scope.for_user(user, user.organization)
   end
 
   def extract_user_token(fun) do

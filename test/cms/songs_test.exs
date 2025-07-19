@@ -8,8 +8,8 @@ defmodule CMS.SongsTest do
 
   describe "list_songs/1" do
     test "returns songs for the organization within the given scope, sorted alphabetically by title" do
-      user = user_fixture()
-      scope = Scope.for_user(user)
+      user = user_fixture(%{}, organization_fixture())
+      scope = Scope.for_user(user, user.organization)
 
       _song_z = song_fixture(%{organization_id: user.organization_id, title: "Song Z for Org 1"})
       _song_a = song_fixture(%{organization_id: user.organization_id, title: "Song A for Org 1"})
@@ -21,8 +21,8 @@ defmodule CMS.SongsTest do
     end
 
     test "returns an empty list when no songs exist for the organization in scope" do
-      user = user_fixture()
-      scope = Scope.for_user(user)
+      user = user_fixture(%{}, organization_fixture())
+      scope = Scope.for_user(user, user.organization)
 
       assert Songs.list_songs(scope) == []
     end

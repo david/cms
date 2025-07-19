@@ -58,8 +58,8 @@ defmodule CMS.Accounts do
   Raises `Ecto.NoResultsError` if no organization is found.
   This function assumes a single-organization setup.
   """
-  def fetch_singleton_organization! do
-    Repo.one!(Organization)
+  def get_organization_by_hostname!(hostname) when is_binary(hostname) do
+    Repo.get_by!(Organization, hostname: hostname)
   end
 
   @doc """

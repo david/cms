@@ -223,7 +223,8 @@ CREATE TABLE public.organizations (
     id bigint NOT NULL,
     name character varying(255) NOT NULL,
     inserted_at timestamp(0) without time zone NOT NULL,
-    updated_at timestamp(0) without time zone NOT NULL
+    updated_at timestamp(0) without time zone NOT NULL,
+    hostname character varying(255) DEFAULT NULL::character varying NOT NULL
 );
 
 
@@ -485,6 +486,13 @@ CREATE UNIQUE INDEX liturgies_organization_id_service_on_index ON public.liturgi
 
 
 --
+-- Name: organizations_hostname_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX organizations_hostname_index ON public.organizations USING btree (hostname);
+
+
+--
 -- Name: users_email_index; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -643,3 +651,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20250530132548);
 INSERT INTO public."schema_migrations" (version) VALUES (20250605171914);
 INSERT INTO public."schema_migrations" (version) VALUES (20250605173012);
 INSERT INTO public."schema_migrations" (version) VALUES (20250605175322);
+INSERT INTO public."schema_migrations" (version) VALUES (20250719145605);

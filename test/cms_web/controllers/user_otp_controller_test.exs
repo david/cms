@@ -8,7 +8,8 @@ defmodule CMSWeb.UserOTPControllerTest do
   @otp_validity_in_minutes 5
 
   setup %{conn: conn} do
-    %{conn: conn, organization: organization_fixture()}
+    org = organization_fixture(%{hostname: "www.example.com"})
+    %{conn: conn, organization: org}
   end
 
   defp create_user_and_otp(organization, user_attrs) do
@@ -27,16 +28,22 @@ defmodule CMSWeb.UserOTPControllerTest do
       assert html_response(conn, 200) =~ user.email
     end
 
-    test "redirects to login page if email is missing", %{conn: conn} do
-      conn = get(conn, ~p"/users/lobby")
+    test "redirects to login page if email is missing", %{conn: conn, organization: org} do
+      conn =
+        %Plug.Conn{conn | host: org.hostname}
+        |> get(~p"/users/lobby")
+
       assert redirected_to(conn) == ~p"/users/log-in"
 
       assert Phoenix.Flash.get(conn.assigns.flash, :error) ==
                "An email address is required to enter the OTP lobby."
     end
 
-    test "redirects to login page if email is empty", %{conn: conn} do
-      conn = get(conn, ~p"/users/lobby?email=")
+    test "redirects to login page if email is empty", %{conn: conn, organization: org} do
+      conn =
+        %Plug.Conn{conn | host: org.hostname}
+        |> get(~p"/users/lobby?email=")
+
       assert redirected_to(conn) == ~p"/users/log-in"
 
       assert Phoenix.Flash.get(conn.assigns.flash, :error) ==
@@ -62,7 +69,6 @@ defmodule CMSWeb.UserOTPControllerTest do
     end
 
     test "redirects to lobby with error for incorrect OTP", %{conn: conn, organization: org} do
-      # Corrected
       user = user_fixture(%{email: "incorrect_otp_user@example.com"}, org)
 
       conn =
@@ -77,7 +83,6 @@ defmodule CMSWeb.UserOTPControllerTest do
     end
 
     test "redirects to lobby with error for expired OTP", %{conn: conn, organization: org} do
-      # Corrected
       user = user_fixture(%{email: "expired_otp_login@example.com"}, org)
       {otp_string, token_template} = UserToken.build_otp_token(user, "login_otp")
 
@@ -99,9 +104,10 @@ defmodule CMSWeb.UserOTPControllerTest do
       assert Phoenix.Flash.get(conn.assigns.flash, :error) =~ "Invalid or expired OTP"
     end
 
-    test "redirects to login for non-existent user email", %{conn: conn} do
+    test "redirects to login for non-existent user email", %{conn: conn, organization: org} do
       conn =
-        post(conn, ~p"/users/verify-otp", %{
+        %Plug.Conn{conn | host: org.hostname}
+        |> post(~p"/users/verify-otp", %{
           "_csrf_token" => get_csrf_token_for_conn(conn),
           "user" => %{"email" => "nonexistent@example.com", "otp_code" => "123456"}
         })
@@ -111,9 +117,10 @@ defmodule CMSWeb.UserOTPControllerTest do
       assert Phoenix.Flash.get(conn.assigns.flash, :error) =~ "User not found"
     end
 
-    test "redirects to login for invalid parameters", %{conn: conn} do
+    test "redirects to login for invalid parameters", %{conn: conn, organization: org} do
       conn =
-        post(conn, ~p"/users/verify-otp", %{
+        %Plug.Conn{conn | host: org.hostname}
+        |> post(~p"/users/verify-otp", %{
           "_csrf_token" => get_csrf_token_for_conn(conn),
           "user" => %{"email" => "onlyemail@example.com"}
         })

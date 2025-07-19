@@ -4,6 +4,7 @@ defmodule CMS.Accounts.Organization do
 
   schema "organizations" do
     field :name, :string
+    field :hostname, :string
 
     timestamps(type: :utc_datetime)
   end
@@ -11,7 +12,8 @@ defmodule CMS.Accounts.Organization do
   @doc false
   def changeset(organization, attrs) do
     organization
-    |> cast(attrs, [:name])
-    |> validate_required([:name])
+    |> cast(attrs, [:name, :hostname])
+    |> validate_required([:name, :hostname])
+    |> unique_constraint(:hostname)
   end
 end

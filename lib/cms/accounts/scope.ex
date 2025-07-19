@@ -26,13 +26,9 @@ defmodule CMS.Accounts.Scope do
   Expects the user struct to have the `:organization` association preloaded.
   Returns nil if no user is given.
   """
-  def for_user(%User{organization: %Organization{}} = user) do
-    %__MODULE__{user: user, organization: user.organization}
-  end
+  def for_user(%User{} = user, %Organization{} = organization) do
+    true = user.organization_id == organization.id
 
-  def for_user(%User{} = user) do
-    %__MODULE__{user: user}
+    %__MODULE__{user: user, organization: organization}
   end
-
-  def for_user(nil), do: nil
 end

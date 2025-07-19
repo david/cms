@@ -2,20 +2,15 @@ defmodule CMSWeb.SongLive.IndexTest do
   use CMSWeb.ConnCase, async: true
 
   import Phoenix.LiveViewTest
-  import CMS.AccountsFixtures
+
   import CMS.SongsFixtures
 
-  setup do
-    user = user_fixture()
-
-    {:ok,
-     conn: log_in_user(build_conn(), user), user: user, organization_id: user.organization_id}
-  end
+  setup :register_and_log_in_user
 
   describe "Songs LiveView (/songs)" do
     test "mounts with songs for the current organization, sorted alphabetically", %{
       conn: conn,
-      organization_id: org_id
+      organization: %{id: org_id}
     } do
       song_c = song_fixture(%{title: "Song C", organization_id: org_id})
       song_a = song_fixture(%{title: "Song A", organization_id: org_id})

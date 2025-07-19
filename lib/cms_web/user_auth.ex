@@ -65,16 +65,16 @@ defmodule CMSWeb.UserAuth do
   Will reissue the session token if it is older than the configured age.
   """
   def fetch_current_scope_for_user(conn, _opts) do
+    organization = Accounts.get_organization_by_hostname!(conn.host)
+
     with {token, conn} <- ensure_user_token(conn),
          {user, token_inserted_at} <- Accounts.get_user_by_session_token(token) do
       conn
-      |> assign(:current_scope, Scope.for_user(user))
+      |> assign(:current_scope, Scope.for_user(user, organization))
       |> maybe_reissue_user_session_token(user, token_inserted_at)
     else
       nil ->
-        org = Accounts.fetch_singleton_organization!()
-
-        assign(conn, :current_scope, %Scope{organization: org})
+        assign(conn, :current_scope, %Scope{organization: organization})
     end
   end
 
@@ -268,20 +268,20 @@ defmodule CMSWeb.UserAuth do
 
   defp mount_current_scope(socket, session) do
     Phoenix.Component.assign_new(socket, :current_scope, fn ->
+      %URI{host: host} = Phoenix.LiveView.get_connect_info(socket, :uri)
+      organization = Accounts.get_organization_by_hostname!(host)
+
       if user_token = session["user_token"] do
         case Accounts.get_user_by_session_token(user_token) do
           {user, _} ->
-            Scope.for_user(user)
+            Scope.for_user(user, organization)
 
           # If there is a user token but no user, treat the user as a guest
           _ ->
-            org = Accounts.fetch_singleton_organization!()
-            %Scope{organization: org}
+            %Scope{organization: organization}
         end
       else
-        # TODO: should be able to determine the proper organization
-        org = Accounts.fetch_singleton_organization!()
-        %Scope{organization: org}
+        %Scope{organization: organization}
       end
     end)
   end

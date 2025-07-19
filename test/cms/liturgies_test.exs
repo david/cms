@@ -10,8 +10,8 @@ defmodule CMS.LiturgiesTest do
 
   describe "update_liturgy/3" do
     test "broadcasts a message to the liturgy's public topic" do
-      user = user_fixture()
-      scope = CMS.Accounts.Scope.for_user(user)
+      user = user_fixture(%{}, organization_fixture())
+      scope = CMS.Accounts.Scope.for_user(user, user.organization)
       liturgy = liturgy_fixture(scope)
       Phoenix.PubSub.subscribe(CMS.PubSub, "liturgy:#{liturgy.id}")
 

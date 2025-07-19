@@ -10,8 +10,13 @@ defmodule CMSWeb.LiturgyLive.ShowTest do
 
   setup :register_and_log_in_user
 
-  test "updates when a public broadcast is received", %{conn: conn, scope: scope} do
-    liturgy = liturgy_fixture(scope, %{"service_on" => ~D[2025-04-20]})
+  test "updates when a public broadcast is received", %{
+    conn: conn,
+    scope: scope,
+    organization: org
+  } do
+    liturgy =
+      liturgy_fixture(scope, %{"service_on" => ~D[2025-04-20], "organization_id" => org.id})
 
     {:ok, view, _html} = live(conn, ~p"/liturgies/#{liturgy}")
 
@@ -30,8 +35,8 @@ defmodule CMSWeb.LiturgyLive.ShowTest do
     assert render(view) =~ "2025-04-21"
   end
 
-  test "displays block titles in the sidebar", %{conn: conn, scope: scope} do
-    liturgy = liturgy_fixture(scope)
+  test "displays block titles in the sidebar", %{conn: conn, scope: scope, organization: org} do
+    liturgy = liturgy_fixture(scope, %{"organization_id" => org.id})
     {:ok, view, _html} = live(conn, ~p"/liturgies/#{liturgy}")
 
     html = render(view)

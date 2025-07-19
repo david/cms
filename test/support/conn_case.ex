@@ -45,15 +45,16 @@ defmodule CMSWeb.ConnCase do
   test context.
   """
   def register_and_log_in_user(%{conn: conn} = context) do
-    user = CMS.AccountsFixtures.user_fixture()
-    scope = CMS.Accounts.Scope.for_user(user)
+    org = CMS.AccountsFixtures.organization_fixture()
+    user = CMS.AccountsFixtures.user_fixture(%{}, org)
+    scope = CMS.Accounts.Scope.for_user(user, user.organization)
 
     opts =
       context
       |> Map.take([:token_authenticated_at])
       |> Enum.into([])
 
-    %{conn: log_in_user(conn, user, opts), user: user, scope: scope}
+    %{conn: log_in_user(conn, user, opts), user: user, scope: scope, organization: org}
   end
 
   @doc """
@@ -66,7 +67,7 @@ defmodule CMSWeb.ConnCase do
 
     maybe_set_token_authenticated_at(token, opts[:token_authenticated_at])
 
-    conn
+    %Plug.Conn{conn | host: user.organization.hostname}
     |> Phoenix.ConnTest.init_test_session(%{})
     |> Plug.Conn.put_session(:user_token, token)
   end

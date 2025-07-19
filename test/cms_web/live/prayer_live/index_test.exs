@@ -5,6 +5,8 @@ defmodule CMSWeb.PrayerLive.IndexTest do
 
   @moduletag :capture_log
 
+  setup :register_and_log_in_user
+
   describe "Index" do
     test "displays an empty state message when there are no prayer requests", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/prayers")
