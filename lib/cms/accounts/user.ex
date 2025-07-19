@@ -20,6 +20,8 @@ defmodule CMS.Accounts.User do
     belongs_to :organization, CMS.Accounts.Organization
     belongs_to :family, CMS.Accounts.Family
 
+    has_many :prayer_requests, CMS.Prayers.PrayerRequest
+
     field :role, Ecto.Enum, values: @roles
 
     timestamps(type: :utc_datetime)

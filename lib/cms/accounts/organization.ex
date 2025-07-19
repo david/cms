@@ -6,6 +6,8 @@ defmodule CMS.Accounts.Organization do
     field :name, :string
     field :hostname, :string
 
+    has_many :prayer_requests, CMS.Prayers.PrayerRequest
+
     timestamps(type: :utc_datetime)
   end
 

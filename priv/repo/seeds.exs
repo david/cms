@@ -14,6 +14,7 @@ alias CMS.Accounts.Family
 alias CMS.Accounts.Organization
 alias CMS.Accounts.User
 alias CMS.Liturgies.Liturgy
+alias CMS.Prayers.PrayerRequest
 alias CMS.Repo
 alias CMS.Songs.Song
 
@@ -37,6 +38,50 @@ admin_user =
       confirmed_at: DateTime.utc_now() |> DateTime.truncate(:second),
       organization_id: org.id
     })
+
+smith_family =
+  Repo.get_by(Family, designation: "The Smiths", organization_id: org.id) ||
+    Repo.insert!(%Family{designation: "The Smiths", organization: org})
+
+smith_user =
+  Repo.get_by(User, email: "smith@example.com") ||
+    Repo.insert!(%User{
+      email: "smith@example.com",
+      family_id: smith_family.id,
+      name: "John Smith",
+      role: :member,
+      confirmed_at: DateTime.utc_now() |> DateTime.truncate(:second),
+      organization_id: org.id
+    })
+
+jones_family =
+  Repo.get_by(Family, designation: "The Joneses", organization_id: org.id) ||
+    Repo.insert!(%Family{designation: "The Joneses", organization: org})
+
+jones_user =
+  Repo.get_by(User, email: "jones@example.com") ||
+    Repo.insert!(%User{
+      email: "jones@example.com",
+      family_id: jones_family.id,
+      name: "Mary Jones",
+      role: :member,
+      confirmed_at: DateTime.utc_now() |> DateTime.truncate(:second),
+      organization_id: org.id
+    })
+
+Repo.get_by(PrayerRequest, user_id: smith_user.id) ||
+  Repo.insert!(%PrayerRequest{
+    body: "Please pray for my upcoming job interview.",
+    user_id: smith_user.id,
+    organization_id: org.id
+  })
+
+Repo.get_by(PrayerRequest, user_id: jones_user.id) ||
+  Repo.insert!(%PrayerRequest{
+    body: "Please pray for my grandmother's health.",
+    user_id: jones_user.id,
+    organization_id: org.id
+  })
 
 song =
   Repo.get_by(Song, title: "Amazing Grace", organization_id: org.id) ||

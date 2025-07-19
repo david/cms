@@ -248,6 +248,39 @@ ALTER SEQUENCE public.organizations_id_seq OWNED BY public.organizations.id;
 
 
 --
+-- Name: prayer_requests; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.prayer_requests (
+    id bigint NOT NULL,
+    body text NOT NULL,
+    user_id bigint NOT NULL,
+    organization_id bigint NOT NULL,
+    inserted_at timestamp(0) without time zone NOT NULL,
+    updated_at timestamp(0) without time zone NOT NULL
+);
+
+
+--
+-- Name: prayer_requests_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.prayer_requests_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: prayer_requests_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.prayer_requests_id_seq OWNED BY public.prayer_requests.id;
+
+
+--
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -365,6 +398,13 @@ ALTER TABLE ONLY public.organizations ALTER COLUMN id SET DEFAULT nextval('publi
 
 
 --
+-- Name: prayer_requests id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.prayer_requests ALTER COLUMN id SET DEFAULT nextval('public.prayer_requests_id_seq'::regclass);
+
+
+--
 -- Name: songs id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -434,6 +474,14 @@ ALTER TABLE ONLY public.organizations
 
 
 --
+-- Name: prayer_requests prayer_requests_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.prayer_requests
+    ADD CONSTRAINT prayer_requests_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: schema_migrations schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -490,6 +538,20 @@ CREATE UNIQUE INDEX liturgies_organization_id_service_on_index ON public.liturgi
 --
 
 CREATE UNIQUE INDEX organizations_hostname_index ON public.organizations USING btree (hostname);
+
+
+--
+-- Name: prayer_requests_organization_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX prayer_requests_organization_id_index ON public.prayer_requests USING btree (organization_id);
+
+
+--
+-- Name: prayer_requests_user_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX prayer_requests_user_id_index ON public.prayer_requests USING btree (user_id);
 
 
 --
@@ -591,6 +653,22 @@ ALTER TABLE ONLY public.liturgies
 
 
 --
+-- Name: prayer_requests prayer_requests_organization_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.prayer_requests
+    ADD CONSTRAINT prayer_requests_organization_id_fkey FOREIGN KEY (organization_id) REFERENCES public.organizations(id);
+
+
+--
+-- Name: prayer_requests prayer_requests_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.prayer_requests
+    ADD CONSTRAINT prayer_requests_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
 -- Name: users users_family_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -651,4 +729,5 @@ INSERT INTO public."schema_migrations" (version) VALUES (20250530132548);
 INSERT INTO public."schema_migrations" (version) VALUES (20250605171914);
 INSERT INTO public."schema_migrations" (version) VALUES (20250605173012);
 INSERT INTO public."schema_migrations" (version) VALUES (20250605175322);
+INSERT INTO public."schema_migrations" (version) VALUES (20250719142506);
 INSERT INTO public."schema_migrations" (version) VALUES (20250719145605);
