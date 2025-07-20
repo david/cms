@@ -1,38 +1,56 @@
-### Git & Version Control
+### Project: Church Management System (CMS)
 
-- The user prefers commit messages without conventional commit prefixes like 'feat:', 'chore:', 'fix:', etc.
-- When I need to revert changes I've made, especially after a user correction, I should use git commands like `git reset --hard` or `git checkout` instead of trying to undo them manually. This is faster and less error-prone.
-- When reverting changes, I must use the most specific git command possible. For individual files, I will use `git checkout -- <file_path>`. I will only use a broad, destructive command like `git reset --hard HEAD` as a last resort and only when the explicit goal is to discard all changes in the working directory.
-- When using `git commit -m` via the shell, ensure the commit message is properly quoted to prevent the shell from interpreting its contents as commands. Use backticks or other forms of escaping for special characters within the message.
-- I must be aware that `git stash` by default does not save new (untracked) files. Before debugging or making significant changes, I will use `git status` to confirm the state of the working directory to avoid confusion from untracked files.
+This is an Elixir/Phoenix application that serves as a CMS for church-related activities. The core domains include `Accounts`, `Bibles`, `Liturgies`, `Prayers`, and `Songs`.
 
-### Elixir & Phoenix Development
+### 1. Core Development Philosophy
 
-- When writing Elixir code, I will prefer idiomatic patterns such as multiple function heads with pattern matching and destructuring over case statements or manual field access. I will also avoid redundant code, like explicitly setting a field to its default `nil` value.
-- A Phoenix component that uses the `~p` sigil for verified routes must include the `use Phoenix.VerifiedRoutes, ...` directive within its own module to be self-contained and avoid compilation errors.
-- When the data model changes, I should also update the seed file at `priv/repo/seeds.exs` to reflect those changes.
-- When implementing real-time updates via PubSub, a more robust pattern is to broadcast only the ID of the changed resource, not the entire data structure. The receiving process (like a LiveView) should then use that ID to re-fetch the data. This prevents bugs caused by broadcasting stale or incompletely processed data.
-- All context functions that access or modify data belonging to an organization must accept a `%Scope{}` struct as the first argument. This `scope` must be used to enforce authorization, typically by filtering database queries with `where: ... organization_id == ^scope.organization.id` or by asserting `true = resource.organization_id == scope.organization.id` before performing an update or delete.
-- When a changeset function requires a `%Scope{}` struct, the scope must be the last argument.
-- All user-facing messages should be in Portuguese (`pt_PT`). This includes flash messages, form labels, and validation messages.
+-   **Propose, Don't Impose:** I will always discuss non-trivial changes with you before implementing them.
+-   **Confirm Before Acting:** After we agree on a plan, I will wait for your go-ahead before I start coding.
+-   **Domain-Driven Contexts:** All business logic must reside in its corresponding context module (e.g., `Cms.Prayers`, `Cms.Songs`). Phoenix controllers and LiveViews should be thin layers that call these contexts.
+-   **Incremental & Testable Slices:** Features will be broken down into small, vertical slices. Backend changes (like a new database field) must be used by the UI within the same task to avoid dead code.
+-   **Hypothesize and Verify:** I will treat my fixes as hypotheses and will only consider them complete after they are verified by passing tests. If a fix fails, I will re-evaluate the problem instead of making another small guess.
 
-### Development Workflow & Best Practices
+### 2. Git & Version Control
 
-- Before writing new code or tests, I must first read the relevant existing code—especially data schemas, context modules, and component files—to understand the established data structures, APIs, and conventions. I will not code based on assumption.
-- When modifying a file, especially one with multiple components or functions, I must be careful to only change the intended parts. I should read the file first and use precise replacement or careful construction to avoid accidentally deleting existing, valid code.
-- If a proposed fix fails, I must state that my hypothesis was wrong and re-evaluate the problem from a higher level, rather than attempting another small tweak based on the failed assumption.
-- I must synthesize all available context (user instructions, plan files, existing code, `git diff`) before forming a plan. Relying on a single source can lead to incorrect assumptions and wasted effort.
+-   **Commit Messages:** Use standard, descriptive messages without conventional commit prefixes (e.g., no `feat:`, `fix:`).
+-   **Reverting Changes:** Use specific git commands (`git checkout -- <file>` or `git reset --hard`) for reverts instead of manual rollbacks. Use `git reset --hard HEAD` only as a last resort to discard all local changes.
+-   **Stashing:** Before stashing, run `git status` to check for untracked files, as `git stash` does not save them by default.
 
-### Testing & Verification
+### 3. Elixir & Phoenix Implementation Guide
 
-- After making any changes to the code, I will run the tests and format the code to ensure everything is working correctly and the code is clean.
-- After implementing a feature and seeing its specific tests pass, I must run the full test suite to check for regressions, and then run `mix format`.
-- When testing a feature where components communicate indirectly (e.g., a context broadcasting to a LiveView), it's not enough to unit test each part in isolation. The tests must also validate the "contract"—the exact data structure—passed between them. A test for the consumer (the LiveView) should not be written assuming a "perfect" payload that the producer (the context) doesn't actually send.
-- When debugging test failures, I will prioritize analyzing the stack trace to find the root cause in the *application code* over patching the tests themselves. A failing test is a symptom; the bug is in the code under test.
-- When creating new files, especially test helpers or fixtures, I must first find and study existing examples within the project to ensure I follow established patterns and data dependencies.
-- When a test fails in an unfamiliar way, I will avoid a trial-and-error approach of swapping similar-looking functions. Instead, I will pause to analyze the actual return values of the functions and test helpers I am using to understand the mismatch with my assertions.
+#### **Authorization: The `%Scope{}` Struct**
+This is the most critical rule. To ensure a user from one organization cannot access data from another, every context function that reads or modifies data must:
+1.  Accept a `%Scope{}` struct as its **first** argument (e.g., `Prayers.list_requests(scope)`).
+2.  Use the `scope.organization_id` in its Ecto queries (e.g., `from p in Prayer, where: p.organization_id == ^scope.organization_id`).
+3.  For changesets, the `%Scope{}` struct must be the **last** argument.
 
-### User Interaction
+#### **Data Integrity & Validation**
+-   **Changesets are the Source of Truth:** All data validation must be defined within an Ecto changeset function in the relevant schema module.
+-   **Keep Seeds Fresh:** When a data model changes (e.g., adding a not-null field to `Cms.Prayers.Request`), the `priv/repo/seeds.exs` file must be updated to match.
 
-- I must propose and discuss any new ideas or non-trivial design choices with the user before implementing them. I will prioritize collaboration and exchanging ideas over making unilateral changes, even if my intention is to be helpful. Propose, don't impose.
-- I will not state that a fix is complete until it has been verified by passing tests. I will communicate my actions as hypotheses (e.g., "I believe the issue is X, I will try Y to fix it") and report on the results of verification.
+#### **Real-time Features**
+-   **Broadcast IDs, Not Data:** For real-time updates with Phoenix PubSub, broadcast only the ID of the changed resource (e.g., `{:prayer_request_created, prayer_request.id}`). The receiving LiveView is responsible for re-fetching the full data. This prevents stale data from being pushed to clients.
+
+#### **User Interface**
+-   **Localization:** All user-facing text (labels, validation, flash messages) must be in Portuguese (`pt_PT`) using `gettext`.
+-   **Verified Routes:** Any component using the `~p` sigil must include `use Phoenix.VerifiedRoutes, ...` to remain self-contained.
+
+### 4. Testing Strategy
+
+-   **Test, Then Format:** After any code change, I will first run the full test suite (`mix test`) and then format the code (`mix format`).
+-   **Debug the App, Not the Test:** When a test fails, I will analyze the stack trace to find the root cause in the application code.
+-   **`Ecto.NoResultsError` Failures:** This almost always means the test setup is missing data. I will verify that the test correctly creates all necessary records (especially the `Organization`) and sets required request headers (like `host`).
+-   **`UndefinedFunctionError` Failures:** This means a function name, arity, or import is wrong. I will find a working example in another test before guessing a fix.
+-   **Module Naming:** Core application logic is under the `CMS` namespace, while web-related code (controllers, views, etc.) is under `CMSWeb`.
+-   **Test the Contract:** For tests involving PubSub, I will ensure the test for the *consumer* (the LiveView) asserts against the *exact* payload broadcasted by the *producer* (the context).
+
+### 5. Project Tooling
+
+#### Common Commands
+-  `mix setup`: Install dependencies, set up DB, build assets.
+-  `mix test`: Run all tests.
+-  `mix format`: Format code.
+
+#### Planning
+-   Epics are in `plan/`. Each epic's `README.md` links to its task files.
+-   Tasks are sequential markdown files (e.g., `01-task-name.md`).

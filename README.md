@@ -1,5 +1,17 @@
 # Church Management System
 
+### About the Project
+
+This is a comprehensive management system designed to support church communities by providing digital tools for organization and engagement. The goal is to centralize key activities and information, making them easily accessible to members and staff.
+
+Key features include:
+
+*   **Liturgy Planning:** Organize and plan church services and events.
+*   **Song Management:** Maintain a digital library of songs for worship.
+*   **Prayer Wall:** A space for community members to share and respond to prayer requests.
+*   **Bible Access:** Easy access to Bible passages.
+*   **Account Management:** Secure user accounts and organization controls.
+
 ## Prerequisites
 
 Ensure you have the following installed before proceeding:
