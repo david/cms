@@ -81,4 +81,17 @@ defmodule CMSWeb.PrayerLiveTest do
       refute has_element?(view, "[data-testid=empty-state]")
     end
   end
+
+  describe "authentication" do
+    test "redirects unauthenticated users to the login page" do
+      organization = organization_fixture()
+
+      conn =
+        build_conn()
+        |> Map.put(:host, organization.hostname)
+        |> get(~p"/prayers")
+
+      assert redirected_to(conn) == ~p"/users/log-in"
+    end
+  end
 end

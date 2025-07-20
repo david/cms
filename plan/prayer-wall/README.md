@@ -12,9 +12,9 @@ This epic is broken down into the following main tasks:
 
 - [x] [Initial Setup: Prayer Wall Empty State](./01-prayer-wall-empty-state.md)
 - [x] [Feature: Display Prayer Requests](./02-display-prayer-requests.md)
-- [ ] [Feature: Create New Prayer Requests](./03-create-new-prayer-requests.md)
+- [x] [Feature: Create New Prayer Requests](./03-create-new-prayer-requests.md)
+- [x] /prayers and /prayers/new should be accessible to logged-in users only.
 - [ ] All messages should be in pt_PT.
-- [ ] /prayers and /prayers/new should be accessible to logged-in users only.
 - [ ] Allow users to edit their own prayer requests.
 - [ ] Allow users to mark their own prayer requests as "done".
 - [ ] Implement pagination for the prayer request list.

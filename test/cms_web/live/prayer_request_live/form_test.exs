@@ -2,6 +2,7 @@ defmodule CMSWeb.PrayerRequestLive.FormTest do
   use CMSWeb.ConnCase
 
   import Phoenix.LiveViewTest
+  import CMS.AccountsFixtures
 
   @invalid_attrs %{body: ""}
 
@@ -32,6 +33,19 @@ defmodule CMSWeb.PrayerRequestLive.FormTest do
       render_submit(form)
 
       assert has_element?(view, "p", "can't be blank")
+    end
+  end
+
+  describe "authentication" do
+    test "redirects unauthenticated users to the login page" do
+      organization = organization_fixture()
+
+      conn =
+        build_conn()
+        |> Map.put(:host, organization.hostname)
+        |> get(~p"/prayers/new")
+
+      assert redirected_to(conn) == ~p"/users/log-in"
     end
   end
 end
