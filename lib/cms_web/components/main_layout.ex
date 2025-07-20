@@ -68,6 +68,11 @@ defmodule CMSWeb.MainLayout do
         </div>
         <div class="navbar-end">
           <ul class="menu menu-horizontal">
+            <li>
+              <.link patch={~p"/prayers/new"}>
+                <.icon name="hero-plus-solid" class="h-5 w-5" />
+              </.link>
+            </li>
             <.user_menu current_scope={@current_scope} />
           </ul>
         </div>
