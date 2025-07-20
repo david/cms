@@ -16,7 +16,7 @@ defmodule CMSWeb.PrayerRequestLive.Form do
 
     socket
     |> assign(:form, to_form(changeset))
-    |> assign(:page_title, "New Prayer Request")
+    |> assign(:page_title, "Novo Pedido de Oração")
   end
 
   @impl true
@@ -26,16 +26,16 @@ defmodule CMSWeb.PrayerRequestLive.Form do
       <.header>
         {@page_title}
         <:subtitle>
-          Write your prayer request below.
+          Escreva o seu pedido de oração abaixo.
         </:subtitle>
       </.header>
 
       <.form for={@form} id="prayer-request-form" phx-submit="save">
-        <.input field={@form[:body]} type="textarea" label="Prayer Request" required />
+        <.input field={@form[:body]} type="textarea" label="Pedido de Oração" required />
 
         <footer>
-          <.button phx-disable-with="Saving..." variant="primary">Save</.button>
-          <.button navigate={~p"/prayers"}>Cancel</.button>
+          <.button phx-disable-with="A guardar..." variant="primary">Guardar</.button>
+          <.button navigate={~p"/prayers"}>Cancelar</.button>
         </footer>
       </.form>
     </.main_layout>
@@ -48,7 +48,7 @@ defmodule CMSWeb.PrayerRequestLive.Form do
       {:ok, _prayer_request} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Prayer request created successfully.")
+         |> put_flash(:info, "Pedido de oração criado com sucesso.")
          |> push_navigate(to: ~p"/prayers")}
 
       {:error, %Ecto.Changeset{} = changeset} ->

@@ -11,7 +11,7 @@
 msgid ""
 msgstr ""
 
-#: lib/cms_web/components/core_components.ex:354
+#: lib/cms_web/components/core_components.ex:331
 #, elixir-autogen, elixir-format
 msgid "Actions"
 msgstr ""
@@ -31,7 +31,7 @@ msgstr ""
 msgid "Something went wrong!"
 msgstr ""
 
-#: lib/cms_web/live/liturgy_live/show.ex:54
+#: lib/cms_web/live/liturgy_live/show.ex:45
 #, elixir-autogen, elixir-format
 msgid "Song"
 msgstr ""
@@ -46,33 +46,42 @@ msgstr ""
 msgid "close"
 msgstr ""
 
-#: lib/cms_web/live/liturgy_live/show.ex:36
+#: lib/cms_web/live/liturgy_live/show.ex:27
 #, elixir-autogen, elixir-format
 msgid "Edit"
 msgstr ""
 
-#: lib/cms_web/controllers/page_html/home.html.heex:5
-#: lib/cms_web/live/liturgy_live/show.ex:14
+#: lib/cms_web/live/liturgy_live/show.ex:22
 #, elixir-autogen, elixir-format
 msgid "Liturgy"
 msgstr ""
 
-#: lib/cms_web/live/liturgy_live/show.ex:83
+#: lib/cms_web/live/liturgy_live/show.ex:67
 #, elixir-autogen, elixir-format
 msgid "Show Liturgy"
 msgstr ""
 
-#: lib/cms_web/components/layouts/root.html.heex:72
+#: lib/cms_web/components/main_layout.ex:126
 #, elixir-autogen, elixir-format
-msgid "Do you want to install this app on your device?"
+msgid "Deseja instalar esta aplicação no seu dispositivo?"
 msgstr ""
 
-#: lib/cms_web/components/layouts/root.html.heex:77
+#: lib/cms_web/components/main_layout.ex:150
 #, elixir-autogen, elixir-format
-msgid "No"
+msgid "Ignorar"
 msgstr ""
 
-#: lib/cms_web/components/layouts/root.html.heex:74
+#: lib/cms_web/components/main_layout.ex:131
 #, elixir-autogen, elixir-format
-msgid "Yes"
+msgid "Não"
+msgstr ""
+
+#: lib/cms_web/components/main_layout.ex:145
+#, elixir-autogen, elixir-format
+msgid "Para instalar esta aplicação no seu dispositivo, toque no botão Partilhar e de seguida em 'Adicionar ao ecrã principal'."
+msgstr ""
+
+#: lib/cms_web/components/main_layout.ex:128
+#, elixir-autogen, elixir-format
+msgid "Sim"
 msgstr ""

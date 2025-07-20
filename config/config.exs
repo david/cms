@@ -36,7 +36,10 @@ config :cms, CMSWeb.Endpoint,
   pubsub_server: CMS.PubSub,
   live_view: [signing_salt: "91mAmnWG"]
 
-config :cms, CMSWeb.Gettext, default_locale: "pt", locales: ~w(pt en)
+config :cms, CMSWeb.Gettext,
+  default_locale: "pt",
+  locales: ~w(pt en),
+  ecto_translators: [Ecto.Changeset]
 
 # Configures the mailer
 #

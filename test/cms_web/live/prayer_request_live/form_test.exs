@@ -19,11 +19,13 @@ defmodule CMSWeb.PrayerRequestLive.FormTest do
       {:ok, view, _html} = live(conn, ~p"/prayers/new")
 
       form =
-        form(view, "#prayer-request-form", prayer_request: %{body: "Please pray for my family."})
+        form(view, "#prayer-request-form",
+          prayer_request: %{body: "Por favor, orem pela minha família."}
+        )
 
       {:ok, _redirected_view, html} = render_submit(form) |> follow_redirect(conn)
 
-      assert html =~ "Prayer request created successfully."
+      assert html =~ "Pedido de oração criado com sucesso."
     end
 
     test "fails to create prayer request with invalid data", %{conn: conn} do
@@ -32,7 +34,7 @@ defmodule CMSWeb.PrayerRequestLive.FormTest do
       form = form(view, "#prayer-request-form", prayer_request: @invalid_attrs)
       render_submit(form)
 
-      assert has_element?(view, "p", "can't be blank")
+      assert has_element?(view, "p", "não pode estar em branco")
     end
   end
 

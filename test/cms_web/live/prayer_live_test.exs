@@ -33,14 +33,14 @@ defmodule CMSWeb.PrayerLiveTest do
       organization: org
     } do
       Repo.insert!(%PrayerRequest{
-        body: "Please pray for my family.",
+        body: "Por favor, orem pela minha família.",
         user_id: user.id,
         organization_id: org.id
       })
 
       {:ok, view, html} = live(conn, ~p"/prayers")
 
-      assert html =~ "Please pray for my family."
+      assert html =~ "Por favor, orem pela minha família."
       assert has_element?(view, "[data-testid=prayer-requests-list]")
       refute has_element?(view, "[data-testid=empty-state]")
     end
@@ -51,7 +51,7 @@ defmodule CMSWeb.PrayerLiveTest do
       organization: org
     } do
       Repo.insert!(%PrayerRequest{
-        body: "This should be visible.",
+        body: "Isto deve ser visível.",
         user_id: user.id,
         organization_id: org.id
       })
@@ -68,15 +68,15 @@ defmodule CMSWeb.PrayerLiveTest do
         )
 
       Repo.insert!(%PrayerRequest{
-        body: "This should not be visible.",
+        body: "Isto não deve ser visível.",
         user_id: other_user.id,
         organization_id: other_org.id
       })
 
       {:ok, view, html} = live(conn, ~p"/prayers")
 
-      assert html =~ "This should be visible."
-      refute html =~ "This should not be visible."
+      assert html =~ "Isto deve ser visível."
+      refute html =~ "Isto não deve ser visível."
       assert has_element?(view, "[data-testid=prayer-requests-list]")
       refute has_element?(view, "[data-testid=empty-state]")
     end

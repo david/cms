@@ -14,6 +14,7 @@
 - When implementing real-time updates via PubSub, a more robust pattern is to broadcast only the ID of the changed resource, not the entire data structure. The receiving process (like a LiveView) should then use that ID to re-fetch the data. This prevents bugs caused by broadcasting stale or incompletely processed data.
 - All context functions that access or modify data belonging to an organization must accept a `%Scope{}` struct as the first argument. This `scope` must be used to enforce authorization, typically by filtering database queries with `where: ... organization_id == ^scope.organization.id` or by asserting `true = resource.organization_id == scope.organization.id` before performing an update or delete.
 - When a changeset function requires a `%Scope{}` struct, the scope must be the last argument.
+- All user-facing messages should be in Portuguese (`pt_PT`). This includes flash messages, form labels, and validation messages.
 
 ### Development Workflow & Best Practices
 
