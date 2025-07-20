@@ -12,12 +12,15 @@
 - A Phoenix component that uses the `~p` sigil for verified routes must include the `use Phoenix.VerifiedRoutes, ...` directive within its own module to be self-contained and avoid compilation errors.
 - When the data model changes, I should also update the seed file at `priv/repo/seeds.exs` to reflect those changes.
 - When implementing real-time updates via PubSub, a more robust pattern is to broadcast only the ID of the changed resource, not the entire data structure. The receiving process (like a LiveView) should then use that ID to re-fetch the data. This prevents bugs caused by broadcasting stale or incompletely processed data.
+- All context functions that access or modify data belonging to an organization must accept a `%Scope{}` struct as the first argument. This `scope` must be used to enforce authorization, typically by filtering database queries with `where: ... organization_id == ^scope.organization.id` or by asserting `true = resource.organization_id == scope.organization.id` before performing an update or delete.
+- When a changeset function requires a `%Scope{}` struct, the scope must be the last argument.
 
 ### Development Workflow & Best Practices
 
 - Before writing new code or tests, I must first read the relevant existing code—especially data schemas, context modules, and component files—to understand the established data structures, APIs, and conventions. I will not code based on assumption.
 - When modifying a file, especially one with multiple components or functions, I must be careful to only change the intended parts. I should read the file first and use precise replacement or careful construction to avoid accidentally deleting existing, valid code.
 - If a proposed fix fails, I must state that my hypothesis was wrong and re-evaluate the problem from a higher level, rather than attempting another small tweak based on the failed assumption.
+- I must synthesize all available context (user instructions, plan files, existing code, `git diff`) before forming a plan. Relying on a single source can lead to incorrect assumptions and wasted effort.
 
 ### Testing & Verification
 
@@ -25,6 +28,8 @@
 - After implementing a feature and seeing its specific tests pass, I must run the full test suite to check for regressions, and then run `mix format`.
 - When testing a feature where components communicate indirectly (e.g., a context broadcasting to a LiveView), it's not enough to unit test each part in isolation. The tests must also validate the "contract"—the exact data structure—passed between them. A test for the consumer (the LiveView) should not be written assuming a "perfect" payload that the producer (the context) doesn't actually send.
 - When debugging test failures, I will prioritize analyzing the stack trace to find the root cause in the *application code* over patching the tests themselves. A failing test is a symptom; the bug is in the code under test.
+- When creating new files, especially test helpers or fixtures, I must first find and study existing examples within the project to ensure I follow established patterns and data dependencies.
+- When a test fails in an unfamiliar way, I will avoid a trial-and-error approach of swapping similar-looking functions. Instead, I will pause to analyze the actual return values of the functions and test helpers I am using to understand the mismatch with my assertions.
 
 ### User Interaction
 
