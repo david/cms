@@ -17,6 +17,8 @@ defmodule CMSWeb.ConnCase do
 
   use ExUnit.CaseTemplate
 
+  import CMS.AccountsFixtures
+
   using do
     quote do
       # The default endpoint for testing
@@ -45,8 +47,8 @@ defmodule CMSWeb.ConnCase do
   test context.
   """
   def register_and_log_in_user(%{conn: conn} = context) do
-    org = CMS.AccountsFixtures.organization_fixture()
-    user = CMS.AccountsFixtures.user_fixture(%{}, org)
+    org = organization_fixture()
+    user = user_fixture(%{}, org)
     scope = CMS.Accounts.Scope.for_user(user, user.organization)
 
     opts =
@@ -55,6 +57,19 @@ defmodule CMSWeb.ConnCase do
       |> Enum.into([])
 
     %{conn: log_in_user(conn, user, opts), user: user, scope: scope, organization: org}
+  end
+
+  def register_and_log_in_admin(%{conn: conn} = context) do
+    org = organization_fixture()
+    admin = admin_fixture(%{}, org)
+    scope = CMS.Accounts.Scope.for_user(admin, admin.organization)
+
+    opts =
+      context
+      |> Map.take([:token_authenticated_at])
+      |> Enum.into([])
+
+    %{conn: log_in_user(conn, admin, opts), user: admin, scope: scope, organization: org}
   end
 
   @doc """
@@ -75,6 +90,6 @@ defmodule CMSWeb.ConnCase do
   defp maybe_set_token_authenticated_at(_token, nil), do: nil
 
   defp maybe_set_token_authenticated_at(token, authenticated_at) do
-    CMS.AccountsFixtures.override_token_authenticated_at(token, authenticated_at)
+    override_token_authenticated_at(token, authenticated_at)
   end
 end

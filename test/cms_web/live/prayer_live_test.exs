@@ -3,9 +3,7 @@ defmodule CMSWeb.PrayerLiveTest do
 
   import Phoenix.LiveViewTest
   import CMS.AccountsFixtures
-
-  alias CMS.Prayers.PrayerRequest
-  alias CMS.Repo
+  import CMS.PrayersFixtures
 
   @moduletag :live_view
 
@@ -32,10 +30,10 @@ defmodule CMSWeb.PrayerLiveTest do
       user: user,
       organization: org
     } do
-      Repo.insert!(%PrayerRequest{
+      prayer_request_fixture(%{
         body: "Por favor, orem pela minha família.",
-        user_id: user.id,
-        organization_id: org.id
+        user: user,
+        organization: org
       })
 
       {:ok, view, html} = live(conn, ~p"/prayers")
@@ -50,10 +48,10 @@ defmodule CMSWeb.PrayerLiveTest do
       user: user,
       organization: org
     } do
-      Repo.insert!(%PrayerRequest{
+      prayer_request_fixture(%{
         body: "Isto deve ser visível.",
-        user_id: user.id,
-        organization_id: org.id
+        user: user,
+        organization: org
       })
 
       other_org = organization_fixture(%{name: "Other Organization"})
@@ -67,10 +65,10 @@ defmodule CMSWeb.PrayerLiveTest do
           other_org
         )
 
-      Repo.insert!(%PrayerRequest{
+      prayer_request_fixture(%{
         body: "Isto não deve ser visível.",
-        user_id: other_user.id,
-        organization_id: other_org.id
+        user: other_user,
+        organization: other_org
       })
 
       {:ok, view, html} = live(conn, ~p"/prayers")

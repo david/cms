@@ -88,6 +88,7 @@ Repo.get_by(PrayerRequest, user_id: smith_user.id) ||
   Repo.insert!(%PrayerRequest{
     body: "Please pray for my upcoming job interview.",
     user_id: smith_user.id,
+    created_by_id: smith_user.id,
     organization_id: org.id
   })
 
@@ -95,6 +96,7 @@ Repo.get_by(PrayerRequest, user_id: jones_user.id) ||
   Repo.insert!(%PrayerRequest{
     body: "Please pray for my grandmother's health.",
     user_id: jones_user.id,
+    created_by_id: jones_user.id,
     organization_id: org.id
   })
 

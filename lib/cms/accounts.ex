@@ -46,6 +46,10 @@ defmodule CMS.Accounts do
     Repo.get_by(User, email: email)
   end
 
+  def get_user(%Scope{organization: %{id: org_id}}, id) do
+    Repo.get_by(User, id: id, organization_id: org_id)
+  end
+
   @doc """
   Gets a single user.
 
