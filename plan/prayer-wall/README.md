@@ -6,9 +6,9 @@ This document provides an overview of the "Prayer Wall" feature epic. The goal i
 
 The Prayer Wall is a key feature for enhancing community engagement within the application. By providing a dedicated space for members to share and respond to prayer requests, we aim to foster a stronger, more supportive community. This feature will allow users to feel more connected and provide them with an accessible way to care for one another through prayer, regardless of their physical location.
 
-## Tasks
+## Specs
 
-This epic is broken down into the following main tasks:
+This epic is broken down into the following main specs:
 
 - [x] [Initial Setup: Prayer Wall Empty State](./01-prayer-wall-empty-state.md)
 - [x] [Feature: Display Prayer Requests](./02-display-prayer-requests.md)

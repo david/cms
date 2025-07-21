@@ -6,9 +6,9 @@ This document provides an overview of the "Accounts" feature epic. The goal is t
 
 The Accounts epic is foundational for the application. This work adds User Groups, which will allow administrators to control access to sensitive or specific content, such as prayers intended for a particular audience.
 
-## Tasks
+## Specs
 
-This epic is broken down into the following main tasks:
+This epic is broken down into the following main specs:
 
 -   [x] Add a new route `/admin/groups` that shows a page with a title and an empty state message.
         [spec](01-add-admin-groups-route-with-empty-state.md)
