@@ -11,7 +11,9 @@ The Accounts epic is foundational for the application. This work adds User Group
 This epic is broken down into the following main tasks:
 
 -   [x] Add a new route `/admin/groups` that shows a page with a title and an empty state message.
--   [ ] Create the `groups` data structure and display a list of seeded groups on the `/admin/groups` page.
+        [spec](01-add-admin-groups-route-with-empty-state.md)
+-   [x] Create the `groups` data structure and display a list of seeded groups on the `/admin/groups` page.
+        [spec](02-create-groups-data-structure-and-display-list.md)
 -   [ ] Add a link to /admin/groups/new from the empty state message on the `/admin/groups` page.
 -   [ ] Add a "New Group" button and form to allow administrators to create new groups.
 -   [ ] Add a "Manage Members" page for each group to display its members.

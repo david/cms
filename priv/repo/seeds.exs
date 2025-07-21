@@ -11,6 +11,7 @@
 # and so on) as they will fail if something goes wrong.
 
 alias CMS.Accounts.Family
+alias CMS.Accounts.Group
 alias CMS.Accounts.Organization
 alias CMS.Accounts.User
 alias CMS.Liturgies.Liturgy
@@ -23,6 +24,20 @@ org =
     Repo.insert!(%Organization{
       name: "Default Organization"
     })
+
+Repo.get_by(Group, name: "Elders", organization_id: org.id) ||
+  Repo.insert!(%Group{
+    name: "Elders",
+    description: "The elders of the church.",
+    organization_id: org.id
+  })
+
+Repo.get_by(Group, name: "Deacons", organization_id: org.id) ||
+  Repo.insert!(%Group{
+    name: "Deacons",
+    description: "The deacons of the church.",
+    organization_id: org.id
+  })
 
 family =
   Repo.get_by(Family, designation: "Administrator", organization_id: org.id) ||

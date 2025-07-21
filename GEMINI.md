@@ -12,7 +12,7 @@ This is an Elixir/Phoenix application that serves as a CMS for church-related ac
 
 ### 2. Git & Version Control
 
--   **Commit Messages:** Use standard, descriptive messages without conventional commit prefixes (e.g., no `feat:`, `fix:`).
+-   **Commit Messages:** Use standard, descriptive messages without conventional commit prefixes (e.g., no `feat:`, `fix:`). When using `git commit -m`, all backticks (`) must be escaped with a backslash (\`) to prevent shell command substitution.
 -   **Reverting Changes:** Use specific git commands (`git checkout -- <file>` or `git reset --hard`) for reverts instead of manual rollbacks. Use `git reset --hard HEAD` only as a last resort to discard all local changes.
 -   **Stashing:** Before stashing, run `git status` to check for untracked files, as `git stash` does not save them by default.
 
@@ -34,15 +34,19 @@ This is the most critical rule. To ensure a user from one organization cannot ac
 #### **User Interface**
 -   **Localization:** All user-facing text (labels, validation, flash messages) must be in Portuguese (`pt_PT`) using `gettext`.
 -   **Verified Routes:** Any component using the `~p` sigil must include `use Phoenix.VerifiedRoutes, ...` to remain self-contained.
+-   **Core Components:** Before using a component from `lib/cms_web/components/core_components.ex` (e.g., `<.table>`), verify its `attr` definitions. Do not assume attributes like `testid` or `rest` are available unless explicitly defined. Use the specified attributes, such as a required `id`, for testing selectors.
+-   **Layout Consistency:** All top-level LiveViews that render a full page must be wrapped in the `<.main_layout>` component, passing it the `@flash` and `@current_scope` assigns.
 
 ### 4. Testing Strategy
 
 -   **Test, Then Format:** After any code change, I will first run the full test suite (`mix test`) and then format the code (`mix format`).
+-   **Fixtures First:** Before writing tests, always check for existing fixtures in `test/support/fixtures/`. Use these fixtures to create test data instead of inserting records directly. Fixtures should accept their dependencies as arguments (e.g., `my_fixture(attrs, organization)`) rather than creating them internally.
 -   **Debug the App, Not the Test:** When a test fails, I will analyze the stack trace to find the root cause in the application code.
 -   **`Ecto.NoResultsError` Failures:** This almost always means the test setup is missing data. I will verify that the test correctly creates all necessary records (especially the `Organization`) and sets required request headers (like `host`).
 -   **`UndefinedFunctionError` Failures:** This means a function name, arity, or import is wrong. I will find a working example in another test before guessing a fix.
 -   **Module Naming:** Core application logic is under the `CMS` namespace, while web-related code (controllers, views, etc.) is under `CMSWeb`.
 -   **Test the Contract:** For tests involving PubSub, I will ensure the test for the *consumer* (the LiveView) asserts against the *exact* payload broadcasted by the *producer* (the context).
+-   **Testing LiveViews with Scope:** When testing a LiveView that requires an authenticated user, use the `log_in_user/2` helper in your test setup. The scope is automatically assigned to the socket and can be accessed in the LiveView via `socket.assigns.current_scope`. Do not manually assign the scope to the connection in tests.
 
 ### 5. Project Tooling
 

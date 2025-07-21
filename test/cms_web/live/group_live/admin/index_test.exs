@@ -6,9 +6,9 @@ defmodule CMSWeb.GroupLive.Admin.IndexTest do
 
   setup do
     org = organization_fixture()
-    user = user_fixture(%{role: :admin}, org)
+    admin = admin_fixture(%{}, org)
 
-    %{org: org, user: user}
+    %{org: org, admin: admin}
   end
 
   describe "authorization" do
@@ -34,12 +34,23 @@ defmodule CMSWeb.GroupLive.Admin.IndexTest do
   end
 
   describe "rendering" do
-    test "displays the empty state message", %{conn: conn, user: user} do
-      conn = conn |> log_in_user(user)
+    test "displays the empty state message", %{conn: conn, admin: admin} do
+      conn = conn |> log_in_user(admin)
       {:ok, view, _html} = live(conn, ~p"/admin/groups")
 
       assert has_element?(view, "[data-testid=page-title]")
       assert has_element?(view, "[data-testid=empty-state]")
+    end
+
+    test "displays the list of groups", %{conn: conn, admin: admin, org: org} do
+      group = group_fixture(%{}, org)
+
+      conn = conn |> log_in_user(admin)
+      {:ok, view, _html} = live(conn, ~p"/admin/groups")
+
+      assert has_element?(view, "[data-testid=page-title]")
+      refute has_element?(view, "[data-testid=empty-state]")
+      assert has_element?(view, "#groups-table", group.name)
     end
   end
 end

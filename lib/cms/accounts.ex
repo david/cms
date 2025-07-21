@@ -7,8 +7,16 @@ defmodule CMS.Accounts do
 
   alias Ecto.Changeset
 
-  alias CMS.Accounts.{Family, Organization, Scope, User, UserToken, UserNotifier}
+  alias CMS.Accounts.{Family, Group, Organization, Scope, User, UserToken, UserNotifier}
   alias CMS.Repo
+
+  def list_groups(%Scope{organization: %Organization{id: org_id}}) do
+    from(g in Group,
+      where: g.organization_id == ^org_id,
+      order_by: [asc: g.name]
+    )
+    |> Repo.all()
+  end
 
   ## Database getters
 

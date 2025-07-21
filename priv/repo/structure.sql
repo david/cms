@@ -165,6 +165,39 @@ ALTER SEQUENCE public.families_id_seq OWNED BY public.families.id;
 
 
 --
+-- Name: groups; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.groups (
+    id bigint NOT NULL,
+    name character varying(255) NOT NULL,
+    description text,
+    organization_id bigint NOT NULL,
+    inserted_at timestamp(0) without time zone NOT NULL,
+    updated_at timestamp(0) without time zone NOT NULL
+);
+
+
+--
+-- Name: groups_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.groups_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: groups_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.groups_id_seq OWNED BY public.groups.id;
+
+
+--
 -- Name: liturgies; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -384,6 +417,13 @@ ALTER TABLE ONLY public.families ALTER COLUMN id SET DEFAULT nextval('public.fam
 
 
 --
+-- Name: groups id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.groups ALTER COLUMN id SET DEFAULT nextval('public.groups_id_seq'::regclass);
+
+
+--
 -- Name: liturgies id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -447,6 +487,14 @@ ALTER TABLE ONLY public.songs
 
 ALTER TABLE ONLY public.families
     ADD CONSTRAINT families_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: groups groups_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.groups
+    ADD CONSTRAINT groups_pkey PRIMARY KEY (id);
 
 
 --
@@ -517,6 +565,13 @@ CREATE UNIQUE INDEX bible_verses_book_chapter_verse_index ON public.bible_verses
 --
 
 CREATE UNIQUE INDEX families_organization_id_designation_index ON public.families USING btree (organization_id, designation);
+
+
+--
+-- Name: groups_organization_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX groups_organization_id_index ON public.groups USING btree (organization_id);
 
 
 --
@@ -618,6 +673,14 @@ ALTER TABLE ONLY public.blocks
 
 ALTER TABLE ONLY public.families
     ADD CONSTRAINT families_organization_id_fkey FOREIGN KEY (organization_id) REFERENCES public.organizations(id) ON DELETE CASCADE;
+
+
+--
+-- Name: groups groups_organization_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.groups
+    ADD CONSTRAINT groups_organization_id_fkey FOREIGN KEY (organization_id) REFERENCES public.organizations(id) ON DELETE CASCADE;
 
 
 --
@@ -731,3 +794,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20250605173012);
 INSERT INTO public."schema_migrations" (version) VALUES (20250605175322);
 INSERT INTO public."schema_migrations" (version) VALUES (20250719142506);
 INSERT INTO public."schema_migrations" (version) VALUES (20250719145605);
+INSERT INTO public."schema_migrations" (version) VALUES (20250721090414);

@@ -7,10 +7,25 @@ defmodule CMS.AccountsFixtures do
   import Ecto.Query
 
   alias CMS.Accounts
-  alias CMS.Accounts.Scope
   alias CMS.Accounts.Family
+  alias CMS.Accounts.Group
+  alias CMS.Accounts.Scope
   alias CMS.Accounts.User
   alias CMS.Repo
+
+  def group_fixture(attrs \\ %{}, organization) do
+    name = "Group #{System.unique_integer()}"
+
+    {:ok, group} =
+      %Group{
+        name: name,
+        organization_id: organization.id
+      }
+      |> Map.merge(attrs)
+      |> Repo.insert()
+
+    group
+  end
 
   def unique_user_email, do: "user#{System.unique_integer()}@example.com"
 
