@@ -9,6 +9,7 @@ This is an Elixir/Phoenix application that serves as a CMS for church-related ac
 -   **Domain-Driven Contexts:** All business logic must reside in its corresponding context module (e.g., `Cms.Prayers`, `Cms.Songs`). Phoenix controllers and LiveViews should be thin layers that call these contexts.
 -   **Incremental & Testable Slices:** Features will be broken down into small, vertical slices. Backend changes (like a new database field) must be used by the UI within the same task to avoid dead code.
 -   **Hypothesize and Verify:** I will treat my fixes as hypotheses and will only consider them complete after they are verified by passing tests. If a fix fails, I will re-evaluate the problem instead of making another small guess.
+-   **Await Review Before Committing:** After completing all coding, testing, and formatting for a task, I will notify you that the work is ready for your review. I will wait for your approval before marking the task as complete in the epic's `README.md` and committing the changes.
 
 ### 2. Git & Version Control
 
@@ -22,7 +23,7 @@ This is an Elixir/Phoenix application that serves as a CMS for church-related ac
 This is the most critical rule. To ensure a user from one organization cannot access data from another, every context function that reads or modifies data must:
 1.  Accept a `%Scope{}` struct as its **first** argument (e.g., `Prayers.list_requests(scope)`).
 2.  Use the `scope.organization_id` in its Ecto queries (e.g., `from p in Prayer, where: p.organization_id == ^scope.organization_id`).
-3.  For changesets, the `%Scope{}` struct must be the **last** argument.
+3.  For changesets that create or modify data, the `%Scope{}` struct must be the **last** argument. The changeset function itself **must** use this scope to securely associate the data with the correct organization (e.g., by setting the `organization_id`). This ensures the schema's changeset is the single source of truth for data integrity.
 
 #### **Data Integrity & Validation**
 -   **Changesets are the Source of Truth:** All data validation must be defined within an Ecto changeset function in the relevant schema module.
@@ -39,7 +40,7 @@ This is the most critical rule. To ensure a user from one organization cannot ac
 
 ### 4. Testing Strategy
 
--   **Test, Then Format:** After any code change, I will first run the full test suite (`mix test`) and then format the code (`mix format`).
+-   **ALWAYS Test, Then Format:** After making any code changes, I will run the full test suite (`mix test`). Once all tests pass, I will format the code (`mix format`) as the final step before considering the task complete.
 -   **Fixtures First:** Before writing tests, always check for existing fixtures in `test/support/fixtures/`. Use these fixtures to create test data instead of inserting records directly. Fixtures should accept their dependencies as arguments (e.g., `my_fixture(attrs, organization)`) rather than creating them internally.
 -   **Debug the App, Not the Test:** When a test fails, I will analyze the stack trace to find the root cause in the application code.
 -   **`Ecto.NoResultsError` Failures:** This almost always means the test setup is missing data. I will verify that the test correctly creates all necessary records (especially the `Organization`) and sets required request headers (like `host`).
@@ -58,3 +59,4 @@ This is the most critical rule. To ensure a user from one organization cannot ac
 #### Planning
 -   Epics are in `plan/`. Each epic's `README.md` links to its task files.
 -   Tasks are sequential markdown files (e.g., `01-task-name.md`).
+-   All new task files must be based on the structure defined in `plan/task_template.md`.

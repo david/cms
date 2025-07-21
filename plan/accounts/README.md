@@ -14,8 +14,8 @@ This epic is broken down into the following main tasks:
         [spec](01-add-admin-groups-route-with-empty-state.md)
 -   [x] Create the `groups` data structure and display a list of seeded groups on the `/admin/groups` page.
         [spec](02-create-groups-data-structure-and-display-list.md)
--   [ ] Add a "New Group" button and form to allow administrators to create new groups.
-        (Add a link to /admin/groups/new from the empty state message on the `/admin/groups` page.)
+-   [x] Add a "New Group" button and form to allow administrators to create new groups.
+        [spec](03-add-new-group-form.md)
 -   [ ] Add a "Manage Members" page for each group to display its members.
 -   [ ] Implement functionality to add existing users to a group from the "Manage Members" page.
 -   [ ] Implement functionality to remove users from a group.

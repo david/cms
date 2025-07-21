@@ -34,15 +34,23 @@ defmodule CMSWeb.GroupLive.Admin.IndexTest do
   end
 
   describe "rendering" do
-    test "displays the empty state message", %{conn: conn, admin: admin} do
+    test "displays the empty state message and a link to create a group", %{
+      conn: conn,
+      admin: admin
+    } do
       conn = conn |> log_in_user(admin)
       {:ok, view, _html} = live(conn, ~p"/admin/groups")
 
       assert has_element?(view, "[data-testid=page-title]")
       assert has_element?(view, "[data-testid=empty-state]")
+      assert has_element?(view, "a[href='#{~p"/admin/groups/new"}']")
     end
 
-    test "displays the list of groups", %{conn: conn, admin: admin, org: org} do
+    test "displays the list of groups and a link to create a group", %{
+      conn: conn,
+      admin: admin,
+      org: org
+    } do
       group = group_fixture(%{}, org)
 
       conn = conn |> log_in_user(admin)
@@ -51,6 +59,7 @@ defmodule CMSWeb.GroupLive.Admin.IndexTest do
       assert has_element?(view, "[data-testid=page-title]")
       refute has_element?(view, "[data-testid=empty-state]")
       assert has_element?(view, "#groups-table", group.name)
+      assert has_element?(view, "a[href='#{~p"/admin/groups/new"}']")
     end
   end
 end

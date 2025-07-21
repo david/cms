@@ -18,6 +18,16 @@ defmodule CMS.Accounts do
     |> Repo.all()
   end
 
+  def create_group(%Scope{} = scope, attrs) do
+    %Group{}
+    |> Group.changeset(attrs, scope)
+    |> Repo.insert()
+  end
+
+  def change_group(group, attrs, scope) do
+    Group.changeset(group, attrs, scope)
+  end
+
   ## Database getters
 
   @doc """
