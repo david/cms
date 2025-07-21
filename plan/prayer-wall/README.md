@@ -15,6 +15,7 @@ This epic is broken down into the following main tasks:
 - [x] [Feature: Create New Prayer Requests](./03-create-new-prayer-requests.md)
 - [x] /prayers and /prayers/new should be accessible to logged-in users only.
 - [x] All messages should be in pt_PT.
+- [x] The plus sign should be visible only on the prayer wall page.
 - [ ] Allow users to edit their own prayer requests.
 - [ ] Allow users to mark their own prayer requests as "done".
 - [ ] Implement pagination for the prayer request list.

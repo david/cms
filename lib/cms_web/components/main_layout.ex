@@ -18,6 +18,7 @@ defmodule CMSWeb.MainLayout do
 
   slot :inner_block, required: true
   slot :sidebar_bottom, required: false
+  slot :nav_actions, required: false
 
   alias CMSWeb.LiturgyComponents
 
@@ -31,7 +32,11 @@ defmodule CMSWeb.MainLayout do
           page_title={@page_title}
           liturgy={@liturgy}
           qr_code_svg={@qr_code_svg}
-        />
+        >
+          <:actions>
+            {render_slot(@nav_actions)}
+          </:actions>
+        </.navbar>
         <div class="flex-grow overflow-y-auto">
           <CMSWeb.Layouts.app flash={@flash}>
             {render_slot(@inner_block)}
@@ -56,6 +61,7 @@ defmodule CMSWeb.MainLayout do
   attr :page_title, :string, default: nil
   attr :liturgy, :map, default: nil
   attr :qr_code_svg, :string, default: nil
+  slot :actions, required: false
 
   defp navbar(assigns) do
     ~H"""
@@ -68,11 +74,7 @@ defmodule CMSWeb.MainLayout do
         </div>
         <div class="navbar-end">
           <ul class="menu menu-horizontal">
-            <li>
-              <.link patch={~p"/prayers/new"}>
-                <.icon name="hero-plus-solid" class="h-5 w-5" />
-              </.link>
-            </li>
+            {render_slot(@actions)}
             <.user_menu current_scope={@current_scope} />
           </ul>
         </div>

@@ -15,6 +15,14 @@ defmodule CMSWeb.PrayerLive.Index do
   def render(assigns) do
     ~H"""
     <.main_layout flash={@flash} current_scope={@current_scope}>
+      <:nav_actions>
+        <li>
+          <.link patch={~p"/prayers/new"}>
+            <.icon name="hero-plus-solid" class="h-5 w-5" />
+          </.link>
+        </li>
+      </:nav_actions>
+
       <.header>
         Pedidos de Oração
         <:subtitle>
