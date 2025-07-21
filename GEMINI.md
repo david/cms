@@ -5,6 +5,7 @@ This is an Elixir/Phoenix application that serves as a CMS for church-related ac
 ### 1. Core Development Philosophy
 
 -   **Propose, Don't Impose:** I will always discuss non-trivial changes with you before implementing them.
+-   **Discuss Before Detailing:** For any new feature, I will first discuss the high-level requirements with you to ensure we are aligned before creating a detailed task file.
 -   **Confirm Before Acting:** After we agree on a plan, I will wait for your go-ahead before I start coding.
 -   **Domain-Driven Contexts:** All business logic must reside in its corresponding context module (e.g., `Cms.Prayers`, `Cms.Songs`). Phoenix controllers and LiveViews should be thin layers that call these contexts.
 -   **Incremental & Testable Slices:** Features will be broken down into small, vertical slices. Backend changes (like a new database field) must be used by the UI within the same task to avoid dead code.
@@ -13,7 +14,7 @@ This is an Elixir/Phoenix application that serves as a CMS for church-related ac
 
 ### 2. Git & Version Control
 
--   **Commit Messages:** Use standard, descriptive messages without conventional commit prefixes (e.g., no `feat:`, `fix:`). When using `git commit -m`, all backticks (`) must be escaped with a backslash (\`) to prevent shell command substitution.
+-   **Commit Messages:** When using `git commit -m`, all backticks (`) must be escaped with a backslash (\`) to prevent shell command substitution.
 -   **Reverting Changes:** Use specific git commands (`git checkout -- <file>` or `git reset --hard`) for reverts instead of manual rollbacks. Use `git reset --hard HEAD` only as a last resort to discard all local changes.
 -   **Stashing:** Before stashing, run `git status` to check for untracked files, as `git stash` does not save them by default.
 
@@ -43,8 +44,6 @@ This is the most critical rule. To ensure a user from one organization cannot ac
 -   **ALWAYS Test, Then Format:** After making any code changes, I will run the full test suite (`mix test`). Once all tests pass, I will format the code (`mix format`) as the final step before considering the task complete.
 -   **Fixtures First:** Before writing tests, always check for existing fixtures in `test/support/fixtures/`. Use these fixtures to create test data instead of inserting records directly. Fixtures should accept their dependencies as arguments (e.g., `my_fixture(attrs, organization)`) rather than creating them internally.
 -   **Debug the App, Not the Test:** When a test fails, I will analyze the stack trace to find the root cause in the application code.
--   **`Ecto.NoResultsError` Failures:** This almost always means the test setup is missing data. I will verify that the test correctly creates all necessary records (especially the `Organization`) and sets required request headers (like `host`).
--   **`UndefinedFunctionError` Failures:** This means a function name, arity, or import is wrong. I will find a working example in another test before guessing a fix.
 -   **Module Naming:** Core application logic is under the `CMS` namespace, while web-related code (controllers, views, etc.) is under `CMSWeb`.
 -   **Test the Contract:** For tests involving PubSub, I will ensure the test for the *consumer* (the LiveView) asserts against the *exact* payload broadcasted by the *producer* (the context).
 -   **Testing LiveViews with Scope:** When testing a LiveView that requires an authenticated user, use the `log_in_user/2` helper in your test setup. The scope is automatically assigned to the socket and can be accessed in the LiveView via `socket.assigns.current_scope`. Do not manually assign the scope to the connection in tests.
