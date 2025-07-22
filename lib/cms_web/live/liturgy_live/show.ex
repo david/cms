@@ -16,7 +16,12 @@ defmodule CMSWeb.LiturgyLive.Show do
     >
       <:nav_actions>
         <%= if @current_scope.user && @current_scope.organization.id == @liturgy.organization_id do %>
-          <li><.button_edit path={~p"/admin/liturgies/#{@liturgy}/edit?return_to=show"} /></li>
+          <li>
+            <.button_nav
+              path={~p"/admin/liturgies/#{@liturgy}/edit?return_to=show"}
+              icon="hero-pencil-square"
+            />
+          </li>
         <% end %>
       </:nav_actions>
       <:sidebar_bottom>

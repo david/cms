@@ -548,37 +548,21 @@ defmodule CMSWeb.CoreComponents do
   end
 
   @doc """
-  Renders a button to add a new item.
+  Renders a navigation button.
 
   ## Examples
 
-      <.button_add path={~p"/prayers/new"} />
+      <.button_nav path={~p"/prayers/new"} icon="hero-plus-solid" />
+      <.button_nav path={~p"/prayers/edit"} icon="hero-pencil-square" />
 
   """
   attr :path, :any, required: true
+  attr :icon, :string, required: true
 
-  def button_add(assigns) do
+  def button_nav(assigns) do
     ~H"""
     <.link patch={@path}>
-      <.icon name="hero-plus-solid" class="h-5 w-5" />
-    </.link>
-    """
-  end
-
-  @doc """
-  Renders a button to edit an item.
-
-  ## Examples
-
-      <.button_edit path={~p"/prayers/edit"} />
-
-  """
-  attr :path, :any, required: true
-
-  def button_edit(assigns) do
-    ~H"""
-    <.link patch={@path}>
-      <.icon name="hero-pencil-square" class="h-5 w-5" />
+      <.icon name={@icon} class="h-5 w-5" />
     </.link>
     """
   end
