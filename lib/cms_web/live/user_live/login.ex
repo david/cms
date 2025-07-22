@@ -8,18 +8,7 @@ defmodule CMSWeb.UserLive.Login do
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <div class="mx-auto max-w-sm space-y-4">
         <.header class="text-center">
-          <p>Log in</p>
-          <:subtitle>
-            <%= if @current_scope.user do %>
-              Use the button below to send a new login OTP to your email.
-            <% else %>
-              Don't have an account? <.link
-                navigate={~p"/users/register"}
-                class="font-semibold text-brand hover:underline"
-                phx-no-format
-              >Sign up</.link> for an account now.
-            <% end %>
-          </:subtitle>
+          <p>Entrar</p>
         </.header>
 
         <div :if={local_mail_adapter?()} class="alert alert-info">
@@ -48,8 +37,8 @@ defmodule CMSWeb.UserLive.Login do
             required
             phx-mounted={JS.focus()}
           />
-          <.button class="w-full" variant="primary">
-            Send OTP <span aria-hidden="true">→</span>
+          <.button class="mt-4 w-full" variant="primary">
+            Enviar código <span aria-hidden="true">→</span>
           </.button>
         </.form>
       </div>
