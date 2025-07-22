@@ -1,5 +1,6 @@
 defmodule CMSWeb.UserLive.Admin.Index do
   use CMSWeb, :live_view
+  use Phoenix.VerifiedRoutes, endpoint: CMSWeb.Endpoint, router: CMSWeb.Router
 
   alias CMS.Accounts
   alias CMS.Accounts.Import
@@ -46,6 +47,22 @@ defmodule CMSWeb.UserLive.Admin.Index do
     {:noreply, socket}
   end
 
+  def handle_event("invite_user", %{"id" => id}, socket) do
+    user = Accounts.get_user(socket.assigns.current_scope, id)
+    login_url = url(~p"/users/lobby")
+
+    socket =
+      case Accounts.send_invitation_instructions(user, login_url) do
+        {:ok, _} ->
+          put_flash(socket, :info, "Convite enviado para #{user.email}")
+
+        {:error, :already_confirmed} ->
+          put_flash(socket, :error, "Usuário já confirmado.")
+      end
+
+    {:noreply, socket}
+  end
+
   @impl true
   def render(assigns) do
     ~H"""
@@ -64,20 +81,27 @@ defmodule CMSWeb.UserLive.Admin.Index do
         </:actions>
       </.header>
 
-      <.table id="users" rows={@streams.users}>
+      <.table id="users" rows={@streams.users} row_id={fn {_id, user} -> "user-#{user.id}" end}>
         <:col :let={{_id, user}} label="Name">{user.name}</:col>
         <:col :let={{_id, user}} label="Family">{user.family.designation}</:col>
-        <:col :let={{_id, user}} :if={{@current_scope.user.role == :admin}} label="Email">
-          {user.email}
-        </:col>
+        <:col :let={{_id, user}} label="Email">{user.email}</:col>
         <:col :let={{_id, user}} label="Role">{user.role}</:col>
         <:col :let={{_id, user}} label={~H(<div class="text-center">Confirmed?</div>)}>
           <div :if={user.confirmed_at} class="text-center">
             <.icon name="hero-check-solid" class="size-5 text-success inline-block" />
           </div>
         </:col>
-        <:action :let={{_id, user}} :if={{@current_scope.user.role == :admin}}>
+        <:action :let={{_id, user}}>
           <.link navigate={~p"/admin/users/#{user}/edit"}>Edit</.link>
+          <div :if={is_nil(user.confirmed_at)}>
+            <.link
+              phx-click="invite_user"
+              phx-value-id={user.id}
+              data-confirm="Tem certeza que deseja convidar este usuário?"
+            >
+              Convidar
+            </.link>
+          </div>
         </:action>
       </.table>
 

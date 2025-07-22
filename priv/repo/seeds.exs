@@ -84,6 +84,32 @@ jones_user =
       organization_id: org.id
     })
 
+unconfirmed_family_1 =
+  Repo.get_by(Family, designation: "The Unconfirmeds", organization_id: org.id) ||
+    Repo.insert!(%Family{designation: "The Unconfirmeds", organization: org})
+
+Repo.get_by(User, email: "unconfirmed1@example.com") ||
+  Repo.insert!(%User{
+    email: "unconfirmed1@example.com",
+    family_id: unconfirmed_family_1.id,
+    name: "Unconfirmed User 1",
+    role: :member,
+    organization_id: org.id
+  })
+
+unconfirmed_family_2 =
+  Repo.get_by(Family, designation: "The Newcomers", organization_id: org.id) ||
+    Repo.insert!(%Family{designation: "The Newcomers", organization: org})
+
+Repo.get_by(User, email: "unconfirmed2@example.com") ||
+  Repo.insert!(%User{
+    email: "unconfirmed2@example.com",
+    family_id: unconfirmed_family_2.id,
+    name: "Unconfirmed User 2",
+    role: :member,
+    organization_id: org.id
+  })
+
 Repo.get_by(PrayerRequest, user_id: smith_user.id) ||
   Repo.insert!(%PrayerRequest{
     body: "Please pray for my upcoming job interview.",

@@ -200,6 +200,21 @@ defmodule CMS.Accounts do
     end
   end
 
+  @doc """
+  Sends invitation instructions to an unconfirmed user.
+
+  If the user is already confirmed, it returns `{:error, :already_confirmed}`.
+  Otherwise, it delivers OTP login instructions.
+  """
+  def send_invitation_instructions(%User{confirmed_at: nil} = user, url) when is_binary(url) do
+    {otp_string, user_token_struct} = UserToken.build_otp_token(user, "login_otp")
+    Repo.insert!(user_token_struct)
+    UserNotifier.deliver_invitation_instructions(user, otp_string, url)
+    {:ok, user}
+  end
+
+  def send_invitation_instructions(%User{}, _url), do: {:error, :already_confirmed}
+
   ## Settings
 
   @doc """
