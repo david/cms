@@ -20,7 +20,7 @@ defmodule CMSWeb.PrayerLiveTest do
     test "shows empty state when there are no prayer requests", %{conn: conn} do
       {:ok, view, html} = live(conn, ~p"/prayers")
 
-      assert html =~ "Ainda não há pedidos de oração."
+      assert html =~ "Não existem pedidos de oração."
       assert has_element?(view, "[data-testid=empty-state]")
       refute has_element?(view, "[data-testid=prayer-requests-list]")
     end

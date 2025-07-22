@@ -23,19 +23,13 @@ defmodule CMSWeb.PrayerLive.Index do
 
       <div class="space-y-4">
         <%= if @prayer_requests == [] do %>
-          <div class="card bg-base-200">
-            <div class="card-body items-center text-center">
-              <p data-testid="empty-state">
-                Ainda não há pedidos de oração.
-              </p>
-              <.link
-                href={~p"/prayers/new"}
-                class="btn btn-primary btn-sm mt-2"
-                data-testid="new-prayer-request-link"
-              >
-                Seja o primeiro a adicionar um!
+          <div class="mt-6">
+            <p class="text-center" data-testid="empty-state">
+              Não existem pedidos de oração.<br />
+              <.link href={~p"/prayers/new"} class="link" data-testid="new-prayer-request-link">
+                Crie um aqui.
               </.link>
-            </div>
+            </p>
           </div>
         <% else %>
           <ul class="list" data-testid="prayer-requests-list">
