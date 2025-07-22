@@ -556,4 +556,22 @@ defmodule CMSWeb.CoreComponents do
     </.link>
     """
   end
+
+  @doc """
+  Renders a button to edit an item.
+
+  ## Examples
+
+      <.button_edit path={~p"/prayers/edit"} />
+
+  """
+  attr :path, :any, required: true
+
+  def button_edit(assigns) do
+    ~H"""
+    <.link patch={@path}>
+      <.icon name="hero-pencil-square" class="h-5 w-5" />
+    </.link>
+    """
+  end
 end

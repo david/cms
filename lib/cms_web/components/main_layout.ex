@@ -68,9 +68,8 @@ defmodule CMSWeb.MainLayout do
     <div class="sticky top-0 z-80 px-2 flex items-center flex-shrink-0 bg-base-100 shadow-md">
       <.hamburger_button />
       <div class="navbar z-50">
-        <div class="navbar-start"></div>
-        <div class="navbar-center">
-          {@page_title}
+        <div class="navbar-start">
+          <span class="font-medium">{@page_title}</span>
         </div>
         <div class="navbar-end">
           <ul class="menu menu-horizontal">

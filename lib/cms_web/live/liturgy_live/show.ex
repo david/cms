@@ -8,7 +8,17 @@ defmodule CMSWeb.LiturgyLive.Show do
   @impl true
   def render(assigns) do
     ~H"""
-    <.main_layout flash={@flash} current_scope={@current_scope} liturgy={@liturgy}>
+    <.main_layout
+      flash={@flash}
+      current_scope={@current_scope}
+      liturgy={@liturgy}
+      page_title={@page_title}
+    >
+      <:nav_actions>
+        <%= if @current_scope.user && @current_scope.organization.id == @liturgy.organization_id do %>
+          <li><.button_edit path={~p"/admin/liturgies/#{@liturgy}/edit?return_to=show"} /></li>
+        <% end %>
+      </:nav_actions>
       <:sidebar_bottom>
         <li :if={@qr_code_svg} class="mt-6 flex flex-col items-center">
           <img
@@ -18,17 +28,6 @@ defmodule CMSWeb.LiturgyLive.Show do
           />
         </li>
       </:sidebar_bottom>
-      <.header>
-        {gettext("Liturgy")}
-        <p title="Service date" class="text-sm font-normal">{@liturgy.service_on}</p>
-        <:actions>
-          <%= if @current_scope.user && @current_scope.organization.id == @liturgy.organization_id do %>
-            <.button variant="primary" navigate={~p"/admin/liturgies/#{@liturgy}/edit?return_to=show"}>
-              <.icon name="hero-pencil-square" /> {gettext("Edit")}
-            </.button>
-          <% end %>
-        </:actions>
-      </.header>
 
       <div class="space-y-10">
         <div :for={block <- @liturgy.blocks} id={"block-#{block.id}"} class="">
@@ -64,7 +63,7 @@ defmodule CMSWeb.LiturgyLive.Show do
 
     {:ok,
      socket
-     |> assign(:page_title, gettext("Show Liturgy"))
+     |> assign(:page_title, "Ordem de Culto")
      |> assign(:liturgy, liturgy)}
   end
 

@@ -7,14 +7,14 @@ defmodule CMSWeb.PrayerLive.Index do
   def mount(_params, _session, socket) do
     {:ok,
      socket
-     |> assign(:page_title, "Pedidos de Oração")
+     |> assign(:page_title, "Pedidos de oração")
      |> assign(:prayer_requests, Prayers.list_prayer_requests(socket.assigns.current_scope))}
   end
 
   @impl true
   def render(assigns) do
     ~H"""
-    <.main_layout flash={@flash} current_scope={@current_scope}>
+    <.main_layout flash={@flash} current_scope={@current_scope} page_title={@page_title}>
       <:nav_actions>
         <li>
           <.button_add path={~p"/prayers/new"} />

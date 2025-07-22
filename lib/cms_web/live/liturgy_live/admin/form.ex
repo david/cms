@@ -10,12 +10,7 @@ defmodule CMSWeb.LiturgyLive.Admin.Form do
   @impl true
   def render(assigns) do
     ~H"""
-    <.main_layout flash={@flash} current_scope={@current_scope}>
-      <.header>
-        {@page_title}
-        <:subtitle>Use this form to manage liturgy records in your database.</:subtitle>
-      </.header>
-
+    <.main_layout flash={@flash} current_scope={@current_scope} page_title={@page_title}>
       <.form for={@form} id="liturgy-form" phx-change="validate" phx-submit="save">
         <.input field={@form[:service_on]} type="date" label="Service on" />
 
@@ -155,7 +150,7 @@ defmodule CMSWeb.LiturgyLive.Admin.Form do
       |> to_form()
 
     socket
-    |> assign(:page_title, "Edit Liturgy")
+    |> assign(:page_title, "Editar ordem de culto")
     |> assign(:liturgy, liturgy)
     |> assign(:form, form)
   end
