@@ -125,12 +125,12 @@ defmodule CMSWeb.MainLayout do
       phx-update="ignore"
     >
       <p class="mb-2">{gettext("Deseja instalar esta aplicação no seu dispositivo?")}</p>
-      <button onclick="window.handleInstallClick()" class="btn btn-primary mr-2">
+      <.button onclick="window.handleInstallClick()" class="mr-2">
         {gettext("Sim")}
-      </button>
-      <button onclick="window.hideInstallPromotion()" class="btn btn-ghost">
+      </.button>
+      <.button onclick="window.hideInstallPromotion()" variant="ghost">
         {gettext("Não")}
-      </button>
+      </.button>
     </div>
     """
   end
@@ -147,9 +147,9 @@ defmodule CMSWeb.MainLayout do
           "Para instalar esta aplicação no seu dispositivo, toque no botão Partilhar e de seguida em 'Adicionar ao ecrã principal'."
         )}
       </p>
-      <button onclick="window.hideIosInstallPromotion()" class="btn btn-ghost">
+      <.button onclick="window.hideIosInstallPromotion()" variant="ghost">
         {gettext("Ignorar")}
-      </button>
+      </.button>
     </div>
     """
   end
@@ -183,20 +183,22 @@ defmodule CMSWeb.MainLayout do
       </li>
 
       <li class="flex flex-row join join-horizontal justify-between items-center my-6 gap-2">
-        <button
+        <.button
           id="liturgy-decrease-font-size"
           aria-label="Decrease font size"
-          class="btn join-item flex-1"
+          class="join-item flex-1"
+          variant="secondary"
         >
           <.icon name="hero-magnifying-glass-minus" class="size-5" />
-        </button>
-        <button
+        </.button>
+        <.button
           id="liturgy-increase-font-size"
           aria-label="Increase font size"
-          class="btn join-item flex-1"
+          class="join-item flex-1"
+          variant="secondary"
         >
           <.icon name="hero-magnifying-glass-plus" class="size-5" />
-        </button>
+        </.button>
       </li>
 
       <li>

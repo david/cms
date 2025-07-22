@@ -66,7 +66,9 @@ defmodule CMSWeb.LiturgyLive.Admin.Form do
 
         <footer>
           <.button phx-disable-with="Saving..." variant="primary">Save Liturgy</.button>
-          <.button navigate={return_path(@current_scope, @return_to, @liturgy)}>Cancel</.button>
+          <.button navigate={return_path(@current_scope, @return_to, @liturgy)} variant="secondary">
+            Cancel
+          </.button>
         </footer>
       </.form>
     </.main_layout>
@@ -95,33 +97,36 @@ defmodule CMSWeb.LiturgyLive.Admin.Form do
   defp add_block_button(assigns) do
     ~H"""
     <div class="flex justify-center join">
-      <button
+      <.button
         type="button"
-        class="btn btn-outline btn-primary join-item"
+        class="join-item"
         name="liturgy[blocks_sort][]"
         value="new-text"
         phx-click={JS.dispatch("change")}
+        variant="secondary"
       >
         + text
-      </button>
-      <button
+      </.button>
+      <.button
         type="button"
-        class="btn btn-outline btn-primary join-item"
+        class="join-item"
         name="liturgy[blocks_sort][]"
         value="new-song"
         phx-click={JS.dispatch("change")}
+        variant="secondary"
       >
         + song
-      </button>
-      <button
+      </.button>
+      <.button
         type="button"
-        class="btn btn-outline btn-primary join-item"
+        class="join-item"
         name="liturgy[blocks_sort][]"
         value="new-passage"
         phx-click={JS.dispatch("change")}
+        variant="secondary"
       >
         + passage
-      </button>
+      </.button>
     </div>
     """
   end

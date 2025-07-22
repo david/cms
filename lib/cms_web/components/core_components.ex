@@ -88,13 +88,21 @@ defmodule CMSWeb.CoreComponents do
       <.button phx-click="go" variant="primary">Send!</.button>
       <.button navigate={~p"/"}>Home</.button>
   """
-  attr :rest, :global, include: ~w(href navigate patch)
-  attr :variant, :string, values: ~w(primary)
+  attr :class, :string, default: nil
+  attr :rest, :global, include: ~w(href navigate patch name value)
+  attr :variant, :string, values: ~w(primary secondary ghost)
   slot :inner_block, required: true
 
   def button(%{rest: rest} = assigns) do
-    variants = %{"primary" => "btn-primary", nil => "btn-primary btn-soft"}
-    assigns = assign(assigns, :class, Map.fetch!(variants, assigns[:variant]))
+    variants = %{
+      "primary" => "btn-primary",
+      "secondary" => "btn-secondary",
+      "ghost" => "btn-ghost",
+      nil => "btn-primary btn-soft"
+    }
+
+    class = [Map.fetch!(variants, assigns[:variant]), assigns[:class]]
+    assigns = assign(assigns, :class, class)
 
     if rest[:href] || rest[:navigate] || rest[:patch] do
       ~H"""
