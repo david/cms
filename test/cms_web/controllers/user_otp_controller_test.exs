@@ -24,7 +24,7 @@ defmodule CMSWeb.UserOTPControllerTest do
       user = user_fixture(%{}, org)
       conn = get(conn, ~p"/users/lobby?email=#{user.email}")
 
-      assert html_response(conn, 200) =~ "Enter OTP"
+      assert html_response(conn, 200) =~ "Verificar Código"
       assert html_response(conn, 200) =~ user.email
     end
 
