@@ -30,4 +30,4 @@ fi
 docker --host ssh://chr-prod-app container exec $CONTAINER \
   pg_dump -U app chr_prod > /tmp/chr_prod.sql
 
-psql cms_dev -f /tmp/chr_prod.sql
+# psql cms_dev -f /tmp/chr_prod.sql
