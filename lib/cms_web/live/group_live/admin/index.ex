@@ -14,9 +14,7 @@ defmodule CMSWeb.GroupLive.Admin.Index do
     <.main_layout flash={@flash} current_scope={@current_scope}>
       <:nav_actions>
         <li>
-          <.link patch={~p"/admin/groups/new"}>
-            <.icon name="hero-plus-solid" class="h-5 w-5" />
-          </.link>
+          <.button_add path={~p"/admin/groups/new"} />
         </li>
       </:nav_actions>
 

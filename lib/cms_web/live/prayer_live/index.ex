@@ -17,18 +17,9 @@ defmodule CMSWeb.PrayerLive.Index do
     <.main_layout flash={@flash} current_scope={@current_scope}>
       <:nav_actions>
         <li>
-          <.link patch={~p"/prayers/new"}>
-            <.icon name="hero-plus-solid" class="h-5 w-5" />
-          </.link>
+          <.button_add path={~p"/prayers/new"} />
         </li>
       </:nav_actions>
-
-      <.header>
-        Pedidos de Oração
-        <:subtitle>
-          Peçam, e será dado; busquem, e encontrarão; batam, e a porta será aberta.
-        </:subtitle>
-      </.header>
 
       <div class="space-y-4">
         <%= if @prayer_requests == [] do %>

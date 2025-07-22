@@ -538,4 +538,22 @@ defmodule CMSWeb.CoreComponents do
     </div>
     """
   end
+
+  @doc """
+  Renders a button to add a new item.
+
+  ## Examples
+
+      <.button_add path={~p"/prayers/new"} />
+
+  """
+  attr :path, :any, required: true
+
+  def button_add(assigns) do
+    ~H"""
+    <.link patch={@path}>
+      <.icon name="hero-plus-solid" class="h-5 w-5" />
+    </.link>
+    """
+  end
 end
