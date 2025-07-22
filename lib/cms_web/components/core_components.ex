@@ -561,9 +561,11 @@ defmodule CMSWeb.CoreComponents do
 
   def button_nav(assigns) do
     ~H"""
-    <.link patch={@path}>
-      <.icon name={@icon} class="h-5 w-5" />
-    </.link>
+    <li>
+      <.link patch={@path}>
+        <.icon name={@icon} class="h-5 w-5" />
+      </.link>
+    </li>
     """
   end
 end

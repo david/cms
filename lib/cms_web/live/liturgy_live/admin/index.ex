@@ -8,9 +8,7 @@ defmodule CMSWeb.LiturgyLive.Admin.Index do
     ~H"""
     <.main_layout flash={@flash} current_scope={@current_scope} page_title={@page_title}>
       <:nav_actions>
-        <li>
-          <.button_nav path={~p"/admin/liturgies/new"} icon="hero-plus-solid" />
-        </li>
+        <.button_nav path={~p"/admin/liturgies/new"} icon="hero-plus-solid" />
       </:nav_actions>
 
       <.table

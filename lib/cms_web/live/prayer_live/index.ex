@@ -16,9 +16,7 @@ defmodule CMSWeb.PrayerLive.Index do
     ~H"""
     <.main_layout flash={@flash} current_scope={@current_scope} page_title={@page_title}>
       <:nav_actions>
-        <li>
-          <.button_nav path={~p"/prayers/new"} icon="hero-plus-solid" />
-        </li>
+        <.button_nav path={~p"/prayers/new"} icon="hero-plus-solid" />
       </:nav_actions>
 
       <div class="space-y-4">
