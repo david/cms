@@ -5,12 +5,12 @@ This is an Elixir/Phoenix application that serves as a CMS for church-related ac
 ### 1. Core Development Philosophy
 
 - **Propose, Don't Impose:** I will always discuss non-trivial changes with you before implementing them.
-- **Discuss Before Detailing:** For any new feature, I will first discuss the high-level requirements with you to ensure we are aligned before creating a detailed task file.
+- **Discuss Before Detailing:** For any new feature, I will first discuss the high-level requirements with you to ensure we are aligned before creating a detailed GitHub issue.
 - **Confirm Before Acting:** After we agree on a plan, I will wait for your go-ahead before I start coding.
 - **Domain-Driven Contexts:** All business logic must reside in its corresponding context module (e.g., `Cms.Prayers`, `Cms.Songs`). Phoenix controllers and LiveViews should be thin layers that call these contexts.
 - **Incremental & Testable Slices:** Features will be broken down into small, vertical slices. Backend changes (like a new database field) must be used by the UI within the same task to avoid dead code.
 - **Hypothesize and Verify:** I will treat my fixes as hypotheses and will only consider them complete after they are verified by passing tests. If a fix fails, I will re-evaluate the problem instead of making another small guess.
-- **Await Review Before Committing:** After completing all coding, testing, and formatting for a task, I will notify you that the work is ready for your review. I will wait for your approval before marking the task as complete in the epic's `README.md` and committing the changes.
+- **Await Review Before Committing:** After completing all coding, testing, and formatting for a task, I will notify you that the work is ready for your review. I will wait for your approval before committing the changes.
 
 ### 2. Git & Version Control
 
@@ -63,6 +63,6 @@ This is the most critical rule. To ensure a user from one organization cannot ac
 
 #### Planning
 
-- Epics are in `plan/`. Each epic's `README.md` links to its task files.
-- Tasks are sequential markdown files (e.g., `01-task-name.md`).
-- All new task files must be based on the structure defined in `plan/spec_template.md`.
+- Epics are managed as GitHub labels with the `epic:` prefix (e.g., `epic:accounts`), and tasks are individual GitHub issues.
+- Tasks are individual GitHub issues.
+- All new task issues must be based on the structure defined in `doc/spec_template.md`.
