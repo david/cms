@@ -6,15 +6,12 @@ defmodule CMSWeb.LiturgyLive.Admin.Index do
   @impl true
   def render(assigns) do
     ~H"""
-    <.main_layout flash={@flash} current_scope={@current_scope}>
-      <.header>
-        Listing Liturgies
-        <:actions>
-          <.button variant="primary" navigate={~p"/admin/liturgies/new"}>
-            <.icon name="hero-plus" /> New Liturgy
-          </.button>
-        </:actions>
-      </.header>
+    <.main_layout flash={@flash} current_scope={@current_scope} page_title={@page_title}>
+      <:nav_actions>
+        <li>
+          <.button_add path={~p"/admin/liturgies/new"} />
+        </li>
+      </:nav_actions>
 
       <.table
         id="liturgies"
