@@ -546,26 +546,4 @@ defmodule CMSWeb.CoreComponents do
     </div>
     """
   end
-
-  @doc """
-  Renders a navigation button.
-
-  ## Examples
-
-      <.button_nav path={~p"/prayers/new"} icon="hero-plus-solid" />
-      <.button_nav path={~p"/prayers/edit"} icon="hero-pencil-square" />
-
-  """
-  attr :path, :any, required: true
-  attr :icon, :string, required: true
-
-  def button_nav(assigns) do
-    ~H"""
-    <li>
-      <.link patch={@path}>
-        <.icon name={@icon} class="h-5 w-5" />
-      </.link>
-    </li>
-    """
-  end
 end
