@@ -45,4 +45,20 @@ defmodule CMS.AccountsTest do
       assert changeset.errors[:name] == {"can't be blank", [validation: :required]}
     end
   end
+
+  describe "update_user/3" do
+    test "updates user attributes", %{scope: scope, org: org} do
+      user = user_fixture(%{}, org) |> CMS.Repo.preload(:family)
+
+      update_attrs = %{
+        "email" => "new_email@example.com",
+        "name" => user.name,
+        "family_id" => user.family_id,
+        "family_designation" => user.family.designation
+      }
+
+      assert {:ok, updated_user} = Accounts.update_user(scope, user, update_attrs)
+      assert updated_user.email == "new_email@example.com"
+    end
+  end
 end

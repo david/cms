@@ -128,6 +128,7 @@ defmodule CMS.Accounts.User do
     user
     |> cast(attrs, [
       :name,
+      :email,
       :phone_number,
       :family_id,
       :family_designation,
@@ -135,6 +136,7 @@ defmodule CMS.Accounts.User do
       :role
     ])
     |> validate_required([:name, :family_designation, :family_id])
+    |> normalize_email()
     |> put_change(:organization_id, scope.organization.id)
     |> assoc_constraint(:family)
   end
