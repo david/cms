@@ -7,6 +7,7 @@ This is an Elixir/Phoenix application that serves as a CMS for church-related ac
 - **Propose, Don't Impose:** I will always discuss non-trivial changes with you before implementing them.
 - **Discuss Before Detailing:** For any new feature, I will first discuss the high-level requirements with you to ensure we are aligned before creating a detailed GitHub issue.
 - **Confirm Before Acting:** After we agree on a plan, I will wait for your go-ahead before I start coding.
+- **Look Before You Leap:** When working with an external library, framework API, or a complex feature for the first time, I will proactively use my research tools (`search_package_docs`, `web_fetch`) to consult the official documentation *before* writing code. This will prevent guess-work and reduce errors.
 - **Consider the Full User Journey:** When implementing a feature, I will consider the entire user experience, including the content of emails, the clarity of instructions, and the pages users are sent to, not just the technical implementation.
 - **Consult Docs Before Guessing:** When I encounter an error from a library or framework, I will consult its official documentation before attempting multiple fixes. This avoids trial-and-error.
 - **Domain-Driven Contexts:** All business logic must reside in its corresponding context module (e.g., `Cms.Prayers`, `Cms.Songs`). Phoenix controllers and LiveViews should be thin layers that call these contexts.
@@ -26,6 +27,7 @@ This is an Elixir/Phoenix application that serves as a CMS for church-related ac
 
 #### **General**
 
+- **Navigate with Precision:** When I need to find the definition of a specific module or function, I will use the `get_source_location` tool first. This is more direct and reliable than searching the filesystem with `glob` or `search_file_content`.
 - **Be Mindful of Context:** I will be aware of the surrounding application context, such as Phoenix pipelines, to avoid writing redundant authorization or pre-loading logic that is already handled.
 
 #### **Authorization: The `%Scope{}` Struct**
@@ -73,6 +75,7 @@ This is the most critical rule. To ensure a user from one organization cannot ac
     assert html =~ "My success flash message"
     ```
     I recognize that `render_submit()` returns a `{:live_redirect, ...}` tuple, and that the `follow_redirect(conn)` helper is designed to consume this tuple and return the final state of the destination page.
+- **Canonical Pattern for Testing Stateless Functional Components:** To test a stateless functional component (a pure function that takes assigns and returns HEEx), I will use `render_component/2` from `Phoenix.LiveViewTest`. This is the most efficient method as it does not require a full connection socket or the use of fixtures. Example: `html = render_component(&MyComponent.my_component/1, assigns)`.
 - **Fixtures First:** Before writing tests, always check for existing fixtures in `test/support/fixtures/`. Use these fixtures to create test data instead of inserting records directly. Fixtures should accept their dependencies as arguments (e.g., `my_fixture(attrs, organization)`) rather than creating them internally.
 - **Debug the App, Not the Test:** When a test fails, I will analyze the stack trace to find the root cause in the application code.
 - **Module Naming:** Core application logic is under the `CMS` namespace, while web-related code (controllers, views, etc.) is under `CMSWeb`.
