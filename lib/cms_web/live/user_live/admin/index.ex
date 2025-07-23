@@ -49,7 +49,7 @@ defmodule CMSWeb.UserLive.Admin.Index do
 
   def handle_event("invite_user", %{"id" => id}, socket) do
     user = Accounts.get_user(socket.assigns.current_scope, id)
-    login_url = url(~p"/users/lobby")
+    login_url = url(~p"/users/lobby?email=#{user.email}")
 
     socket =
       case Accounts.send_invitation_instructions(user, login_url) do
