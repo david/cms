@@ -144,20 +144,9 @@ defmodule CMSWeb.MainLayout do
         </.button>
       </li>
 
-      <li>
-        <details :if={@liturgy} open>
-          <summary>
-            <.link href={~p"/liturgy"}>
-              Liturgia <span class="text-sm">({@liturgy.service_on})</span>
-            </.link>
-          </summary>
-          <LiturgyComponents.liturgy_sidebar_nav liturgy={@liturgy} />
-        </details>
-        <.link :if={is_nil(@liturgy)} href={~p"/liturgy"}>
-          Liturgia
-        </.link>
+      <li :if={@liturgy}>
+        <LiturgyComponents.liturgy_sidebar_nav liturgy={@liturgy} />
       </li>
-      <li><.link navigate={~p"/songs"}>Hinos</.link></li>
 
       <li class="flex-grow bg-transparent"></li>
 

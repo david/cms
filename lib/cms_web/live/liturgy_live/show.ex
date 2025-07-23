@@ -64,10 +64,12 @@ defmodule CMSWeb.LiturgyLive.Show do
 
     Liturgies.subscribe(liturgy)
 
+    page_title = "Liturgia (#{liturgy.service_on})"
+
     {:ok,
      socket
-     |> assign(:page_title, "Ordem de Culto")
-     |> assign(:liturgy, liturgy)}
+     |> assign(:liturgy, liturgy)
+     |> assign(:page_title, page_title)}
   end
 
   @impl true
@@ -84,7 +86,8 @@ defmodule CMSWeb.LiturgyLive.Show do
       ) do
     # Re-fetch the liturgy to get all populated fields
     liturgy = Liturgies.get_public_liturgy!(liturgy_id)
-    {:noreply, assign(socket, :liturgy, liturgy)}
+    page_title = "Liturgia (#{liturgy.service_on})"
+    {:noreply, assign(socket, liturgy: liturgy, page_title: page_title)}
   end
 
   def handle_info(
