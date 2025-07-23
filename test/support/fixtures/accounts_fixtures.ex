@@ -36,10 +36,11 @@ defmodule CMS.AccountsFixtures do
     })
   end
 
-  def family_fixture(attrs \\ %{}) do
+  def family_fixture(attrs \\ %{}, organization) do
     {:ok, family} =
       %Family{
-        designation: "Test Family #{System.unique_integer()}"
+        designation: "Test Family #{System.unique_integer()}",
+        organization_id: organization.id
       }
       |> Map.merge(attrs)
       |> Repo.insert()
@@ -53,7 +54,7 @@ defmodule CMS.AccountsFixtures do
       |> Map.merge(valid_user_attributes())
       |> Map.merge(attrs)
       |> Map.put(:organization_id, organization.id)
-      |> Map.put(:family_id, family_fixture(%{organization_id: organization.id}).id)
+      |> Map.put(:family_id, family_fixture(%{}, organization).id)
       |> Ecto.Changeset.change(%{})
       |> Repo.insert()
 
