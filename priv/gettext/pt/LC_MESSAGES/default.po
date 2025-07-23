@@ -66,6 +66,16 @@ msgstr "Liturgia"
 msgid "Show Liturgy"
 msgstr "Mostrar Liturgia"
 
+#: lib/cms_web/components/bottom_dock.ex:13
+#, elixir-autogen, elixir-format
+msgid "Prayers"
+msgstr "Orações"
+
+#: lib/cms_web/components/bottom_dock.ex:17
+#, elixir-autogen, elixir-format
+msgid "Songs"
+msgstr "Hinos"
+
 #: lib/cms_web/components/main_layout.ex:126
 #, elixir-autogen, elixir-format
 msgid "Deseja instalar esta aplicação no seu dispositivo?"

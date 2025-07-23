@@ -8,6 +8,7 @@ defmodule CMSWeb.MainLayout do
 
   import CMSWeb.CoreComponents
   import CMSWeb.Navbar
+  import CMSWeb.BottomDock
 
   alias Phoenix.LiveView.JS
 
@@ -45,6 +46,7 @@ defmodule CMSWeb.MainLayout do
         </div>
         <.pwa_install_banner />
         <.pwa_ios_install_banner />
+        <.bottom_dock current_scope={@current_scope} />
       </div>
       <div id="sidebar-container" class="drawer-side z-80" phx-hook="Sidebar">
         <label for="sidebar-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
