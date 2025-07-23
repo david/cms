@@ -69,24 +69,24 @@ msgstr "Mostrar Liturgia"
 #: lib/cms_web/components/main_layout.ex:126
 #, elixir-autogen, elixir-format
 msgid "Deseja instalar esta aplicação no seu dispositivo?"
-msgstr ""
+msgstr "Deseja instalar esta aplicação no seu dispositivo?"
 
 #: lib/cms_web/components/main_layout.ex:150
 #, elixir-autogen, elixir-format
 msgid "Ignorar"
-msgstr ""
+msgstr "Ignorar"
 
 #: lib/cms_web/components/main_layout.ex:131
 #, elixir-autogen, elixir-format
 msgid "Não"
-msgstr ""
+msgstr "Não"
 
 #: lib/cms_web/components/main_layout.ex:145
 #, elixir-autogen, elixir-format
 msgid "Para instalar esta aplicação no seu dispositivo, toque no botão Partilhar e de seguida em 'Adicionar ao ecrã principal'."
-msgstr ""
+msgstr "Para instalar esta aplicação no seu dispositivo, toque no botão Partilhar e de seguida em 'Adicionar ao ecrã principal'."
 
 #: lib/cms_web/components/main_layout.ex:128
 #, elixir-autogen, elixir-format
 msgid "Sim"
-msgstr ""
+msgstr "Sim"
