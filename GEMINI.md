@@ -56,6 +56,23 @@ This is the most critical rule. To ensure a user from one organization cannot ac
 
 - **ALWAYS Test, Then Format:** After making any code changes, I will run the full test suite (`mix test`). Once all tests pass, I will format the code (`mix format`) as the final step before considering the task complete.
 - **Write Feature Tests:** For any new feature, I will write corresponding tests that verify its correctness from the user's perspective. Running existing tests is not enough.
+- **The Two-Strike Rule for Failing Tests:** If I attempt to fix a failing test and my first fix also fails, I will stop. Before making a third attempt, I will pause, announce that my approach is not working, and present a new, more thoroughly researched plan. This will prevent the inefficient trial-and-error cycles that are frustrating and unproductive.
+- **Prioritize Verifying the Outcome, Not the Implementation Details:** My primary goal is to assert that the *business outcome* was successful (e.g., the data changed in the database). UI details like flash messages are secondary. While I will test them when possible, I will not get stuck on them if the primary outcome is verified.
+- **Analyze User Fixes Before Proceeding:** If you step in to fix a problem, my immediate next step will be to use the `read_file` tool to analyze your change. I will not proceed with any other action or summary until I can explain *why* your solution worked and what I learned from it.
+- **Verify, Don't Assume, Testing APIs:** When a test fails with an error in a test helper function (like `assert_redirect`), I will treat it as a signal that I have a knowledge gap. I will immediately stop and use my tools to find the official documentation or working examples within this project for that specific function.
+- **Canonical Pattern for Testing LiveView Navigations:** To test a form submission that results in a `push_navigate` or `push_redirect`, I will use the following pipeline:
+    ```elixir
+    # In a test:
+    {:ok, _view, html} =
+      view
+      |> form("#my-form", %{...})
+      |> render_submit()
+      |> follow_redirect(conn)
+
+    # The flash message is now in the final rendered HTML.
+    assert html =~ "My success flash message"
+    ```
+    I recognize that `render_submit()` returns a `{:live_redirect, ...}` tuple, and that the `follow_redirect(conn)` helper is designed to consume this tuple and return the final state of the destination page.
 - **Fixtures First:** Before writing tests, always check for existing fixtures in `test/support/fixtures/`. Use these fixtures to create test data instead of inserting records directly. Fixtures should accept their dependencies as arguments (e.g., `my_fixture(attrs, organization)`) rather than creating them internally.
 - **Debug the App, Not the Test:** When a test fails, I will analyze the stack trace to find the root cause in the application code.
 - **Module Naming:** Core application logic is under the `CMS` namespace, while web-related code (controllers, views, etc.) is under `CMSWeb`.
