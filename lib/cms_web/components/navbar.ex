@@ -33,12 +33,13 @@ defmodule CMSWeb.Navbar do
   attr :current_scope, :map, required: true
   attr :page_title, :string, default: nil
   attr :qr_code_svg, :string, default: nil
+  attr :show_sidebar_button, :boolean, default: true
   slot :actions, required: false
 
   def navbar(assigns) do
     ~H"""
     <div class="sticky top-0 z-80 px-2 flex items-center flex-shrink-0 bg-base-100 shadow-md">
-      <.hamburger_button />
+      <.hamburger_button :if={@show_sidebar_button} />
       <div class="navbar z-50">
         <div class="navbar-start">
           <span class="font-medium">{@page_title}</span>

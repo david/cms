@@ -26,7 +26,12 @@ defmodule CMSWeb.MainLayout do
     <div class="drawer" id="content-wrapper" phx-hook="FontSizeApplier">
       <input id="sidebar-drawer" type="checkbox" class="drawer-toggle" />
       <div id="drawer-content" class="drawer-content flex flex-col h-screen" phx-hook="SettingsDrawer">
-        <.navbar current_scope={@current_scope} page_title={@page_title} qr_code_svg={@qr_code_svg}>
+        <.navbar
+          current_scope={@current_scope}
+          page_title={@page_title}
+          qr_code_svg={@qr_code_svg}
+          show_sidebar_button={@sidebar_top != [] or @sidebar_bottom != []}
+        >
           <:actions>
             {render_slot(@nav_actions)}
           </:actions>
