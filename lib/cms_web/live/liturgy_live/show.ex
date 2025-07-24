@@ -21,7 +21,7 @@ defmodule CMSWeb.LiturgyLive.Show do
         <LiturgyComponents.liturgy_sidebar_nav liturgy={@liturgy} />
       </:sidebar_top>
       <:sidebar_bottom>
-        <li :if={@qr_code_svg} class="mt-6 flex flex-col items-center">
+        <li class="mt-6 flex flex-col items-center">
           <img
             src={"data:image/svg+xml;base64,#{@qr_code_svg}"}
             alt="QR Code"
