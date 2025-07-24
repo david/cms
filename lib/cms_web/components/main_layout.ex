@@ -23,7 +23,7 @@ defmodule CMSWeb.MainLayout do
 
   def main_layout(assigns) do
     ~H"""
-    <div class="drawer" id="content-wrapper" phx-hook="FontSizeApplier">
+    <div class="drawer" id="content-wrapper">
       <input id="sidebar-drawer" type="checkbox" class="drawer-toggle" />
       <div id="drawer-content" class="drawer-content flex flex-col h-screen" phx-hook="SettingsDrawer">
         <.navbar
@@ -36,7 +36,7 @@ defmodule CMSWeb.MainLayout do
             {render_slot(@nav_actions)}
           </:actions>
         </.navbar>
-        <div class="flex-grow overflow-y-auto">
+        <div id="main-content" class="flex-grow overflow-y-auto" phx-hook="FontSizeApplier">
           <CMSWeb.Layouts.app flash={@flash}>
             {render_slot(@inner_block)}
           </CMSWeb.Layouts.app>
