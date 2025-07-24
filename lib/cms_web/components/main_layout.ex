@@ -15,26 +15,19 @@ defmodule CMSWeb.MainLayout do
   attr :flash, :map, default: %{}
   attr :current_scope, :map, required: true
   attr :page_title, :string, default: nil
-  attr :liturgy, :map, default: nil
   attr :qr_code_svg, :string, default: nil
 
   slot :inner_block, required: true
+  slot :sidebar_top, required: false
   slot :sidebar_bottom, required: false
   slot :nav_actions, required: false
-
-  alias CMSWeb.LiturgyComponents
 
   def main_layout(assigns) do
     ~H"""
     <div class="drawer" id="content-wrapper" phx-hook="FontSizeApplier">
       <input id="sidebar-drawer" type="checkbox" class="drawer-toggle" />
       <div class="drawer-content flex flex-col h-screen">
-        <.navbar
-          current_scope={@current_scope}
-          page_title={@page_title}
-          liturgy={@liturgy}
-          qr_code_svg={@qr_code_svg}
-        >
+        <.navbar current_scope={@current_scope} page_title={@page_title} qr_code_svg={@qr_code_svg}>
           <:actions>
             {render_slot(@nav_actions)}
           </:actions>
@@ -50,7 +43,10 @@ defmodule CMSWeb.MainLayout do
       </div>
       <div id="sidebar-container" class="drawer-side z-80" phx-hook="Sidebar">
         <label for="sidebar-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
-        <.sidebar liturgy={@liturgy} qr_code_svg={@qr_code_svg}>
+        <.sidebar qr_code_svg={@qr_code_svg}>
+          <:sidebar_top>
+            {render_slot(@sidebar_top)}
+          </:sidebar_top>
           <:sidebar_bottom>
             {render_slot(@sidebar_bottom)}
           </:sidebar_bottom>
@@ -97,8 +93,8 @@ defmodule CMSWeb.MainLayout do
     """
   end
 
-  attr :liturgy, :map, default: nil
   attr :qr_code_svg, :string, default: nil
+  slot :sidebar_top, required: false
   slot :sidebar_bottom, required: false
 
   defp sidebar(assigns) do
@@ -144,9 +140,7 @@ defmodule CMSWeb.MainLayout do
         </.button>
       </li>
 
-      <li :if={@liturgy}>
-        <LiturgyComponents.liturgy_sidebar_nav liturgy={@liturgy} />
-      </li>
+      {render_slot(@sidebar_top)}
 
       <li class="flex-grow bg-transparent"></li>
 

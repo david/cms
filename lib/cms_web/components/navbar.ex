@@ -32,7 +32,6 @@ defmodule CMSWeb.Navbar do
 
   attr :current_scope, :map, required: true
   attr :page_title, :string, default: nil
-  attr :liturgy, :map, default: nil
   attr :qr_code_svg, :string, default: nil
   slot :actions, required: false
 

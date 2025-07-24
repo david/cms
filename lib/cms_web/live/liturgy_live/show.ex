@@ -8,12 +8,7 @@ defmodule CMSWeb.LiturgyLive.Show do
   @impl true
   def render(assigns) do
     ~H"""
-    <.main_layout
-      flash={@flash}
-      current_scope={@current_scope}
-      liturgy={@liturgy}
-      page_title={@page_title}
-    >
+    <.main_layout flash={@flash} current_scope={@current_scope} page_title={@page_title}>
       <:nav_actions>
         <%= if @current_scope.user && @current_scope.organization.id == @liturgy.organization_id do %>
           <.button_nav
@@ -22,6 +17,9 @@ defmodule CMSWeb.LiturgyLive.Show do
           />
         <% end %>
       </:nav_actions>
+      <:sidebar_top>
+        <LiturgyComponents.liturgy_sidebar_nav liturgy={@liturgy} />
+      </:sidebar_top>
       <:sidebar_bottom>
         <li :if={@qr_code_svg} class="mt-6 flex flex-col items-center">
           <img
