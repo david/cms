@@ -9,6 +9,7 @@ defmodule CMSWeb.MainLayout do
   import CMSWeb.CoreComponents
   import CMSWeb.Navbar
   import CMSWeb.BottomDock
+  import CMSWeb.Settings
 
   alias Phoenix.LiveView.JS
 
@@ -26,7 +27,7 @@ defmodule CMSWeb.MainLayout do
     ~H"""
     <div class="drawer" id="content-wrapper" phx-hook="FontSizeApplier">
       <input id="sidebar-drawer" type="checkbox" class="drawer-toggle" />
-      <div class="drawer-content flex flex-col h-screen">
+      <div id="drawer-content" class="drawer-content flex flex-col h-screen" phx-hook="SettingsDrawer">
         <.navbar current_scope={@current_scope} page_title={@page_title} qr_code_svg={@qr_code_svg}>
           <:actions>
             {render_slot(@nav_actions)}
@@ -39,6 +40,7 @@ defmodule CMSWeb.MainLayout do
         </div>
         <.pwa_install_banner />
         <.pwa_ios_install_banner />
+        <.drawer show={false} />
         <.bottom_dock current_scope={@current_scope} />
       </div>
       <div id="sidebar-container" class="drawer-side z-80" phx-hook="Sidebar">

@@ -9,7 +9,7 @@ defmodule CMSWeb.BottomDock do
 
   def bottom_dock(assigns) do
     ~H"""
-    <div class="dock dock-center sm:hidden">
+    <div class="dock dock-center sm:hidden z-40">
       <.link navigate={~p"/liturgy"} class="dock-item">
         <.icon name="hero-book-open-solid" class="w-5 h-5" />
         <span class="dock-label">{gettext("Liturgy")}</span>
@@ -21,6 +21,10 @@ defmodule CMSWeb.BottomDock do
       <.link :if={@current_scope.user} navigate={~p"/prayers"} class="dock-item">
         <.icon name="hero-user-group-solid" class="w-5 h-5" />
         <span class="dock-label">{gettext("Prayers")}</span>
+      </.link>
+      <.link id="settings-button" class="dock-item">
+        <.icon name="hero-cog-6-tooth-solid" class="w-5 h-5" />
+        <span class="dock-label">{gettext("Settings")}</span>
       </.link>
     </div>
     """

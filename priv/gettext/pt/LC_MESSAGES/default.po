@@ -100,3 +100,7 @@ msgstr "Para instalar esta aplicação no seu dispositivo, toque no botão Parti
 #, elixir-autogen, elixir-format
 msgid "Sim"
 msgstr "Sim"
+
+#, elixir-autogen, elixir-format
+msgid "Settings"
+msgstr "Definições"

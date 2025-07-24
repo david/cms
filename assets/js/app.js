@@ -98,6 +98,21 @@ const Hooks = {
 
       return currentFontSize;
     }
+  },
+
+  SettingsDrawer: {
+    mounted() {
+      const settingsButton = document.getElementById("settings-button");
+      const closeButton = document.getElementById("close-settings-drawer");
+      const settingsDrawer = document.getElementById("settings-drawer");
+
+      const toggleDrawer = () => {
+        settingsDrawer.classList.toggle("translate-y-full");
+      };
+
+      settingsButton.addEventListener("click", toggleDrawer);
+      closeButton.addEventListener("click", toggleDrawer);
+    }
   }
 };
 
