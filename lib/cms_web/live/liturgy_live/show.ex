@@ -3,7 +3,7 @@ defmodule CMSWeb.LiturgyLive.Show do
 
   alias CMS.Liturgies
   alias Earmark
-  alias CMSWeb.LiturgyComponents
+  import CMSWeb.LiturgyComponents
 
   @impl true
   def render(assigns) do
@@ -18,16 +18,10 @@ defmodule CMSWeb.LiturgyLive.Show do
         <% end %>
       </:nav_actions>
       <:sidebar_top>
-        <LiturgyComponents.liturgy_sidebar_nav liturgy={@liturgy} />
+        <.liturgy_sidebar_nav liturgy={@liturgy} />
       </:sidebar_top>
       <:sidebar_bottom>
-        <li class="mt-6 flex flex-col items-center">
-          <img
-            src={"data:image/svg+xml;base64,#{@qr_code_svg}"}
-            alt="QR Code"
-            class="w-48 h-48 rounded"
-          />
-        </li>
+        <.liturgy_qr_code liturgy={@liturgy} />
       </:sidebar_bottom>
 
       <div class="space-y-10">
@@ -48,7 +42,7 @@ defmodule CMSWeb.LiturgyLive.Show do
               <span class="text-xs uppercase text-gray-500">{block.subtitle}</span>
               <h3 class="text-lg font-medium">{block.title}</h3>
 
-              <LiturgyComponents.verse_list verses={block.resolved_body} />
+              <.verse_list verses={block.resolved_body} />
           <% end %>
         </div>
       </div>
@@ -68,13 +62,6 @@ defmodule CMSWeb.LiturgyLive.Show do
      socket
      |> assign(:liturgy, liturgy)
      |> assign(:page_title, page_title)}
-  end
-
-  @impl true
-  def handle_params(_params, uri, socket) do
-    {:ok, qr_code_svg} = uri |> QRCode.create() |> QRCode.render(:svg)
-
-    {:noreply, assign(socket, :qr_code_svg, Base.encode64(qr_code_svg))}
   end
 
   @impl true

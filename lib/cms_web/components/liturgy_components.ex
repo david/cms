@@ -44,6 +44,29 @@ defmodule CMSWeb.LiturgyComponents do
     """
   end
 
+  attr :liturgy, Liturgy, required: true
+
+  def liturgy_qr_code(assigns) do
+    path = ~p"/liturgies/#{assigns.liturgy}"
+
+    full_url =
+      %URI{CMSWeb.Endpoint.struct_url() | path: path}
+      |> URI.to_string()
+
+    {:ok, qr_code_svg} = full_url |> QRCode.create() |> QRCode.render(:svg)
+    assigns = assign(assigns, :qr_code_base64, Base.encode64(qr_code_svg))
+
+    ~H"""
+    <li class="mt-6 flex flex-col items-center">
+      <img
+        src={"data:image/svg+xml;base64,#{@qr_code_base64}"}
+        alt="QR Code"
+        class="w-48 h-48 rounded"
+      />
+    </li>
+    """
+  end
+
   defp block_icon(:passage), do: "hero-book-open"
   defp block_icon(:song), do: "hero-musical-note"
   defp block_icon(:text), do: "hero-document-text"
