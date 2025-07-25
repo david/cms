@@ -93,13 +93,13 @@ defmodule CMSWeb.Router do
       live "/users/register", UserLive.Registration, :new
       live "/users/log-in", UserLive.Login, :new
       live "/users/log-in/:token", UserLive.Confirmation, :new
+      live "/liturgies/latest", LiturgyLive.Show, :show
       live "/liturgies/:id", LiturgyLive.Show, :show
       live "/songs", SongLive.Index, :index
       live "/songs/:id", SongLive.Show, :show
     end
 
     get "/users/lobby", UserOTPController, :lobby
-    get "/liturgy", LiturgyController, :latest
 
     post "/users/log-in", UserSessionController, :create
     post "/users/verify-otp", UserOTPController, :verify_and_log_in

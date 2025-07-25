@@ -51,7 +51,7 @@ defmodule CMSWeb.LiturgyLive.Show do
   end
 
   @impl true
-  def mount(%{"id" => id}, _session, socket) do
+  def mount(%{"id" => id}, _session, socket) when not is_nil(id) do
     liturgy = Liturgies.get_public_liturgy!(id)
 
     Liturgies.subscribe(liturgy)
@@ -62,6 +62,13 @@ defmodule CMSWeb.LiturgyLive.Show do
      socket
      |> assign(:liturgy, liturgy)
      |> assign(:page_title, page_title)}
+  end
+
+  @impl true
+  def mount(%{}, _session, socket) do
+    liturgy_id = socket.assigns.current_scope |> Liturgies.get_last(Date.utc_today()) |> Map.get(:id)
+
+    {:ok, redirect(socket, to: "/liturgies/#{liturgy_id}")}
   end
 
   @impl true
