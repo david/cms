@@ -22,7 +22,8 @@ alias CMS.Songs.Song
 org =
   Repo.get_by(Organization, name: "Default Organization") ||
     Repo.insert!(%Organization{
-      name: "Default Organization"
+      name: "Default Organization",
+      hostname: "localhost"
     })
 
 Repo.get_by(Group, name: "Elders", organization_id: org.id) ||
