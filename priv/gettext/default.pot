@@ -11,7 +11,7 @@
 msgid ""
 msgstr ""
 
-#: lib/cms_web/components/core_components.ex:331
+#: lib/cms_web/components/core_components.ex:350
 #, elixir-autogen, elixir-format
 msgid "Actions"
 msgstr ""
@@ -31,7 +31,7 @@ msgstr ""
 msgid "Something went wrong!"
 msgstr ""
 
-#: lib/cms_web/live/liturgy_live/show.ex:45
+#: lib/cms_web/live/liturgy_live/show.ex:39
 #, elixir-autogen, elixir-format
 msgid "Song"
 msgstr ""
@@ -41,47 +41,77 @@ msgstr ""
 msgid "We can't find the internet"
 msgstr ""
 
-#: lib/cms_web/components/core_components.ex:74
+#: lib/cms_web/components/core_components.ex:81
 #, elixir-autogen, elixir-format
 msgid "close"
 msgstr ""
 
-#: lib/cms_web/live/liturgy_live/show.ex:27
-#, elixir-autogen, elixir-format
-msgid "Edit"
-msgstr ""
-
-#: lib/cms_web/live/liturgy_live/show.ex:22
+#: lib/cms_web/components/bottom_dock.ex:15
 #, elixir-autogen, elixir-format
 msgid "Liturgy"
 msgstr ""
 
-#: lib/cms_web/live/liturgy_live/show.ex:67
-#, elixir-autogen, elixir-format
-msgid "Show Liturgy"
-msgstr ""
-
-#: lib/cms_web/components/main_layout.ex:126
+#: lib/cms_web/components/main_layout.ex:71
 #, elixir-autogen, elixir-format
 msgid "Deseja instalar esta aplicação no seu dispositivo?"
 msgstr ""
 
-#: lib/cms_web/components/main_layout.ex:150
+#: lib/cms_web/components/main_layout.ex:95
 #, elixir-autogen, elixir-format
 msgid "Ignorar"
 msgstr ""
 
-#: lib/cms_web/components/main_layout.ex:131
+#: lib/cms_web/components/main_layout.ex:76
 #, elixir-autogen, elixir-format
 msgid "Não"
 msgstr ""
 
-#: lib/cms_web/components/main_layout.ex:145
+#: lib/cms_web/components/main_layout.ex:90
 #, elixir-autogen, elixir-format
 msgid "Para instalar esta aplicação no seu dispositivo, toque no botão Partilhar e de seguida em 'Adicionar ao ecrã principal'."
 msgstr ""
 
-#: lib/cms_web/components/main_layout.ex:128
+#: lib/cms_web/components/main_layout.ex:73
 #, elixir-autogen, elixir-format
 msgid "Sim"
+msgstr ""
+
+#: lib/cms_web/live/group_live/admin/index.ex:38
+#, elixir-autogen, elixir-format
+msgid "Crie o primeiro grupo!"
+msgstr ""
+
+#: lib/cms_web/live/group_live/admin/index.ex:20
+#, elixir-autogen, elixir-format
+msgid "Grupos"
+msgstr ""
+
+#: lib/cms_web/components/navbar.ex:96
+#, elixir-autogen, elixir-format
+msgid "Log in"
+msgstr ""
+
+#: lib/cms_web/live/group_live/admin/index.ex:31
+#, elixir-autogen, elixir-format
+msgid "Nenhum grupo encontrado."
+msgstr ""
+
+#: lib/cms_web/live/group_live/admin/index.ex:26
+#, elixir-autogen, elixir-format
+msgid "Nome"
+msgstr ""
+
+#: lib/cms_web/components/bottom_dock.ex:23
+#, elixir-autogen, elixir-format
+msgid "Prayers"
+msgstr ""
+
+#: lib/cms_web/components/bottom_dock.ex:27
+#, elixir-autogen, elixir-format
+msgid "Settings"
+msgstr ""
+
+#: lib/cms_web/components/bottom_dock.ex:19
+#, elixir-autogen, elixir-format
+msgid "Songs"
 msgstr ""
