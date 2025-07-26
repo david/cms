@@ -7,7 +7,7 @@ defmodule CMSWeb.SongLive.Index do
   def mount(_params, _session, socket) do
     songs = Songs.list_songs(socket.assigns.current_scope)
 
-    socket = socket |> assign(:page_title, "Songs") |> assign(:songs, songs)
+    socket = socket |> assign(:page_title, gettext("Músicas")) |> assign(:songs, songs)
 
     {:ok, socket}
   end
@@ -21,7 +21,7 @@ defmodule CMSWeb.SongLive.Index do
           <%= if Enum.empty?(@songs) do %>
             <div class="card bg-base-200 shadow-xl">
               <div class="card-body">
-                <p>No songs found for this organization.</p>
+                <p>{gettext("Nenhuma música encontrada para esta organização.")}</p>
               </div>
             </div>
           <% else %>

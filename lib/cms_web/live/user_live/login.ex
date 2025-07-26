@@ -14,9 +14,12 @@ defmodule CMSWeb.UserLive.Login do
         <div :if={local_mail_adapter?()} class="alert alert-info">
           <.icon name="hero-information-circle" class="w-6 h-6 shrink-0" />
           <div>
-            <p>You are running the local mail adapter.</p>
+            <p>{gettext("Você está a executar o adaptador de email local.")}</p>
             <p>
-              To see sent emails, visit <.link href="/dev/mailbox" class="underline">the mailbox page</.link>.
+              {gettext("Para ver os emails enviados, visite")} <.link
+                href="/dev/mailbox"
+                class="underline"
+              >{gettext("a página da caixa de correio")}</.link>.
             </p>
           </div>
         </div>
@@ -32,13 +35,13 @@ defmodule CMSWeb.UserLive.Login do
             readonly={!!@current_scope.user}
             field={f[:email]}
             type="email"
-            label="Email"
+            label={gettext("Email")}
             autocomplete="username"
             required
             phx-mounted={JS.focus()}
           />
           <.button class="mt-4 w-full" variant="primary">
-            Enviar código <span aria-hidden="true">→</span>
+            {gettext("Enviar código")} <span aria-hidden="true">→</span>
           </.button>
         </.form>
       </div>
@@ -57,7 +60,7 @@ defmodule CMSWeb.UserLive.Login do
   end
 
   def handle_event("submit_magic", %{"user" => %{"email" => email_param}}, socket) do
-    info = "If your email is in our system, you will receive an OTP code shortly."
+    info = gettext("Se o seu email estiver no nosso sistema, receberá um código OTP em breve.")
 
     if user = Accounts.get_user_by_email(email_param) do
       Accounts.deliver_otp_login_instructions(user)

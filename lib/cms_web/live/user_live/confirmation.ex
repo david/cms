@@ -7,7 +7,7 @@ defmodule CMSWeb.UserLive.Confirmation do
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <div class="mx-auto max-w-sm">
-        <.header class="text-center">Welcome {@user.email}</.header>
+        <.header class="text-center">{gettext("Bem-vindo")} {@user.email}</.header>
 
         <.form
           :if={!@user.confirmed_at}
@@ -22,10 +22,10 @@ defmodule CMSWeb.UserLive.Confirmation do
             :if={!@current_scope.user}
             field={@form[:remember_me]}
             type="checkbox"
-            label="Keep me logged in"
+            label={gettext("Mantenha-me ligado")}
           />
-          <.button variant="primary" phx-disable-with="Confirming..." class="w-full">
-            Confirm my account
+          <.button variant="primary" phx-disable-with={gettext("A confirmar...")} class="w-full">
+            {gettext("Confirmar a minha conta")}
           </.button>
         </.form>
 
@@ -42,9 +42,11 @@ defmodule CMSWeb.UserLive.Confirmation do
             :if={!@current_scope.user}
             field={@form[:remember_me]}
             type="checkbox"
-            label="Keep me logged in"
+            label={gettext("Mantenha-me ligado")}
           />
-          <.button variant="primary" phx-disable-with="Logging in..." class="w-full">Log in</.button>
+          <.button variant="primary" phx-disable-with={gettext("A iniciar sessão...")} class="w-full">
+            {gettext("Iniciar sessão")}
+          </.button>
         </.form>
       </div>
     </Layouts.app>
@@ -60,7 +62,7 @@ defmodule CMSWeb.UserLive.Confirmation do
     else
       {:ok,
        socket
-       |> put_flash(:error, "Login link is invalid or it has expired.")
+       |> put_flash(:error, gettext("O link de início de sessão é inválido ou expirou."))
        |> push_navigate(to: ~p"/users/log-in")}
     end
   end

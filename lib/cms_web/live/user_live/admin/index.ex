@@ -15,7 +15,7 @@ defmodule CMSWeb.UserLive.Admin.Index do
       socket
       |> stream(:users, initial_users)
       |> assign(:organization, organization)
-      |> assign(:page_title, "Listing Users")
+      |> assign(:page_title, gettext("Listando Utilizadores"))
       |> assign(:show_import_users_modal, false)
       |> assign(:uploaded_files, [])
       |> allow_upload(:user_import_file, accept: ~w(.csv), max_entries: 1)
@@ -68,31 +68,33 @@ defmodule CMSWeb.UserLive.Admin.Index do
     ~H"""
     <.main_layout flash={@flash} current_scope={@current_scope} page_title={@page_title}>
       <.header>
-        Users
-        for {@organization.name}
-        <:subtitle>This is a list of users for the selected organization.</:subtitle>
+        {gettext("Utilizadores")}
+        {gettext("para")} {@organization.name}
+        <:subtitle>
+          {gettext("Esta é uma lista de utilizadores para a organização selecionada.")}
+        </:subtitle>
         <:actions>
           <.button variant="primary" phx-click="show_import_modal" class="ml-2">
-            <.icon name="hero-arrow-up-tray" /> Import
+            <.icon name="hero-arrow-up-tray" /> {gettext("Importar")}
           </.button>
           <.button variant="primary" navigate={~p"/admin/users/new"}>
-            <.icon name="hero-plus" /> Invite User
+            <.icon name="hero-plus" /> {gettext("Convidar Utilizador")}
           </.button>
         </:actions>
       </.header>
 
       <.table id="users" rows={@streams.users} row_id={fn {_id, user} -> "user-#{user.id}" end}>
-        <:col :let={{_id, user}} label="Name">{user.name}</:col>
-        <:col :let={{_id, user}} label="Family">{user.family.designation}</:col>
-        <:col :let={{_id, user}} label="Email">{user.email}</:col>
-        <:col :let={{_id, user}} label="Role">{user.role}</:col>
-        <:col :let={{_id, user}} label={~H(<div class="text-center">Confirmed?</div>)}>
+        <:col :let={{_id, user}} label={gettext("Nome")}>{user.name}</:col>
+        <:col :let={{_id, user}} label={gettext("Família")}>{user.family.designation}</:col>
+        <:col :let={{_id, user}} label={gettext("Email")}>{user.email}</:col>
+        <:col :let={{_id, user}} label={gettext("Função")}>{user.role}</:col>
+        <:col :let={{_id, user}} label={gettext("Confirmado?")}>
           <div :if={user.confirmed_at} class="text-center">
             <.icon name="hero-check-solid" class="size-5 text-success inline-block" />
           </div>
         </:col>
         <:action :let={{_id, user}}>
-          <.link navigate={~p"/admin/users/#{user}/edit"}>Edit</.link>
+          <.link navigate={~p"/admin/users/#{user}/edit"}>{gettext("Editar")}</.link>
           <div :if={is_nil(user.confirmed_at)}>
             <.link
               phx-click="invite_user"
@@ -112,7 +114,7 @@ defmodule CMSWeb.UserLive.Admin.Index do
         on_cancel={JS.push("cancel_import")}
       >
         <form phx-submit="save_import" phx-change="validate_import">
-          <h2 class="text-lg font-semibold mb-4">Import Users</h2>
+          <h2 class="text-lg font-semibold mb-4">{gettext("Importar Utilizadores")}</h2>
           <div class="mb-4">
             <.live_file_input
               upload={@uploads.user_import_file}
@@ -121,8 +123,12 @@ defmodule CMSWeb.UserLive.Admin.Index do
           </div>
 
           <footer>
-            <.button type="submit" variant="primary" phx-disable-with="Importing...">Import</.button>
-            <.button type="button" phx-click="cancel_import" class="btn-ghost">Cancel</.button>
+            <.button type="submit" variant="primary" phx-disable-with={gettext("A importar...")}>
+              {gettext("Importar")}
+            </.button>
+            <.button type="button" phx-click="cancel_import" class="btn-ghost">
+              {gettext("Cancelar")}
+            </.button>
           </footer>
         </form>
       </.modal>

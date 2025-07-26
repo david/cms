@@ -26,7 +26,7 @@ defmodule CMSWeb.SongLive.IndexTest do
     test "displays message when no songs are found for the current organization", %{conn: conn} do
       {:ok, _view, html} = live(conn, ~p"/songs")
 
-      assert html =~ "<p>No songs found for this organization.</p>"
+      assert html =~ "<p>Nenhuma música encontrada para esta organização.</p>"
       refute html =~ ~r/<li><a>.*?<\/a><\/li>/
     end
   end

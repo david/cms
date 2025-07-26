@@ -9,13 +9,13 @@ defmodule CMSWeb.UserLive.Registration do
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <div class="mx-auto max-w-sm">
         <.header class="text-center">
-          Register for an account
+          {gettext("Registar uma conta")}
           <:subtitle>
-            Already registered?
+            {gettext("Já está registado?")}
             <.link navigate={~p"/users/log-in"} class="font-semibold text-brand hover:underline">
-              Log in
+              {gettext("Iniciar sessão")}
             </.link>
-            to your account now.
+            {gettext("na sua conta agora.")}
           </:subtitle>
         </.header>
 
@@ -23,14 +23,14 @@ defmodule CMSWeb.UserLive.Registration do
           <.input
             field={@form[:email]}
             type="email"
-            label="Email"
+            label={gettext("Email")}
             autocomplete="username"
             required
             phx-mounted={JS.focus()}
           />
 
-          <.button variant="primary" phx-disable-with="Creating account..." class="w-full">
-            Create an account
+          <.button variant="primary" phx-disable-with={gettext("A criar conta...")} class="w-full">
+            {gettext("Criar uma conta")}
           </.button>
         </.form>
       </div>
@@ -62,7 +62,11 @@ defmodule CMSWeb.UserLive.Registration do
          socket
          |> put_flash(
            :info,
-           "An email was sent to #{user.email}, please access it to confirm your account."
+           dgettext(
+             "errors",
+             "Foi enviado um email para %{email}, por favor aceda a ele para confirmar a sua conta.",
+             email: user.email
+           )
          )
          |> push_navigate(to: ~p"/users/log-in")}
 

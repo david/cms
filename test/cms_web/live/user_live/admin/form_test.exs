@@ -36,7 +36,7 @@ defmodule CMSWeb.UserLive.Admin.FormTest do
         |> render_submit()
         |> follow_redirect(conn)
 
-      assert html =~ "User updated successfully."
+      assert html =~ "Utilizador atualizado com sucesso."
 
       updated_user = CMS.Repo.get(User, user_to_edit.id)
       assert updated_user.email == "new-email@example.com"

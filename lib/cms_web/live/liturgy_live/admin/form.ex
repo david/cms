@@ -12,7 +12,7 @@ defmodule CMSWeb.LiturgyLive.Admin.Form do
     ~H"""
     <.main_layout flash={@flash} current_scope={@current_scope} page_title={@page_title}>
       <.form for={@form} id="liturgy-form" phx-change="validate" phx-submit="save">
-        <.input field={@form[:service_on]} type="date" label="Service on" />
+        <.input field={@form[:service_on]} type="date" label={gettext("Data do culto")} />
 
         <datalist id="liturgy-song-blocks">
           <%= for block <- @song_blocks do %>
@@ -32,27 +32,37 @@ defmodule CMSWeb.LiturgyLive.Admin.Form do
 
               <%= case to_string(block[:type].value) do %>
                 <% "text" -> %>
-                  <.block_bar index={block.index} title="Text" />
+                  <.block_bar index={block.index} title={gettext("Texto")} />
 
-                  <.input type="text" field={block[:title]} placeholder="title" />
-                  <.input type="text" field={block[:subtitle]} placeholder="subtitle" />
-                  <.input type="textarea" field={block[:body]} placeholder="body" rows={10} />
+                  <.input type="text" field={block[:title]} placeholder={gettext("título")} />
+                  <.input type="text" field={block[:subtitle]} placeholder={gettext("subtítulo")} />
+                  <.input
+                    type="textarea"
+                    field={block[:body]}
+                    placeholder={gettext("corpo")}
+                    rows={10}
+                  />
                 <% "song" -> %>
-                  <.block_bar index={block.index} title="Song" />
+                  <.block_bar index={block.index} title={gettext("Música")} />
 
                   <.input
                     type="text"
                     field={block[:title]}
-                    placeholder="title"
+                    placeholder={gettext("título")}
                     list="liturgy-song-blocks"
                   />
 
-                  <.input type="textarea" field={block[:body]} placeholder="body" rows={15} />
+                  <.input
+                    type="textarea"
+                    field={block[:body]}
+                    placeholder={gettext("corpo")}
+                    rows={15}
+                  />
                 <% "passage" -> %>
-                  <.block_bar index={block.index} title="Bible passage" />
+                  <.block_bar index={block.index} title={gettext("Passagem bíblica")} />
 
-                  <.input type="text" field={block[:title]} placeholder="verses" />
-                  <.input type="text" field={block[:subtitle]} placeholder="subtitle" />
+                  <.input type="text" field={block[:title]} placeholder={gettext("versículos")} />
+                  <.input type="text" field={block[:subtitle]} placeholder={gettext("subtítulo")} />
 
                   <LiturgyComponents.verse_list verses={block[:resolved_body].value} />
               <% end %>
@@ -65,9 +75,11 @@ defmodule CMSWeb.LiturgyLive.Admin.Form do
         <input type="hidden" name={"#{@form[:blocks_drop].name}[]"} />
 
         <footer>
-          <.button phx-disable-with="Saving..." variant="primary">Save Liturgy</.button>
+          <.button phx-disable-with={gettext("A guardar...")} variant="primary">
+            {gettext("Guardar liturgia")}
+          </.button>
           <.button navigate={return_path(@current_scope, @return_to, @liturgy)} variant="secondary">
-            Cancel
+            {gettext("Cancelar")}
           </.button>
         </footer>
       </.form>
@@ -105,7 +117,7 @@ defmodule CMSWeb.LiturgyLive.Admin.Form do
         phx-click={JS.dispatch("change")}
         variant="secondary"
       >
-        + text
+        {gettext("+ texto")}
       </.button>
       <.button
         type="button"
@@ -115,7 +127,7 @@ defmodule CMSWeb.LiturgyLive.Admin.Form do
         phx-click={JS.dispatch("change")}
         variant="secondary"
       >
-        + song
+        {gettext("+ música")}
       </.button>
       <.button
         type="button"
@@ -125,7 +137,7 @@ defmodule CMSWeb.LiturgyLive.Admin.Form do
         phx-click={JS.dispatch("change")}
         variant="secondary"
       >
-        + passage
+        {gettext("+ passagem")}
       </.button>
     </div>
     """
@@ -169,7 +181,7 @@ defmodule CMSWeb.LiturgyLive.Admin.Form do
       |> to_form()
 
     socket
-    |> assign(:page_title, "New Liturgy")
+    |> assign(:page_title, gettext("Nova liturgia"))
     |> assign(:liturgy, liturgy)
     |> assign(:form, form)
   end
@@ -183,7 +195,7 @@ defmodule CMSWeb.LiturgyLive.Admin.Form do
       |> to_form()
 
     socket
-    |> assign(:page_title, "New Liturgy")
+    |> assign(:page_title, gettext("Nova liturgia"))
     |> assign(:liturgy, liturgy)
     |> assign(:form, form)
   end
@@ -214,7 +226,7 @@ defmodule CMSWeb.LiturgyLive.Admin.Form do
       {:ok, liturgy} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Liturgy updated successfully")
+         |> put_flash(:info, gettext("Liturgia atualizada com sucesso."))
          |> push_navigate(
            to: return_path(socket.assigns.current_scope, socket.assigns.return_to, liturgy)
          )}
@@ -229,7 +241,7 @@ defmodule CMSWeb.LiturgyLive.Admin.Form do
       {:ok, liturgy} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Liturgy created successfully")
+         |> put_flash(:info, gettext("Liturgia criada com sucesso."))
          |> push_navigate(
            to: return_path(socket.assigns.current_scope, socket.assigns.return_to, liturgy)
          )}

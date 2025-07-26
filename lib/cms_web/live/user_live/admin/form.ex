@@ -20,7 +20,7 @@ defmodule CMSWeb.UserLive.Admin.Form do
     socket
     |> assign(:form, to_form(changeset))
     |> assign(:user, user)
-    |> assign(:page_title, "Invite New User")
+    |> assign(:page_title, gettext("Convidar Novo Utilizador"))
   end
 
   defp apply_action(socket, :edit, %{"id" => id}) do
@@ -30,7 +30,7 @@ defmodule CMSWeb.UserLive.Admin.Form do
     socket
     |> assign(:form, to_form(changeset))
     |> assign(:user, user)
-    |> assign(:page_title, "Edit User")
+    |> assign(:page_title, gettext("Editar Utilizador"))
   end
 
   @impl true
@@ -40,19 +40,19 @@ defmodule CMSWeb.UserLive.Admin.Form do
       <.header>
         {@page_title}
         <:subtitle>
-          Enter the name and email of the user to invite to {@current_scope.organization.name}.
+          {gettext("Insira o nome e o email do utilizador para convidar para")} {@current_scope.organization.name}.
         </:subtitle>
       </.header>
 
       <.form for={@form} id="invite-user-form" phx-change="validate" phx-submit="save">
-        <.input field={@form[:name]} type="text" label="Name" required />
+        <.input field={@form[:name]} type="text" label={gettext("Nome")} required />
         <% # FIXME email is required for invite %>
-        <.input field={@form[:email]} type="email" label="Email" />
-        <.input field={@form[:birth_date]} type="date" label="Birth Date" />
+        <.input field={@form[:email]} type="email" label={gettext("Email")} />
+        <.input field={@form[:birth_date]} type="date" label={gettext("Data de Nascimento")} />
 
         <.autocomplete
           id="family_designation_input"
-          label="Family Designation"
+          label={gettext("Designação da Família")}
           text_field={@form[:family_designation]}
           value_field={@form[:family_id]}
           suggestions={@family_suggestions}
@@ -63,17 +63,19 @@ defmodule CMSWeb.UserLive.Admin.Form do
         <.input
           field={@form[:family_address]}
           type="textarea"
-          label="Family Address"
+          label={gettext("Endereço da Família")}
           value={@family_address}
         />
 
-        <.input field={@form[:phone_number]} type="tel" label="Phone Number" />
+        <.input field={@form[:phone_number]} type="tel" label={gettext("Número de Telefone")} />
 
-        <.input field={@form[:role]} type="select" label="Role" options={User.roles()} />
+        <.input field={@form[:role]} type="select" label={gettext("Função")} options={User.roles()} />
 
         <footer>
-          <.button phx-disable-with="Saving..." variant="primary">Save User</.button>
-          <.button navigate={~p"/admin/users"}>Cancel</.button>
+          <.button phx-disable-with={gettext("A guardar...")} variant="primary">
+            {gettext("Guardar Utilizador")}
+          </.button>
+          <.button navigate={~p"/admin/users"}>{gettext("Cancelar")}</.button>
         </footer>
       </.form>
     </.main_layout>
@@ -117,7 +119,7 @@ defmodule CMSWeb.UserLive.Admin.Form do
       {:ok, _user} ->
         {:noreply,
          socket
-         |> put_flash(:info, "User invited successfully.")
+         |> put_flash(:info, gettext("Utilizador convidado com sucesso."))
          |> push_navigate(to: ~p"/admin/users")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -132,7 +134,7 @@ defmodule CMSWeb.UserLive.Admin.Form do
       {:ok, _user} ->
         {:noreply,
          socket
-         |> put_flash(:info, "User updated successfully.")
+         |> put_flash(:info, gettext("Utilizador atualizado com sucesso."))
          |> push_navigate(to: ~p"/admin/users")}
 
       {:error, %Ecto.Changeset{} = changeset} ->

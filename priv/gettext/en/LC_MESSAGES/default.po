@@ -11,7 +11,7 @@ msgstr ""
 "Language: en\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: lib/cms_web/components/core_components.ex:354
+#: lib/cms_web/components/core_components.ex:350
 #, elixir-autogen, elixir-format
 msgid "Actions"
 msgstr ""
@@ -31,7 +31,7 @@ msgstr ""
 msgid "Something went wrong!"
 msgstr ""
 
-#: lib/cms_web/live/liturgy_live/show.ex:54
+#: lib/cms_web/live/liturgy_live/show.ex:39
 #, elixir-autogen, elixir-format
 msgid "Song"
 msgstr "Song"
@@ -41,38 +41,473 @@ msgstr "Song"
 msgid "We can't find the internet"
 msgstr ""
 
-#: lib/cms_web/components/core_components.ex:74
+#: lib/cms_web/components/core_components.ex:81
 #, elixir-autogen, elixir-format
 msgid "close"
 msgstr ""
 
-#: lib/cms_web/live/liturgy_live/show.ex:36
-#, elixir-autogen, elixir-format
-msgid "Edit"
-msgstr "Edit"
-
-#: lib/cms_web/controllers/page_html/home.html.heex:5
-#: lib/cms_web/live/liturgy_live/show.ex:14
+#: lib/cms_web/components/bottom_dock.ex:15
 #, elixir-autogen, elixir-format
 msgid "Liturgy"
 msgstr "Liturgy"
 
-#: lib/cms_web/live/liturgy_live/show.ex:83
+#: lib/cms_web/components/main_layout.ex:71
 #, elixir-autogen, elixir-format
-msgid "Show Liturgy"
-msgstr "Show Liturgy"
-
-#: lib/cms_web/components/layouts/root.html.heex:72
-#, elixir-autogen, elixir-format
-msgid "Do you want to install this app on your device?"
+msgid "Deseja instalar esta aplicação no seu dispositivo?"
 msgstr ""
 
-#: lib/cms_web/components/layouts/root.html.heex:77
+#: lib/cms_web/components/main_layout.ex:95
 #, elixir-autogen, elixir-format
-msgid "No"
+msgid "Ignorar"
 msgstr ""
 
-#: lib/cms_web/components/layouts/root.html.heex:74
+#: lib/cms_web/components/main_layout.ex:76
 #, elixir-autogen, elixir-format
-msgid "Yes"
+msgid "Não"
+msgstr ""
+
+#: lib/cms_web/components/main_layout.ex:90
+#, elixir-autogen, elixir-format
+msgid "Para instalar esta aplicação no seu dispositivo, toque no botão Partilhar e de seguida em 'Adicionar ao ecrã principal'."
+msgstr ""
+
+#: lib/cms_web/components/main_layout.ex:73
+#, elixir-autogen, elixir-format
+msgid "Sim"
+msgstr ""
+
+#: lib/cms_web/live/group_live/admin/index.ex:38
+#, elixir-autogen, elixir-format
+msgid "Crie o primeiro grupo!"
+msgstr ""
+
+#: lib/cms_web/live/group_live/admin/index.ex:20
+#, elixir-autogen, elixir-format
+msgid "Grupos"
+msgstr ""
+
+#: lib/cms_web/live/group_live/admin/index.ex:31
+#, elixir-autogen, elixir-format
+msgid "Nenhum grupo encontrado."
+msgstr ""
+
+#: lib/cms_web/live/group_live/admin/index.ex:26
+#: lib/cms_web/live/user_live/admin/form.ex:48
+#: lib/cms_web/live/user_live/admin/index.ex:85
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Nome"
+msgstr ""
+
+#: lib/cms_web/components/bottom_dock.ex:23
+#, elixir-autogen, elixir-format
+msgid "Prayers"
+msgstr ""
+
+#: lib/cms_web/components/bottom_dock.ex:27
+#, elixir-autogen, elixir-format
+msgid "Settings"
+msgstr ""
+
+#: lib/cms_web/components/bottom_dock.ex:19
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Songs"
+msgstr "Song"
+
+#: lib/cms_web/live/liturgy_live/admin/form.ex:118
+#, elixir-autogen, elixir-format
+msgid "+ música"
+msgstr ""
+
+#: lib/cms_web/live/liturgy_live/admin/form.ex:128
+#, elixir-autogen, elixir-format
+msgid "+ passagem"
+msgstr ""
+
+#: lib/cms_web/live/liturgy_live/admin/form.ex:108
+#, elixir-autogen, elixir-format
+msgid "+ texto"
+msgstr ""
+
+#: lib/cms_web/live/user_live/settings.ex:24
+#, elixir-autogen, elixir-format
+msgid "A alterar..."
+msgstr ""
+
+#: lib/cms_web/live/user_live/confirmation.ex:27
+#, elixir-autogen, elixir-format
+msgid "A confirmar..."
+msgstr ""
+
+#: lib/cms_web/live/user_live/registration.ex:32
+#, elixir-autogen, elixir-format
+msgid "A criar conta..."
+msgstr ""
+
+#: lib/cms_web/live/liturgy_live/admin/form.ex:68
+#: lib/cms_web/live/user_live/admin/form.ex:75
+#, elixir-autogen, elixir-format
+msgid "A guardar..."
+msgstr ""
+
+#: lib/cms_web/live/user_live/admin/index.ex:124
+#, elixir-autogen, elixir-format
+msgid "A importar..."
+msgstr ""
+
+#: lib/cms_web/live/user_live/confirmation.ex:47
+#, elixir-autogen, elixir-format
+msgid "A iniciar sessão..."
+msgstr ""
+
+#: lib/cms_web/live/liturgy_live/show.ex:91
+#, elixir-autogen, elixir-format
+msgid "A liturgia atual foi removida."
+msgstr ""
+
+#: lib/cms_web/live/user_live/settings.ex:24
+#, elixir-autogen, elixir-format
+msgid "Alterar Email"
+msgstr ""
+
+#: lib/cms_web/live/liturgy_live/admin/index.ex:36
+#, elixir-autogen, elixir-format
+msgid "Apagar"
+msgstr ""
+
+#: lib/cms_web/live/user_live/confirmation.ex:10
+#, elixir-autogen, elixir-format
+msgid "Bem-vindo"
+msgstr ""
+
+#: lib/cms_web/live/liturgy_live/admin/form.ex:70
+#: lib/cms_web/live/user_live/admin/form.ex:76
+#: lib/cms_web/live/user_live/admin/index.ex:125
+#, elixir-autogen, elixir-format
+msgid "Cancelar"
+msgstr ""
+
+#: lib/cms_web/live/user_live/admin/index.ex:89
+#, elixir-autogen, elixir-format
+msgid "Confirmado?"
+msgstr ""
+
+#: lib/cms_web/live/user_live/confirmation.ex:28
+#, elixir-autogen, elixir-format
+msgid "Confirmar a minha conta"
+msgstr ""
+
+#: lib/cms_web/live/user_live/admin/form.ex:23
+#, elixir-autogen, elixir-format
+msgid "Convidar Novo Utilizador"
+msgstr ""
+
+#: lib/cms_web/live/user_live/admin/index.ex:79
+#, elixir-autogen, elixir-format
+msgid "Convidar Utilizador"
+msgstr ""
+
+#: lib/cms_web/live/liturgy_live/admin/index.ex:22
+#, elixir-autogen, elixir-format
+msgid "Copiar"
+msgstr ""
+
+#: lib/cms_web/live/user_live/registration.ex:33
+#, elixir-autogen, elixir-format
+msgid "Criar uma conta"
+msgstr ""
+
+#: lib/cms_web/live/user_live/admin/form.ex:51
+#, elixir-autogen, elixir-format
+msgid "Data de Nascimento"
+msgstr ""
+
+#: lib/cms_web/live/liturgy_live/admin/form.ex:15
+#: lib/cms_web/live/liturgy_live/admin/index.ex:19
+#, elixir-autogen, elixir-format
+msgid "Data do culto"
+msgstr ""
+
+#: lib/cms_web/live/user_live/settings.ex:12
+#, elixir-autogen, elixir-format
+msgid "Definições da Conta"
+msgstr ""
+
+#: lib/cms_web/live/user_live/admin/form.ex:55
+#, elixir-autogen, elixir-format
+msgid "Designação da Família"
+msgstr ""
+
+#: lib/cms_web/live/liturgy_live/admin/index.ex:29
+#: lib/cms_web/live/user_live/admin/index.ex:95
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Editar"
+msgstr "Edit"
+
+#: lib/cms_web/live/user_live/admin/form.ex:33
+#, elixir-autogen, elixir-format
+msgid "Editar Utilizador"
+msgstr ""
+
+#: lib/cms_web/live/user_live/admin/form.ex:50
+#: lib/cms_web/live/user_live/admin/index.ex:87
+#: lib/cms_web/live/user_live/login.ex:35
+#: lib/cms_web/live/user_live/registration.ex:26
+#: lib/cms_web/live/user_live/settings.ex:20
+#, elixir-autogen, elixir-format
+msgid "Email"
+msgstr ""
+
+#: lib/cms_web/live/user_live/settings.ex:34
+#, elixir-autogen, elixir-format
+msgid "Email alterado com sucesso."
+msgstr ""
+
+#: lib/cms_web/live/user_live/admin/form.ex:66
+#, elixir-autogen, elixir-format
+msgid "Endereço da Família"
+msgstr ""
+
+#: lib/cms_web/live/user_live/login.ex:41
+#, elixir-autogen, elixir-format
+msgid "Enviar código"
+msgstr ""
+
+#: lib/cms_web/live/user_live/admin/index.ex:73
+#, elixir-autogen, elixir-format
+msgid "Esta é uma lista de utilizadores para a organização selecionada."
+msgstr ""
+
+#: lib/cms_web/live/user_live/admin/index.ex:86
+#, elixir-autogen, elixir-format
+msgid "Família"
+msgstr ""
+
+#: lib/cms_web/live/user_live/settings.ex:80
+#, elixir-autogen, elixir-format
+msgid "Foi enviado um link para confirmar a alteração do seu email para o novo endereço."
+msgstr ""
+
+#: lib/cms_web/live/user_live/admin/form.ex:72
+#: lib/cms_web/live/user_live/admin/index.ex:88
+#, elixir-autogen, elixir-format
+msgid "Função"
+msgstr ""
+
+#: lib/cms_web/live/user_live/settings.ex:13
+#, elixir-autogen, elixir-format
+msgid "Gerir o seu endereço de email da conta"
+msgstr ""
+
+#: lib/cms_web/live/user_live/admin/form.ex:75
+#, elixir-autogen, elixir-format
+msgid "Guardar Utilizador"
+msgstr ""
+
+#: lib/cms_web/live/liturgy_live/admin/form.ex:68
+#, elixir-autogen, elixir-format
+msgid "Guardar liturgia"
+msgstr ""
+
+#: lib/cms_web/live/user_live/admin/index.ex:76
+#: lib/cms_web/live/user_live/admin/index.ex:124
+#, elixir-autogen, elixir-format
+msgid "Importar"
+msgstr ""
+
+#: lib/cms_web/live/user_live/admin/index.ex:115
+#, elixir-autogen, elixir-format
+msgid "Importar Utilizadores"
+msgstr ""
+
+#: lib/cms_web/components/navbar.ex:95
+#: lib/cms_web/live/user_live/confirmation.ex:47
+#: lib/cms_web/live/user_live/registration.ex:16
+#, elixir-autogen, elixir-format
+msgid "Iniciar sessão"
+msgstr ""
+
+#: lib/cms_web/live/user_live/admin/form.ex:43
+#, elixir-autogen, elixir-format
+msgid "Insira o nome e o email do utilizador para convidar para"
+msgstr ""
+
+#: lib/cms_web/live/user_live/registration.ex:14
+#, elixir-autogen, elixir-format
+msgid "Já está registado?"
+msgstr ""
+
+#: lib/cms_web/live/liturgy_live/admin/index.ex:48
+#, elixir-autogen, elixir-format
+msgid "Listando Liturgias"
+msgstr ""
+
+#: lib/cms_web/live/user_live/admin/index.ex:18
+#, elixir-autogen, elixir-format
+msgid "Listando Utilizadores"
+msgstr ""
+
+#: lib/cms_web/live/liturgy_live/admin/form.ex:217
+#, elixir-autogen, elixir-format
+msgid "Liturgia atualizada com sucesso."
+msgstr ""
+
+#: lib/cms_web/live/liturgy_live/admin/form.ex:232
+#, elixir-autogen, elixir-format
+msgid "Liturgia criada com sucesso."
+msgstr ""
+
+#: lib/cms_web/live/user_live/confirmation.ex:25
+#: lib/cms_web/live/user_live/confirmation.ex:45
+#, elixir-autogen, elixir-format
+msgid "Mantenha-me ligado"
+msgstr ""
+
+#: lib/cms_web/live/liturgy_live/admin/form.ex:41
+#, elixir-autogen, elixir-format
+msgid "Música"
+msgstr ""
+
+#: lib/cms_web/live/song_live/index.ex:10
+#, elixir-autogen, elixir-format
+msgid "Músicas"
+msgstr ""
+
+#: lib/cms_web/live/song_live/index.ex:24
+#, elixir-autogen, elixir-format
+msgid "Nenhuma música encontrada para esta organização."
+msgstr ""
+
+#: lib/cms_web/live/liturgy_live/admin/form.ex:172
+#: lib/cms_web/live/liturgy_live/admin/form.ex:186
+#, elixir-autogen, elixir-format
+msgid "Nova liturgia"
+msgstr ""
+
+#: lib/cms_web/live/user_live/admin/form.ex:70
+#, elixir-autogen, elixir-format
+msgid "Número de Telefone"
+msgstr ""
+
+#: lib/cms_web/live/user_live/settings.ex:37
+#, elixir-autogen, elixir-format
+msgid "O link de alteração de email é inválido ou expirou."
+msgstr ""
+
+#: lib/cms_web/live/user_live/confirmation.ex:63
+#, elixir-autogen, elixir-format
+msgid "O link de início de sessão é inválido ou expirou."
+msgstr ""
+
+#: lib/cms_web/live/user_live/login.ex:19
+#, elixir-autogen, elixir-format
+msgid "Para ver os emails enviados, visite"
+msgstr ""
+
+#: lib/cms_web/live/liturgy_live/admin/form.ex:52
+#, elixir-autogen, elixir-format
+msgid "Passagem bíblica"
+msgstr ""
+
+#: lib/cms_web/live/user_live/registration.ex:12
+#, elixir-autogen, elixir-format
+msgid "Registar uma conta"
+msgstr ""
+
+#: lib/cms_web/live/user_live/login.ex:60
+#, elixir-autogen, elixir-format
+msgid "Se o seu email estiver no nosso sistema, receberá um código OTP em breve."
+msgstr ""
+
+#: lib/cms_web/live/liturgy_live/admin/index.ex:34
+#, elixir-autogen, elixir-format
+msgid "Tem a certeza?"
+msgstr ""
+
+#: lib/cms_web/live/liturgy_live/admin/form.ex:35
+#, elixir-autogen, elixir-format
+msgid "Texto"
+msgstr ""
+
+#: lib/cms_web/live/user_live/admin/form.ex:135
+#, elixir-autogen, elixir-format
+msgid "Utilizador atualizado com sucesso."
+msgstr ""
+
+#: lib/cms_web/live/user_live/admin/form.ex:120
+#, elixir-autogen, elixir-format
+msgid "Utilizador convidado com sucesso."
+msgstr ""
+
+#: lib/cms_web/components/navbar.ex:84
+#: lib/cms_web/live/user_live/admin/index.ex:71
+#, elixir-autogen, elixir-format
+msgid "Utilizadores"
+msgstr ""
+
+#: lib/cms_web/live/liturgy_live/admin/index.ex:27
+#, elixir-autogen, elixir-format
+msgid "Ver"
+msgstr ""
+
+#: lib/cms_web/live/song_live/show.ex:21
+#, elixir-autogen, elixir-format
+msgid "Ver Música"
+msgstr ""
+
+#: lib/cms_web/live/user_live/login.ex:17
+#, elixir-autogen, elixir-format
+msgid "Você está a executar o adaptador de email local."
+msgstr ""
+
+#: lib/cms_web/live/user_live/login.ex:19
+#, elixir-autogen, elixir-format
+msgid "a página da caixa de correio"
+msgstr ""
+
+#: lib/cms_web/live/liturgy_live/admin/form.ex:39
+#: lib/cms_web/live/liturgy_live/admin/form.ex:50
+#, elixir-autogen, elixir-format
+msgid "corpo"
+msgstr ""
+
+#: lib/cms_web/live/user_live/registration.ex:18
+#, elixir-autogen, elixir-format
+msgid "na sua conta agora."
+msgstr ""
+
+#: lib/cms_web/live/user_live/admin/index.ex:72
+#, elixir-autogen, elixir-format
+msgid "para"
+msgstr ""
+
+#: lib/cms_web/live/liturgy_live/admin/form.ex:38
+#: lib/cms_web/live/liturgy_live/admin/form.ex:55
+#, elixir-autogen, elixir-format
+msgid "subtítulo"
+msgstr ""
+
+#: lib/cms_web/live/liturgy_live/admin/form.ex:37
+#: lib/cms_web/live/liturgy_live/admin/form.ex:46
+#, elixir-autogen, elixir-format
+msgid "título"
+msgstr ""
+
+#: lib/cms_web/live/liturgy_live/admin/form.ex:54
+#, elixir-autogen, elixir-format
+msgid "versículos"
+msgstr ""
+
+#: lib/cms_web/components/navbar.ex:89
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Definições"
+msgstr ""
+
+#: lib/cms_web/components/navbar.ex:87
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Liturgias"
+msgstr "Liturgy"
+
+#: lib/cms_web/components/navbar.ex:90
+#, elixir-autogen, elixir-format
+msgid "Sair"
 msgstr ""

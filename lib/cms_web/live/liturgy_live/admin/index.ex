@@ -16,24 +16,24 @@ defmodule CMSWeb.LiturgyLive.Admin.Index do
         rows={@streams.liturgies}
         row_click={fn {_id, liturgy} -> JS.navigate(~p"/liturgies/#{liturgy}") end}
       >
-        <:col :let={{_id, liturgy}} label="Service on">{liturgy.service_on}</:col>
+        <:col :let={{_id, liturgy}} label={gettext("Data do culto")}>{liturgy.service_on}</:col>
         <:action :let={{_id, liturgy}}>
           <.link navigate={~p"/admin/liturgies/new?#{[tid: liturgy.id]}"}>
-            Copy
+            {gettext("Copiar")}
           </.link>
         </:action>
         <:action :let={{_id, liturgy}}>
           <div class="sr-only">
-            <.link navigate={~p"/liturgies/#{liturgy}"}>Show</.link>
+            <.link navigate={~p"/liturgies/#{liturgy}"}>{gettext("Ver")}</.link>
           </div>
-          <.link navigate={~p"/admin/liturgies/#{liturgy}/edit"}>Edit</.link>
+          <.link navigate={~p"/admin/liturgies/#{liturgy}/edit"}>{gettext("Editar")}</.link>
         </:action>
         <:action :let={{id, liturgy}}>
           <.link
             phx-click={JS.push("delete", value: %{id: liturgy.id}) |> hide("##{id}")}
-            data-confirm="Are you sure?"
+            data-confirm={gettext("Tem a certeza?")}
           >
-            Delete
+            {gettext("Apagar")}
           </.link>
         </:action>
       </.table>
@@ -45,7 +45,7 @@ defmodule CMSWeb.LiturgyLive.Admin.Index do
   def mount(_params, _session, socket) do
     {:ok,
      socket
-     |> assign(:page_title, "Listing Liturgies")
+     |> assign(:page_title, gettext("Listando Liturgias"))
      |> stream(:liturgies, Liturgies.list_liturgies(socket.assigns.current_scope))}
   end
 

@@ -66,7 +66,8 @@ defmodule CMSWeb.LiturgyLive.Show do
 
   @impl true
   def mount(%{}, _session, socket) do
-    liturgy_id = socket.assigns.current_scope |> Liturgies.get_last(Date.utc_today()) |> Map.get(:id)
+    liturgy_id =
+      socket.assigns.current_scope |> Liturgies.get_last(Date.utc_today()) |> Map.get(:id)
 
     {:ok, redirect(socket, to: "/liturgies/#{liturgy_id}")}
   end
@@ -88,7 +89,7 @@ defmodule CMSWeb.LiturgyLive.Show do
       ) do
     {:noreply,
      socket
-     |> put_flash(:error, "The current liturgy was deleted.")
+     |> put_flash(:error, gettext("A liturgia atual foi removida."))
      |> push_navigate(to: ~p"/admin/liturgies")}
   end
 

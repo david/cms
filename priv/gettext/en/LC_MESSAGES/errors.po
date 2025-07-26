@@ -110,3 +110,8 @@ msgstr ""
 
 msgid "must be equal to %{number}"
 msgstr ""
+
+#: lib/cms_web/live/user_live/registration.ex:65
+#, elixir-autogen, elixir-format
+msgid "Foi enviado um email para %{email}, por favor aceda a ele para confirmar a sua conta."
+msgstr ""

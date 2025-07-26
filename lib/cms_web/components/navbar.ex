@@ -81,18 +81,18 @@ defmodule CMSWeb.Navbar do
           class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 mt-4 z-[1]"
         >
           <li :if={@current_scope.user.role == :admin}>
-            <.link href={~p"/admin/users"}>Users</.link>
+            <.link href={~p"/admin/users"}>{gettext("Utilizadores")}</.link>
           </li>
           <li :if={@current_scope.user.role == :admin}>
-            <.link href={~p"/admin/liturgies"}>Liturgies</.link>
+            <.link href={~p"/admin/liturgies"}>{gettext("Liturgias")}</.link>
           </li>
-          <li><.link href={~p"/users/settings"}>Settings</.link></li>
-          <li><.link href={~p"/users/log-out"} method="delete">Log out</.link></li>
+          <li><.link href={~p"/users/settings"}>{gettext("Definições")}</.link></li>
+          <li><.link href={~p"/users/log-out"} method="delete">{gettext("Sair")}</.link></li>
         </ul>
       </li>
     <% else %>
       <li>
-        <.link href={~p"/users/log-in"}>Log in</.link>
+        <.link href={~p"/users/log-in"}>{gettext("Iniciar sessão")}</.link>
       </li>
     <% end %>
     """

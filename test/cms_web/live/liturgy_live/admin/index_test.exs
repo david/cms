@@ -24,7 +24,7 @@ defmodule CMSWeb.LiturgyLive.Admin.IndexTest do
       liturgy = liturgy_fixture(scope)
       {:ok, _view, html} = live(conn, ~p"/admin/liturgies")
 
-      assert html =~ "Listing Liturgies"
+      assert html =~ "Listando Liturgias"
       assert html =~ liturgy.service_on |> to_string()
     end
   end

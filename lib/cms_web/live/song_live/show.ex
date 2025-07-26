@@ -18,7 +18,7 @@ defmodule CMSWeb.SongLive.Show do
      |> assign(:song, song)}
   end
 
-  defp page_title(:show), do: "Show Song"
+  defp page_title(:show), do: gettext("Ver Música")
 
   @impl true
   def render(assigns) do

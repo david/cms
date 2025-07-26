@@ -9,19 +9,21 @@ defmodule CMSWeb.UserLive.Settings do
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header class="text-center">
-        Account Settings
-        <:subtitle>Manage your account email address</:subtitle>
+        {gettext("Definições da Conta")}
+        <:subtitle>{gettext("Gerir o seu endereço de email da conta")}</:subtitle>
       </.header>
 
       <.form for={@email_form} id="email_form" phx-submit="update_email" phx-change="validate_email">
         <.input
           field={@email_form[:email]}
           type="email"
-          label="Email"
+          label={gettext("Email")}
           autocomplete="username"
           required
         />
-        <.button variant="primary" phx-disable-with="Changing...">Change Email</.button>
+        <.button variant="primary" phx-disable-with={gettext("A alterar...")}>
+          {gettext("Alterar Email")}
+        </.button>
       </.form>
     </Layouts.app>
     """
@@ -31,10 +33,14 @@ defmodule CMSWeb.UserLive.Settings do
     socket =
       case Accounts.update_user_email(socket.assigns.current_scope.user, token) do
         :ok ->
-          put_flash(socket, :info, "Email changed successfully.")
+          put_flash(socket, :info, gettext("Email alterado com sucesso."))
 
         :error ->
-          put_flash(socket, :error, "Email change link is invalid or it has expired.")
+          put_flash(
+            socket,
+            :error,
+            gettext("O link de alteração de email é inválido ou expirou.")
+          )
       end
 
     {:ok, push_navigate(socket, to: ~p"/users/settings")}
@@ -77,7 +83,11 @@ defmodule CMSWeb.UserLive.Settings do
           &url(~p"/users/settings/confirm-email/#{&1}")
         )
 
-        info = "A link to confirm your email change has been sent to the new address."
+        info =
+          gettext(
+            "Foi enviado um link para confirmar a alteração do seu email para o novo endereço."
+          )
+
         {:noreply, socket |> put_flash(:info, info)}
 
       changeset ->
