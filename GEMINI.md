@@ -2,6 +2,10 @@
 
 This is an Elixir/Phoenix application that serves as a CMS for church-related activities. The core domains include `Accounts`, `Bibles`, `Liturgies`, `Prayers`, and `Songs`.
 
+### Repository
+
+The repository name is `david/cms`.
+
 ### 1. Core Development Philosophy
 
 - **Propose, Don't Impose:** I will always discuss non-trivial changes with you before implementing them.
