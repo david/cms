@@ -38,9 +38,9 @@ defmodule CMSWeb.Navbar do
 
   def navbar(assigns) do
     ~H"""
-    <div class="sticky top-0 z-80 px-2 flex items-center flex-shrink-0 bg-base-100 shadow-md">
+    <div class="sticky top-0 z-80 px-2 flex items-center flex-shrink-0 bg-base-100 shadow-md print:shadow-none">
       <.hamburger_button :if={@show_sidebar_button} />
-      <div class="navbar z-50">
+      <div class="navbar z-50 print:main-margins print:px-6">
         <div class="navbar-start">
           <span class="font-medium">{@page_title}</span>
         </div>
@@ -57,7 +57,7 @@ defmodule CMSWeb.Navbar do
 
   def hamburger_button(assigns) do
     ~H"""
-    <label for="sidebar-drawer" class="btn btn-ghost mx-1 px-2 z-100">
+    <label for="sidebar-drawer" class="btn btn-ghost mx-1 px-2 z-100 print:hidden">
       <.icon name="hero-bars-3" class="h-5 w-5" />
     </label>
     """
@@ -68,7 +68,7 @@ defmodule CMSWeb.Navbar do
   defp user_menu(assigns) do
     ~H"""
     <%= if @current_scope.user do %>
-      <li class="dropdown dropdown-end">
+      <li class="dropdown dropdown-end print:hidden">
         <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar placeholder">
           <div class="bg-neutral text-neutral-content rounded-full w-10">
             <span class="text-xl">
@@ -92,7 +92,7 @@ defmodule CMSWeb.Navbar do
       </li>
     <% else %>
       <li>
-        <.link href={~p"/users/log-in"}>{gettext("Iniciar sessão")}</.link>
+        <.link href={~p"/users/log-in"} class="print:hidden">{gettext("Iniciar sessão")}</.link>
       </li>
     <% end %>
     """

@@ -36,7 +36,11 @@ defmodule CMSWeb.MainLayout do
             {render_slot(@nav_actions)}
           </:actions>
         </.navbar>
-        <div id="main-content" class="flex-grow overflow-y-auto" phx-hook="FontSizeApplier">
+        <div
+          id="main-content"
+          class="main-margins flex-grow print:overflow-y-visible overflow-y-auto"
+          phx-hook="FontSizeApplier"
+        >
           <CMSWeb.Layouts.app flash={@flash}>
             {render_slot(@inner_block)}
           </CMSWeb.Layouts.app>

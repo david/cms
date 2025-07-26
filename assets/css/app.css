@@ -101,3 +101,7 @@
 [data-phx-root-id] { display: contents }
 
 /* This file is for your main application CSS */
+
+@utility main-margins {
+  @apply max-w-2xl mx-auto;
+}

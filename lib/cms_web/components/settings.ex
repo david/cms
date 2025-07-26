@@ -9,7 +9,7 @@ defmodule CMSWeb.Settings do
     ~H"""
     <div
       id="settings-drawer"
-      class={"fixed bottom-0 left-0 right-0 bg-base-200 p-4 pb-20 transform transition-transform duration-300 ease-in-out z-30" <> if(@show, do: " translate-y-0", else: " translate-y-full")}
+      class={"print:hidden fixed bottom-0 left-0 right-0 bg-base-200 p-4 pb-20 transform transition-transform duration-300 ease-in-out z-30" <> if(@show, do: " translate-y-0", else: " translate-y-full")}
     >
       <div class="flex justify-between items-center">
         <p>Definições</p>
