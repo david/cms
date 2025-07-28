@@ -38,7 +38,7 @@ defmodule CMSWeb.MainLayout do
         </.navbar>
         <div
           id="main-content"
-          class="main-margins flex-grow print:overflow-y-visible overflow-y-auto"
+          class="main-margins flex-grow print:overflow-y-visible overflow-y-auto pb-16 sm:pb-0"
           phx-hook="FontSizeApplier"
         >
           <CMSWeb.Layouts.app flash={@flash}>
