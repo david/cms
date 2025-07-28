@@ -22,9 +22,8 @@ defmodule CMSWeb.HomeLive do
     <.main_layout current_scope={@current_scope} page_title={@page_title}>
       <Layouts.flash_group flash={@flash} />
 
-      <div class="flex flex-col items-center p-10">
-        <.link href={~p"/liturgies/latest"} class="btn btn-primary self-stretch">Liturgias</.link>
-        <.link navigate={~p"/songs"} class="btn btn-primary mt-4 self-stretch">Hinos</.link>
+      <div class="flex items-center justify-center h-full">
+        <p class="text-lg pb-24">Um dia esta página mostrará qualquer coisa útil.</p>
       </div>
     </.main_layout>
     """
