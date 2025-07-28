@@ -22,12 +22,6 @@ defmodule CMSWeb.Router do
     plug :require_admin_user
   end
 
-  scope "/", CMSWeb do
-    pipe_through :browser
-
-    get "/", PageController, :home
-  end
-
   # Other scopes may use custom stacks.
   # scope "/api", CMSWeb do
   #   pipe_through :api
@@ -90,6 +84,7 @@ defmodule CMSWeb.Router do
 
     live_session :current_user_session,
       on_mount: [{CMSWeb.UserAuth, :mount_current_scope}] do
+      live "/", HomeLive, :home
       live "/users/register", UserLive.Registration, :new
       live "/users/log-in", UserLive.Login, :new
       live "/users/log-in/:token", UserLive.Confirmation, :new
