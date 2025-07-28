@@ -13,12 +13,7 @@ defmodule CMSWeb.Layouts do
 
   def app(assigns) do
     ~H"""
-    <main class="px-4 py-6 sm:px-6 lg:px-8">
-      <div class="prose mx-auto max-w-2xl space-y-4">
-        {render_slot(@inner_block)}
-      </div>
-    </main>
-
+    {render_slot(@inner_block)}
     <.flash_group flash={@flash} />
     """
   end
