@@ -25,7 +25,7 @@ Your task is to implement a feature by following the project's structured develo
     *   Write and pass any new tests described in the **BDD Scenario** and **Unit Tests** sections.
     *   Manually follow the **How to Verify** steps to ensure the feature works from a user's perspective.
 
-6.  **Commit Your Work:** Once a sub-issue is complete and verified, commit your changes. Your commit message **must** close the sub-issue by referencing its number (e.g., `Closes #123`).
+6.  **Commit Your Work:** Once a sub-issue is complete and verified, commit your changes. Your commit message **must** close the sub-issue by referencing its number. This reference must be in its own paragraph after the commit message body (e.g., `Closes #123`).
 
 7.  **Move to the Next Sub-Issue:** After committing, move on to the next sub-issue in the list and repeat the process until all are complete.
 
