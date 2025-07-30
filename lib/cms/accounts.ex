@@ -13,7 +13,8 @@ defmodule CMS.Accounts do
   def list_groups(%Scope{organization: %Organization{id: org_id}}) do
     from(g in Group,
       where: g.organization_id == ^org_id,
-      order_by: [asc: g.name]
+      order_by: [asc: g.name],
+      preload: [:users]
     )
     |> Repo.all()
   end

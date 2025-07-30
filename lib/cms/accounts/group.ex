@@ -9,6 +9,9 @@ defmodule CMS.Accounts.Group do
     field :description, :string
 
     belongs_to :organization, CMS.Accounts.Organization
+
+    many_to_many :users, CMS.Accounts.User, join_through: "groups_users"
+
     timestamps()
   end
 

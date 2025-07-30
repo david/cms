@@ -16,13 +16,17 @@ defmodule CMS.AccountsFixtures do
   def group_fixture(attrs \\ %{}, organization) do
     name = "Group #{System.unique_integer()}"
 
-    {:ok, group} =
+    users = attrs[:users] || []
+
+    changeset =
       %Group{
         name: name,
         organization_id: organization.id
       }
-      |> Map.merge(attrs)
-      |> Repo.insert()
+      |> Ecto.Changeset.change()
+      |> Ecto.Changeset.put_assoc(:users, users)
+
+    {:ok, group} = Repo.insert(changeset)
 
     group
   end
@@ -101,6 +105,7 @@ defmodule CMS.AccountsFixtures do
   end
 
   def user_scope_fixture(user) do
+    user = Repo.preload(user, :groups)
     Scope.for_user(user, user.organization)
   end
 
