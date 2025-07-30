@@ -33,7 +33,7 @@
 *(Describe how the feature will be implemented. This section should align with the **Architecture Overview** and **Context Modules**.)*
 
 ### 3.1. Affected Contexts & Modules
-*(List the primary Phoenix contexts and modules that will be created or modified. Reference `docs/ARCHITECTURE.md`.)*
+*(List the primary Phoenix contexts and modules that will be created or modified. Reference `docs/reference_architecture.md`.)*
 - **`CMS.ContextName`:** (e.g., `CMS.Prayers`)
   - **Reason:** (e.g., This context will handle the business logic for creating and managing prayer requests.)
 - **`CMSWeb.Live.FeatureLive`:** (e.g., `CMSWeb.Live.PrayerRequestLive`)

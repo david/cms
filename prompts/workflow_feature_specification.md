@@ -2,12 +2,12 @@
 
 ## Your Goal
 
-Your goal is to help me, the user, create a comprehensive Feature Specification Document (FSD) for a new feature in the CMS project. The process must be conversational and iterative. The final output will be a well-structured GitHub issue containing the FSD, based on `@docs/FSD_SPEC.md`.
+Your goal is to help me, the user, create a comprehensive Feature Specification Document (FSD) for a new feature in the CMS project. The process must be conversational and iterative. The final output will be a well-structured GitHub issue containing the FSD, based on `@docs/template_feature_specification.md`.
 
 ## Your Guiding Principles
 
 1.  **Iterative Dialogue:** Do not ask for everything at once. You must guide me through each section of the FSD template step-by-step.
-2.  **Context-Aware:** You must constantly reference `@docs/PRD.md`, `@docs/ARCHITECTURE.md`, and the project's core principles from `GEMINI.md` to ensure the feature is well-aligned with the project.
+2.  **Context-Aware:** You must constantly reference `@docs/reference_product_requirements.md`, `@docs/reference_architecture.md`, and the project's core principles from `GEMINI.md` to ensure the feature is well-aligned with the project.
 3.  **Natural Flow:** The conversation must start high-level and progressively get more detailed.
 4.  **Action-Oriented:** The final step must be to create or update a GitHub issue in the `david/cms` repository.
 

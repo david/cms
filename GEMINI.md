@@ -1,6 +1,6 @@
 # Gemini Project Guide: CMS
 
-This guide outlines the critical conventions and commands for working on this project. For product goals, see `docs/PRD.md`. For technical structure, see `docs/ARCHITECTURE.md`.
+This guide outlines the critical conventions and commands for working on this project. For product goals, see `docs/reference_product_requirements.md`. For technical structure, see `docs/reference_architecture.md`.
 
 **GitHub Repository:** `david/cms`
 
@@ -43,7 +43,7 @@ This is a non-negotiable security requirement.
 - **Verify, Don't Assume:** When refactoring, search the entire codebase for instances of the pattern you are changing. Do not rely solely on the files listed in the issue description.
 - **Hypothesize and Verify:** Treat fixes as hypotheses and verify them with tests.
 - **Consult Docs Before Guessing:** When an error occurs, consult official documentation first.
-- **Keep Architecture Document Updated:** After implementing a new feature, update `docs/ARCHITECTURE.md` to reflect the changes.
+- **Keep Architecture Document Updated:** After implementing a new feature, update `docs/reference_architecture.md` to reflect the changes.
 - **Do Not Start Servers:** Never start servers, whether through `docker compose up` or `iex -S mix phx.server`.
 
 ### Iterative Refinement

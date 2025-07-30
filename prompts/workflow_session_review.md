@@ -14,7 +14,7 @@ Your primary task is to perform a meta-analysis of our entire conversation histo
 
 3.  **Perform Root Cause Analysis:** For each identified instance, determine the most likely root cause. Was the information in a document ambiguous, incomplete, or misleading? Was a specific instruction in a prompt unclear?
 
-4.  **Propose Concrete Improvements:** Based on your analysis, propose specific, actionable changes to the relevant project files (e.g., `GEMINI.md`, `docs/ARCHITECTURE.md`, `prompts/developer_workflow.md`, etc.). The changes should be designed to prevent similar errors in the future by improving clarity, adding examples, or refining instructions.
+4.  **Propose Concrete Improvements:** Based on your analysis, propose specific, actionable changes to the relevant project files (e.g., `GEMINI.md`, `docs/reference_architecture.md`, `prompts/workflow_developer.md`, etc.). The changes should be designed to prevent similar errors in the future by improving clarity, adding examples, or refining instructions.
 
 **Output Format:**
 

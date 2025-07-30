@@ -37,7 +37,7 @@ Your task is to act as an expert senior developer and guide me through a collabo
 
 5.  **Architectural Integrity Check:**
     *   After outlining the sub-issues, consider if their implementation will introduce changes to the system's architecture, such as adding a new context module, modifying a core data schema in a significant way, or establishing a new frontend convention.
-    *   If so, add a final sub-issue titled: "**Update `docs/ARCHITECTURE.md`**" to ensure the documentation remains a reliable source of truth for all developers.
+    *   If so, add a final sub-issue titled: "**Update `docs/reference_architecture.md`**" to ensure the documentation remains a reliable source of truth for all developers.
 
 6.  **Final Review:**
     *   Once all sub-issues are created, list them in a clear, numbered sequence for a final review.
