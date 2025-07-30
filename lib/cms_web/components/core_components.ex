@@ -43,6 +43,7 @@ defmodule CMSWeb.CoreComponents do
   attr :flash, :map, default: %{}, doc: "the map of flash messages to display"
   attr :title, :string, default: nil
   attr :kind, :atom, values: [:info, :error], doc: "used for styling and flash lookup"
+  attr :timeout, :integer, default: 4000, doc: "the timeout in milliseconds to hide the flash"
   attr :rest, :global, doc: "the arbitrary HTML attributes to add to the flash container"
 
   slot :inner_block, doc: "the optional inner block that renders the flash message"
@@ -58,10 +59,12 @@ defmodule CMSWeb.CoreComponents do
         JS.push("lv:clear-flash", value: %{key: @kind})
         |> JS.hide(
           to: "##{@id}",
-          time: 200,
-          transition: {"transition-all ease-in duration-200", "opacity-100", "opacity-0"}
+          time: 500,
+          transition: {"transition-all ease-in duration-500", "opacity-100", "opacity-0"}
         )
       }
+      phx-hook="Flash"
+      data-timeout={@timeout}
       role="alert"
       class="toast toast-bottom toast-center z-50"
       {@rest}

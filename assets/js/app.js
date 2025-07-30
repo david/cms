@@ -25,6 +25,14 @@ import {LiveSocket} from "phoenix_live_view"
 import topbar from "../vendor/topbar"
 
 const Hooks = {
+  Flash: {
+    mounted() {
+      const timeout = this.el.dataset.timeout || 4000;
+      setTimeout(() => {
+        this.el.click();
+      }, timeout);
+    }
+  },
   Sidebar: {
     mounted() {
       this.el.addEventListener("click", (e) => {
