@@ -50,7 +50,7 @@ defmodule CMSWeb.MainLayout do
         <.drawer show={false} />
         <.bottom_dock current_scope={@current_scope} />
       </div>
-      <div id="sidebar-container" class="drawer-side z-80" phx-hook="Sidebar">
+      <div id="sidebar-container" class="drawer-side z-modal" phx-hook="Sidebar">
         <label for="sidebar-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
         <.sidebar qr_code_svg={@qr_code_svg}>
           <:sidebar_top>
@@ -69,7 +69,7 @@ defmodule CMSWeb.MainLayout do
     ~H"""
     <div
       id="pwa-install-banner"
-      class="fixed bottom-0 left-0 w-full bg-neutral text-neutral-content p-4 text-center z-[1000] hidden"
+      class="fixed bottom-0 left-0 w-full bg-neutral text-neutral-content p-4 text-center z-modal hidden"
       phx-update="ignore"
     >
       <p class="mb-2">{gettext("Deseja instalar esta aplicação no seu dispositivo?")}</p>
@@ -87,7 +87,7 @@ defmodule CMSWeb.MainLayout do
     ~H"""
     <div
       id="pwa-ios-install-banner"
-      class="fixed bottom-0 left-0 w-full bg-neutral text-neutral-content p-4 text-center z-[1000] hidden"
+      class="fixed bottom-0 left-0 w-full bg-neutral text-neutral-content p-4 text-center z-modal hidden"
       phx-update="ignore"
     >
       <p class="mb-2">

@@ -38,9 +38,9 @@ defmodule CMSWeb.Navbar do
 
   def navbar(assigns) do
     ~H"""
-    <div class="sticky top-0 z-80 px-2 flex items-center flex-shrink-0 bg-base-100 shadow-md print:shadow-none">
+    <div class="sticky top-0 z-sticky px-2 flex items-center flex-shrink-0 bg-base-100 shadow-md print:shadow-none">
       <.hamburger_button :if={@show_sidebar_button} />
-      <div class="navbar z-50 print:main-margins print:px-6">
+      <div class="navbar z-sticky print:main-margins print:px-6">
         <div class="navbar-start">
           <span class="font-medium">{@page_title}</span>
         </div>
@@ -57,7 +57,7 @@ defmodule CMSWeb.Navbar do
 
   def hamburger_button(assigns) do
     ~H"""
-    <label for="sidebar-drawer" class="btn btn-ghost mx-1 px-2 z-100 print:hidden">
+    <label for="sidebar-drawer" class="btn btn-ghost mx-1 px-2 z-modal print:hidden">
       <.icon name="hero-bars-3" class="h-5 w-5" />
     </label>
     """
@@ -78,7 +78,7 @@ defmodule CMSWeb.Navbar do
         </div>
         <ul
           tabindex="0"
-          class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 mt-4 z-[1]"
+          class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 mt-4 z-popover"
         >
           <li :if={@current_scope.user.role == :admin}>
             <.link href={~p"/admin/users"}>{gettext("Utilizadores")}</.link>

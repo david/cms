@@ -9,7 +9,7 @@ defmodule CMSWeb.BottomDock do
 
   def bottom_dock(assigns) do
     ~H"""
-    <div class="dock dock-center sm:hidden z-40 print:hidden">
+    <div class="dock dock-center sm:hidden z-drawer print:hidden">
       <.link navigate={~p"/liturgies/latest"} class="dock-item">
         <.icon name="hero-book-open-solid" class="w-5 h-5" />
         <span class="dock-label">{gettext("Liturgy")}</span>
