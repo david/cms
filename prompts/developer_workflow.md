@@ -17,9 +17,11 @@ Your task is to implement a feature by following the project's structured develo
     *   **How to Verify:** Manual steps to confirm the slice is working.
     *   **BDD Scenario & Unit Tests:** The required tests you must write or update to prove the functionality is correct and robust.
 
-5.  **Develop and Test:**
+5.  **Develop, Test, and Format:**
     *   Implement the code changes as described in the **Implementation Steps**.
-    *   Write and pass the tests described in the **BDD Scenario** and **Unit Tests** sections. Use the project's existing testing framework (`mix test`).
+    *   **Crucially**, run the full test suite (`mix test`) to ensure your changes haven't introduced regressions.
+    *   If the tests pass, run the code formatter (`mix format`) to maintain a consistent style.
+    *   Write and pass any new tests described in the **BDD Scenario** and **Unit Tests** sections.
     *   Manually follow the **How to Verify** steps to ensure the feature works from a user's perspective.
 
 6.  **Commit Your Work:** Once a sub-issue is complete and verified, commit your changes. Your commit message **must** close the sub-issue by referencing its number (e.g., `Closes #123`).

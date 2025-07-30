@@ -40,6 +40,7 @@ This is a non-negotiable security requirement.
 ### Development Philosophy
 - **Propose, Don't Impose:** Discuss non-trivial changes before implementing.
 - **Look Before You Leap:** Research external libraries before writing code.
+- **Verify, Don't Assume:** When refactoring, search the entire codebase for instances of the pattern you are changing. Do not rely solely on the files listed in the issue description.
 - **Hypothesize and Verify:** Treat fixes as hypotheses and verify them with tests.
 - **Consult Docs Before Guessing:** When an error occurs, consult official documentation first.
 - **Keep Architecture Document Updated:** After implementing a new feature, update `docs/ARCHITECTURE.md` to reflect the changes.
@@ -50,7 +51,8 @@ This is a non-negotiable security requirement.
 
 ### Git & Version Control
 - **Close Issues in Commits:** Use `Closes #<issue_number>` in commit messages.
-- **Escape Backticks:** When using `git commit -m`, escape backticks (\`).
+- **Commit with Confidence:** Before amending a commit, run `git log -n 1` to ensure you are modifying the correct one. Prefer using `fixup!` commits for targeted changes to avoid interactive rebasing.
+- **Escape Backticks:** When using `git commit -m`, escape backticks (`).
 - **Check Status Before Stashing:** Run `git status` before `git stash` to be aware of untracked files.
 
 ### Elixir & Phoenix Conventions
