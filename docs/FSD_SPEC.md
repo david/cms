@@ -52,7 +52,12 @@
 | `user_id` | `references` | The user who submitted the request. |
 | `organization_id` | `references` | The organization this request belongs to. |
 
-### 3.3. Key Functions & Logic
+### 3.3. Prerequisites
+*(List any existing features, modules, or data structures that this feature depends on. This helps identify necessary preliminary work. If a prerequisite is not yet implemented, a separate issue should be created to track it.)*
+- **[Prerequisite 1]:** (e.g., A user authentication system must be in place.)
+- **[Prerequisite 2]:** (e.g., The `Groups` context must exist and allow users to be assigned to groups.)
+
+### 3.4. Key Functions & Logic
 *(Outline the new functions that will be created, specifying their module and purpose. As per the project's data scoping rule, ensure that context functions receive a %Scope{} struct to securely access the organization_id.)*
 
 - **`CMS.Prayers.create_request(attrs, scope)`:** Creates a new prayer request, ensuring the `organization_id` is set from the `scope`.
