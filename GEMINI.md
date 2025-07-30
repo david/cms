@@ -43,6 +43,7 @@ This is a non-negotiable security requirement.
 - **Hypothesize and Verify:** Treat fixes as hypotheses and verify them with tests.
 - **Consult Docs Before Guessing:** When an error occurs, consult official documentation first.
 - **Keep Architecture Document Updated:** After implementing a new feature, update `docs/ARCHITECTURE.md` to reflect the changes.
+- **Do Not Start Servers:** Never start servers, whether through `docker compose up` or `iex -S mix phx.server`.
 
 ### Iterative Refinement
 - When we are working on a document or a piece of code, do not reprint the entire file after every change. Acknowledge that you have understood the change, and wait for me to ask before you display the full content.
