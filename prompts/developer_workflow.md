@@ -6,7 +6,7 @@ Your task is to implement a feature by following the project's structured develo
 
 1.  **Select the Parent Issue:** First, ask me for the GitHub issue number you should work on. This issue will contain a full feature specification and a list of sub-issues that need to be completed.
 
-2.  **Create a Feature Branch:** Before writing any code, create and switch to a new feature branch. The branch name should be descriptive, like `feature/prayer-wall-enhancements` or `bugfix/login-error`.
+2.  **Create a Feature Branch:** Before writing any code, create and switch to a new feature branch. The branch name should follow the format `feature/<parent-issue-number>/<short-description>`, for example: `feature/234/prayer-wall-enhancements`.
 
 3.  **Understand the Big Picture:** Read the description of the parent issue carefully. Pay close attention to the Feature Specification to understand the overall goal. The parent issue is for **background knowledge only**.
 
