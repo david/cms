@@ -8,13 +8,16 @@ defmodule CMSWeb.PrayerRequestLive.Form do
   def mount(params, _session, socket) do
     {:ok,
      socket
+     |> assign(:groups, socket.assigns.current_scope.groups)
      |> apply_action(socket.assigns.live_action, params)}
   end
 
   defp apply_action(socket, :new, _params) do
-    changeset = Prayers.change_prayer_request(socket.assigns.current_scope, %PrayerRequest{})
+    prayer_request = %PrayerRequest{}
+    changeset = Prayers.change_prayer_request(socket.assigns.current_scope, prayer_request)
 
     socket
+    |> assign(:prayer_request, prayer_request)
     |> assign(:form, to_form(changeset))
     |> assign(:page_title, "Novo Pedido de Oração")
   end
@@ -30,7 +33,7 @@ defmodule CMSWeb.PrayerRequestLive.Form do
         </:subtitle>
       </.header>
 
-      <.form for={@form} id="prayer-request-form" phx-submit="save">
+      <.form for={@form} id="prayer-request-form" phx-change="validate" phx-submit="save">
         <.input field={@form[:body]} type="textarea" label="Pedido de Oração" required />
         <.input
           field={@form[:visibility]}
@@ -38,10 +41,21 @@ defmodule CMSWeb.PrayerRequestLive.Form do
           label="Visibilidade"
           options={[
             {"Privado", "private"},
-            {"Organização", "organization"}
+            {"Organização", "organization"},
+            {"Grupo", "group"}
           ]}
           required
         />
+          
+        <div :if={@form[:visibility].value == :group}>
+          <.input
+            field={@form[:group_id]}
+            type="select"
+            label="Grupo"
+            options={Enum.map(@groups, &{&1.name, &1.id})}
+            required
+          />
+        </div>
 
         <footer>
           <.button phx-disable-with="A guardar..." variant="primary">Guardar</.button>
@@ -50,6 +64,18 @@ defmodule CMSWeb.PrayerRequestLive.Form do
       </.form>
     </.main_layout>
     """
+  end
+
+  @impl true
+  def handle_event("validate", %{"prayer_request" => prayer_request_params}, socket) do
+    changeset =
+      Prayers.change_prayer_request(
+        socket.assigns.current_scope,
+        socket.assigns.prayer_request,
+        prayer_request_params
+      )
+
+    {:noreply, assign(socket, form: to_form(changeset, action: :validate))}
   end
 
   @impl true

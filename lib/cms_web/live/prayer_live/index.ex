@@ -5,10 +5,13 @@ defmodule CMSWeb.PrayerLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
+    scope = socket.assigns.current_scope
+
     {:ok,
      socket
+     |> assign(:current_scope, scope)
      |> assign(:page_title, "Pedidos de oração")
-     |> assign(:prayer_requests, Prayers.list_prayer_requests(socket.assigns.current_scope))}
+     |> assign(:prayer_requests, Prayers.list_prayer_requests(scope))}
   end
 
   @impl true

@@ -12,13 +12,23 @@ defmodule CMS.PrayersFixtures do
   def prayer_request_fixture(attrs \\ %{}) do
     org = attrs[:organization] || organization_fixture()
     user = attrs[:user] || user_fixture(%{}, org)
-    scope = user_scope_fixture(user)
 
     attrs =
       Enum.into(attrs, %{
         body: "some body",
         visibility: :private
       })
+
+    attrs =
+      if attrs.visibility == :group do
+        group = attrs[:group] || group_fixture(%{users: user}, org)
+
+        Map.put(attrs, :group_id, group.id)
+      else
+        attrs
+      end
+
+    scope = user_scope_fixture(user)
 
     {:ok, prayer_request} = CMS.Prayers.create_prayer_request(scope, attrs)
 
