@@ -105,8 +105,8 @@ defmodule CMS.AccountsFixtures do
   end
 
   def user_scope_fixture(user) do
-    user = Repo.preload(user, :groups)
-    Scope.for_user(user, user.organization)
+    user = Repo.preload(user, [:organization, :groups])
+    Scope.for_user(user, user.organization, user.groups)
   end
 
   def admin_scope_fixture(admin) do
