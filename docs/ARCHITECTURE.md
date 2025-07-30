@@ -47,9 +47,9 @@ The business logic in `lib/cms` is organized into "contexts." Each context is a 
 
 ### `CMS.Prayers`
 
-*   **Purpose:** Manages the Prayer Wall feature, including the creation and viewing of prayer requests.
+*   **Purpose:** Manages the Prayer Wall feature, including the creation and viewing of prayer requests. The `list_prayer_requests/1` function contains important business logic to ensure users can only see prayer requests that are visible to them (i.e., their own private requests, organization-wide requests, or requests shared with a group they belong to).
 *   **Associated Schemas:**
-    *   `CMS.Prayers.PrayerRequest`: Represents a single prayer request submitted by a user.
+    *   `CMS.Prayers.PrayerRequest`: Represents a single prayer request submitted by a user. It includes a `visibility` field (`:private`, `:organization`, or `:group`) and a nullable `group_id` to control who can see the request.
 
 ---
 
