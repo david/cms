@@ -58,3 +58,23 @@ The business logic in `lib/cms` is organized into "contexts." Each context is a 
 *   **Purpose:** Manages the church's library of worship songs.
 *   **Associated Schemas:**
     *   `CMS.Songs.Song`: Represents a single song, including its title, lyrics, author, and other metadata.
+
+## Frontend Conventions
+
+### Z-Index Scale
+
+To ensure a consistent and predictable stacking order for UI elements, we use a semantic z-index scale. Instead of using arbitrary numeric values, you **must** use the following Tailwind CSS utility classes:
+
+*   `z-base`: For elements that need a base stacking context. (z-index: 10)
+*   `z-popover`: For popovers and dropdowns. (z-index: 20)
+*   `z-sticky`: For sticky elements like navbars. (z-index: 30)
+*   `z-drawer`: For drawers and sidebars. (z-index: 40)
+*   `z-modal`: For modals and overlays that must appear on top of all other content. (z-index: 50)
+
+**Example:**
+
+```html
+<div class="modal z-modal">
+  <!-- Modal content -->
+</div>
+```
