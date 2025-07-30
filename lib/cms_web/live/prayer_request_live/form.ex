@@ -32,6 +32,16 @@ defmodule CMSWeb.PrayerRequestLive.Form do
 
       <.form for={@form} id="prayer-request-form" phx-submit="save">
         <.input field={@form[:body]} type="textarea" label="Pedido de Oração" required />
+        <.input
+          field={@form[:visibility]}
+          type="select"
+          label="Visibilidade"
+          options={[
+            {"Privado", "private"},
+            {"Organização", "organization"}
+          ]}
+          required
+        />
 
         <footer>
           <.button phx-disable-with="A guardar..." variant="primary">Guardar</.button>

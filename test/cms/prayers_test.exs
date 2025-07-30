@@ -26,11 +26,61 @@ defmodule CMS.PrayersTest do
       scope1 = user_scope_fixture(user1)
       _scope2 = user_scope_fixture(user2)
 
-      private_request_user1 = prayer_request_fixture(user: user1, created_by: user1, organization: org, visibility: :private)
-      _private_request_user2 = prayer_request_fixture(user: user2, created_by: user2, organization: org, visibility: :private)
+      private_request_user1 =
+        prayer_request_fixture(
+          user: user1,
+          created_by: user1,
+          organization: org,
+          visibility: :private
+        )
+
+      _private_request_user2 =
+        prayer_request_fixture(
+          user: user2,
+          created_by: user2,
+          organization: org,
+          visibility: :private
+        )
 
       assert [request] = Prayers.list_prayer_requests(scope1)
       assert request.id == private_request_user1.id
+    end
+
+    test "list_prayer_requests/1 returns organization-visible prayer requests" do
+      org = organization_fixture()
+      user1 = user_fixture(%{}, org)
+      user2 = user_fixture(%{}, org)
+      scope1 = user_scope_fixture(user1)
+
+      organization_request =
+        prayer_request_fixture(
+          user: user2,
+          created_by: user2,
+          organization: org,
+          visibility: :organization
+        )
+
+      assert [request] = Prayers.list_prayer_requests(scope1)
+      assert request.id == organization_request.id
+    end
+
+    test "list_prayer_requests/1 does not return requests from other organizations" do
+      org1 = organization_fixture()
+      user1 = user_fixture(%{}, org1)
+      scope1 = user_scope_fixture(user1)
+
+      org2 = organization_fixture()
+      user2 = user_fixture(%{}, org2)
+
+      _organization_request =
+        prayer_request_fixture(
+          user: user2,
+          created_by: user2,
+          organization: org2,
+          visibility: :organization
+        )
+
+      assert Prayers.list_prayer_requests(scope1) == []
     end
 
     test "create_prayer_request/2 with valid data creates a prayer_request", %{
