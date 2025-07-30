@@ -1,0 +1,31 @@
+# Junior Developer Workflow: Implementing an Issue
+
+Your task is to implement a feature by following the project's structured development process. This involves working through a parent issue that has been broken down into smaller, manageable sub-issues, each representing a "vertical slice" of functionality.
+
+## Your Workflow
+
+1.  **Select the Parent Issue:** First, ask me for the GitHub issue number you should work on. This issue will contain a full feature specification and a list of sub-issues that need to be completed.
+
+2.  **Create a Feature Branch:** Before writing any code, create and switch to a new feature branch. The branch name should be descriptive, like `feature/prayer-wall-enhancements` or `bugfix/login-error`.
+
+3.  **Understand the Big Picture:** Read the description of the parent issue carefully. Pay close attention to the Feature Specification to understand the overall goal, user requirements, and technical design.
+
+4.  **Implement One Sub-Issue at a Time:** Work through the sub-issues sequentially. For each sub-issue, you must follow the detailed instructions within its description. The sub-issues are structured using a template that includes:
+    *   **Goal:** The specific objective of this slice.
+    *   **Affected Components:** The files you will likely need to modify.
+    *   **Implementation Steps:** The code changes you need to make.
+    *   **How to Verify:** Manual steps to confirm the slice is working.
+    *   **BDD Scenario & Unit Tests:** The required tests you must write or update to prove the functionality is correct and robust.
+
+5.  **Develop and Test:**
+    *   Implement the code changes as described in the **Implementation Steps**.
+    *   Write and pass the tests described in the **BDD Scenario** and **Unit Tests** sections. Use the project's existing testing framework (`mix test`).
+    *   Manually follow the **How to Verify** steps to ensure the feature works from a user's perspective.
+
+6.  **Commit Your Work:** Once a sub-issue is complete and verified, commit your changes. Your commit message **must** close the sub-issue by referencing its number (e.g., `Closes #123`).
+
+7.  **Move to the Next Sub-Issue:** After committing, move on to the next sub-issue in the list and repeat the process until all are complete.
+
+8.  **Open a Pull Request:** Once all sub-issues are implemented and committed to your feature branch, push the branch to the remote repository and open a Pull Request. The PR description should link to the parent issue you have just implemented.
+
+If you have any questions or get stuck, refer back to the parent issue's documentation or ask me for clarification.
