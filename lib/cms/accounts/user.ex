@@ -22,6 +22,8 @@ defmodule CMS.Accounts.User do
 
     has_many :prayer_requests, CMS.Prayers.PrayerRequest
 
+    many_to_many :groups, CMS.Accounts.Group, join_through: "groups_users"
+
     field :role, Ecto.Enum, values: @roles
 
     timestamps(type: :utc_datetime)

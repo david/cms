@@ -198,6 +198,16 @@ ALTER SEQUENCE public.groups_id_seq OWNED BY public.groups.id;
 
 
 --
+-- Name: groups_users; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.groups_users (
+    group_id bigint,
+    user_id bigint
+);
+
+
+--
 -- Name: liturgies; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -577,6 +587,13 @@ CREATE INDEX groups_organization_id_index ON public.groups USING btree (organiza
 
 
 --
+-- Name: groups_users_group_id_user_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX groups_users_group_id_user_id_index ON public.groups_users USING btree (group_id, user_id);
+
+
+--
 -- Name: liturgies_organization_id_index; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -683,6 +700,22 @@ ALTER TABLE ONLY public.families
 
 ALTER TABLE ONLY public.groups
     ADD CONSTRAINT groups_organization_id_fkey FOREIGN KEY (organization_id) REFERENCES public.organizations(id) ON DELETE CASCADE;
+
+
+--
+-- Name: groups_users groups_users_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.groups_users
+    ADD CONSTRAINT groups_users_group_id_fkey FOREIGN KEY (group_id) REFERENCES public.groups(id) ON DELETE CASCADE;
+
+
+--
+-- Name: groups_users groups_users_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.groups_users
+    ADD CONSTRAINT groups_users_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 
 --
@@ -807,4 +840,5 @@ INSERT INTO public."schema_migrations" (version) VALUES (20250719145605);
 INSERT INTO public."schema_migrations" (version) VALUES (20250721090414);
 INSERT INTO public."schema_migrations" (version) VALUES (20250721203328);
 INSERT INTO public."schema_migrations" (version) VALUES (20250730135518);
+INSERT INTO public."schema_migrations" (version) VALUES (20250730141855);
 INSERT INTO public."schema_migrations" (version) VALUES (20250802102134);
