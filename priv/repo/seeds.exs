@@ -26,19 +26,21 @@ org =
       hostname: "localhost"
     })
 
-Repo.get_by(Group, name: "Elders", organization_id: org.id) ||
-  Repo.insert!(%Group{
-    name: "Elders",
-    description: "The elders of the church.",
-    organization_id: org.id
-  })
+elders_group =
+  Repo.get_by(Group, name: "Elders", organization_id: org.id) ||
+    Repo.insert!(%Group{
+      name: "Elders",
+      description: "The elders of the church.",
+      organization_id: org.id
+    })
 
-Repo.get_by(Group, name: "Deacons", organization_id: org.id) ||
-  Repo.insert!(%Group{
-    name: "Deacons",
-    description: "The deacons of the church.",
-    organization_id: org.id
-  })
+deacons_group =
+  Repo.get_by(Group, name: "Deacons", organization_id: org.id) ||
+    Repo.insert!(%Group{
+      name: "Deacons",
+      description: "The deacons of the church.",
+      organization_id: org.id
+    })
 
 family =
   Repo.get_by(Family, designation: "Administrator", organization_id: org.id) ||
@@ -55,6 +57,12 @@ admin_user =
       organization_id: org.id
     })
 
+elders_group = Repo.preload(elders_group, :users)
+
+Ecto.Changeset.change(elders_group, %{})
+|> Ecto.Changeset.put_assoc(:users, [admin_user])
+|> Repo.update!()
+
 smith_family =
   Repo.get_by(Family, designation: "The Smiths", organization_id: org.id) ||
     Repo.insert!(%Family{designation: "The Smiths", organization: org})
@@ -69,6 +77,12 @@ smith_user =
       confirmed_at: DateTime.utc_now() |> DateTime.truncate(:second),
       organization_id: org.id
     })
+
+deacons_group = Repo.preload(deacons_group, :users)
+
+Ecto.Changeset.change(deacons_group, %{})
+|> Ecto.Changeset.put_assoc(:users, [smith_user])
+|> Repo.update!()
 
 jones_family =
   Repo.get_by(Family, designation: "The Joneses", organization_id: org.id) ||
