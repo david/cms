@@ -53,17 +53,25 @@ This is a non-negotiable security requirement.
 - **Close Issues in Commits:** Use `Closes #<issue_number>` in commit messages.
 - **Commit with Confidence:** Before amending a commit, run `git log -n 1` to ensure you are modifying the correct one. Prefer using `fixup!` commits for targeted changes to avoid interactive rebasing.
 - **Escape Backticks:** When using `git commit -m`, escape backticks (`).
+- **Atomic Commits:** Each commit should represent a single logical change. Do not group unrelated changes.
+- **Descriptive Messages:** Commit messages should be descriptive and explain the "what" and "why" of the change.
+- **Pull Before Pushing:** Always run `git pull --rebase` before pushing to ensure your local branch is up to date.
 - **Check Status Before Stashing:** Run `git status` before `git stash` to be aware of untracked files.
 
 ### Elixir & Phoenix Conventions
 - **Navigate with Precision:** Use `get_source_location` to find module/function definitions.
 - **Data Integrity:** All validation must be in Ecto changesets. Keep `priv/repo/seeds.exs` updated.
 - **Real-time Updates:** Broadcast only resource IDs via PubSub, not full data objects.
+- **Migrations:** Prefer Ecto's migration helpers over raw SQL for schema changes.
 - **UI & Components:**
     - All user-facing text must be in Portuguese (`pt_PT`) using `gettext`.
     - Use `Phoenix.VerifiedRoutes` in components that use the `~p` sigil.
     - Verify `attr` definitions in `core_components.ex` before using them.
     - Wrap all top-level LiveViews in the `<.main_layout>` component.
+
+### Tool Usage
+- **Use Existing Tools:** Before attempting to use a tool, ensure it exists in the provided list. Do not hallucinate tool names.
+- **Prefer Framework Features:** When available, prefer using framework-specific features (e.g., Ecto migrations) over raw SQL or other low-level implementations.
 
 ---
 
@@ -72,9 +80,10 @@ This is a non-negotiable security requirement.
 
 - **ALWAYS Test, Then Format:** Run `mix test` after any change. If it passes, run `mix format`.
 - **Write Feature Tests:** New features require new tests.
+- **Treat Warnings as Errors:** Address all compiler warnings before committing.
 - **The Two-Strike Rule:** If a second attempt to fix a test fails, stop and re-evaluate the approach.
 - **Verify the Outcome:** Prioritize testing the business outcome over UI details.
-- **Fixtures First:** Use existing fixtures from `test/support/fixtures/` for test data.
+- **Fixtures First:** Use existing fixtures from `test/support/fixtures/` for test data. Note that fixture files use the `.ex` extension.
 - **Debug the App, Not the Test:** Analyze the stack trace to find the root cause in the application code.
 - **Testing LiveView Navigation:** Use the `follow_redirect(conn)` helper to test `push_navigate` or `push_redirect`.
 - **Testing Stateless Components:** Use `render_component/2` for stateless functional components.
