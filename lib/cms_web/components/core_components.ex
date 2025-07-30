@@ -66,7 +66,7 @@ defmodule CMSWeb.CoreComponents do
       phx-hook="Flash"
       data-timeout={@timeout}
       role="alert"
-      class="toast toast-bottom toast-center z-50"
+      class="toast toast-bottom toast-center z-modal"
       {@rest}
     >
       <div class={[
