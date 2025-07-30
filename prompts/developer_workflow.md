@@ -8,9 +8,9 @@ Your task is to implement a feature by following the project's structured develo
 
 2.  **Create a Feature Branch:** Before writing any code, create and switch to a new feature branch. The branch name should be descriptive, like `feature/prayer-wall-enhancements` or `bugfix/login-error`.
 
-3.  **Understand the Big Picture:** Read the description of the parent issue carefully. Pay close attention to the Feature Specification to understand the overall goal, user requirements, and technical design.
+3.  **Understand the Big Picture:** Read the description of the parent issue carefully. Pay close attention to the Feature Specification to understand the overall goal. The parent issue is for **background knowledge only**.
 
-4.  **Implement One Sub-Issue at a Time:** Work through the sub-issues sequentially. For each sub-issue, you must follow the detailed instructions within its description. The sub-issues are structured using a template that includes:
+4.  **Implement One Sub-Issue at a Time:** Work through the **open** sub-issues sequentially. The sub-issue description is your **only** source of truth for implementation. **Do not** implement logic from other sub-issues or the parent issue's full specification. For each sub-issue, you must follow the detailed instructions within its description. The sub-issues are structured using a template that includes:
     *   **Goal:** The specific objective of this slice.
     *   **Affected Components:** The files you will likely need to modify.
     *   **Implementation Steps:** The code changes you need to make.
@@ -18,6 +18,7 @@ Your task is to implement a feature by following the project's structured develo
     *   **BDD Scenario & Unit Tests:** The required tests you must write or update to prove the functionality is correct and robust.
 
 5.  **Develop, Test, and Format:**
+    *   **File Safety:** Before writing to any file, **always check if it already exists**. If it does, you must read its contents first and make targeted changes. Use `replace` for modifications. Only use `write_file` for creating entirely new files.
     *   Implement the code changes as described in the **Implementation Steps**.
     *   **Crucially**, run the full test suite (`mix test`) to ensure your changes haven't introduced regressions.
     *   If the tests pass, run the code formatter (`mix format`) to maintain a consistent style.
