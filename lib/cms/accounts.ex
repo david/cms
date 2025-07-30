@@ -29,6 +29,12 @@ defmodule CMS.Accounts do
     Group.changeset(group, attrs, scope)
   end
 
+  def update_group(scope, group, attrs) do
+    group
+    |> Group.changeset(attrs, scope)
+    |> Repo.update()
+  end
+
   ## Database getters
 
   @doc """
@@ -298,8 +304,12 @@ defmodule CMS.Accounts do
     {:ok, query} = UserToken.verify_session_token_query(token)
 
     case Repo.one(query) do
-      {user, token_inserted_at} -> {Repo.preload(user, :organization), token_inserted_at}
-      _ -> nil
+      {user, token_inserted_at} ->
+        user = Repo.preload(user, [:organization, :groups])
+        {user, token_inserted_at}
+
+      _ ->
+        nil
     end
   end
 

@@ -70,7 +70,7 @@ defmodule CMSWeb.UserAuth do
     with {token, conn} <- ensure_user_token(conn),
          {user, token_inserted_at} <- Accounts.get_user_by_session_token(token) do
       conn
-      |> assign(:current_scope, Scope.for_user(user, organization))
+      |> assign(:current_scope, Scope.for_user(user, user.organization, user.groups))
       |> maybe_reissue_user_session_token(user, token_inserted_at)
     else
       nil ->
@@ -274,7 +274,7 @@ defmodule CMSWeb.UserAuth do
       if user_token = session["user_token"] do
         case Accounts.get_user_by_session_token(user_token) do
           {user, _} ->
-            Scope.for_user(user, organization)
+            Scope.for_user(user, user.organization, user.groups)
 
           # If there is a user token but no user, treat the user as a guest
           _ ->
