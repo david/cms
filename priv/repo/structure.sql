@@ -290,7 +290,9 @@ CREATE TABLE public.prayer_requests (
     user_id bigint NOT NULL,
     organization_id bigint NOT NULL,
     inserted_at timestamp(0) without time zone NOT NULL,
-    updated_at timestamp(0) without time zone NOT NULL
+    updated_at timestamp(0) without time zone NOT NULL,
+    visibility character varying(255) DEFAULT 'private'::character varying NOT NULL,
+    group_id bigint
 );
 
 
@@ -716,6 +718,14 @@ ALTER TABLE ONLY public.liturgies
 
 
 --
+-- Name: prayer_requests prayer_requests_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.prayer_requests
+    ADD CONSTRAINT prayer_requests_group_id_fkey FOREIGN KEY (group_id) REFERENCES public.groups(id) ON DELETE SET NULL;
+
+
+--
 -- Name: prayer_requests prayer_requests_organization_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -796,4 +806,5 @@ INSERT INTO public."schema_migrations" (version) VALUES (20250719142506);
 INSERT INTO public."schema_migrations" (version) VALUES (20250719145605);
 INSERT INTO public."schema_migrations" (version) VALUES (20250721090414);
 INSERT INTO public."schema_migrations" (version) VALUES (20250721203328);
+INSERT INTO public."schema_migrations" (version) VALUES (20250730135518);
 INSERT INTO public."schema_migrations" (version) VALUES (20250802102134);

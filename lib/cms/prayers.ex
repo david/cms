@@ -20,7 +20,9 @@ defmodule CMS.Prayers do
   """
   def list_prayer_requests(%Scope{} = scope) do
     from(p in PrayerRequest,
-      where: p.organization_id == ^scope.organization.id,
+      where:
+        p.organization_id == ^scope.organization.id and
+          (p.visibility == :private and p.user_id == ^scope.user.id),
       order_by: [desc: p.inserted_at],
       preload: [:organization, :user]
     )

@@ -16,7 +16,8 @@ defmodule CMS.PrayersFixtures do
 
     attrs =
       Enum.into(attrs, %{
-        body: "some body"
+        body: "some body",
+        visibility: :private
       })
 
     {:ok, prayer_request} = CMS.Prayers.create_prayer_request(scope, attrs)
