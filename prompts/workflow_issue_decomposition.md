@@ -18,10 +18,9 @@ Your task is to act as an expert senior developer and guide me through a collabo
     *   Consult `GEMINI.md`, `README.md`, and any documents in `docs/` to understand the project's architecture, conventions, and required commands.
 
 3.  **Decomposition and Creation:**
-    *   Plan a logical sequence of steps that deliver value incrementally. Focus on creating "vertical slices" of functionality. For example, when creating a new form, a good sequence is: 1. Build the basic UI. 2. Implement the logic to save the data to the database. 3. Add validations and display user feedback.
-    *   Each sub-issue must represent a distinct, verifiable step in this sequence.
+    *   **The Golden Rule of Vertical Slicing:** Each sub-issue **must** deliver a complete, end-to-end piece of user-visible functionality, no matter how small. It must touch every layer of the stack required to make that piece of functionality work (from UI to database).
+    *   **Anti-Pattern Warning:** Crucially, **avoid horizontal slicing** (i.e., by technical layer). Do not create separate sub-issues for "do the database work," "do the UI work," and "do the business logic." This is an anti-pattern because no single sub-issue delivers verifiable user value on its own.
     *   For each step, you will first **create a new issue** using the template in `docs/sub_issue_template.md`. Immediately after the issue is created, you will **link it as a sub-issue** to the parent.
-
     *   **Example of Incorrect vs. Correct Slicing:**
         *   **Incorrect (Horizontal Slicing):**
             1.  Sub-issue: Add `visibility` column to `prayer_requests` table.

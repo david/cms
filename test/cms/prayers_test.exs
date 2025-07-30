@@ -19,16 +19,18 @@ defmodule CMS.PrayersTest do
       {:ok, %{user: user, scope: scope, org: org}}
     end
 
-    test "list_prayer_requests/1 returns all prayer_requests for a user's organization", %{
-      scope: scope,
-      user: user
-    } do
-      prayer_request = prayer_request_fixture(%{user: user})
+    test "list_prayer_requests/1 returns only private prayer requests for the current user" do
+      org = organization_fixture()
+      user1 = user_fixture(%{}, org)
+      user2 = user_fixture(%{}, org)
+      scope1 = user_scope_fixture(user1)
+      _scope2 = user_scope_fixture(user2)
 
-      # create a prayer request in another organization
-      prayer_request_fixture(%{organization: organization_fixture()})
+      private_request_user1 = prayer_request_fixture(user: user1, created_by: user1, organization: org, visibility: :private)
+      _private_request_user2 = prayer_request_fixture(user: user2, created_by: user2, organization: org, visibility: :private)
 
-      assert Enum.map(Prayers.list_prayer_requests(scope), & &1.id) == [prayer_request.id]
+      assert [request] = Prayers.list_prayer_requests(scope1)
+      assert request.id == private_request_user1.id
     end
 
     test "create_prayer_request/2 with valid data creates a prayer_request", %{
@@ -43,6 +45,7 @@ defmodule CMS.PrayersTest do
       assert prayer_request.body == "some body"
       assert prayer_request.user_id == user.id
       assert prayer_request.organization_id == user.organization_id
+      assert prayer_request.visibility == :private
     end
 
     test "create_prayer_request/2 with invalid data returns error changeset", %{scope: scope} do
