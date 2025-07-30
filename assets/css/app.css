@@ -102,6 +102,22 @@
 
 /* This file is for your main application CSS */
 
+@utility z-base {
+  z-index: 10;
+}
+@utility z-popover {
+  z-index: 20;
+}
+@utility z-sticky {
+  z-index: 30;
+}
+@utility z-drawer {
+  z-index: 40;
+}
+@utility z-modal {
+  z-index: 50;
+}
+
 @utility main-margins {
   @apply max-w-2xl mx-auto;
 }
