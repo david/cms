@@ -4,6 +4,7 @@ defmodule CMS.Prayers do
   """
 
   import Ecto.Query, warn: false
+
   alias CMS.Repo
 
   alias CMS.Accounts.Scope
@@ -19,11 +20,14 @@ defmodule CMS.Prayers do
 
   """
   def list_prayer_requests(%Scope{} = scope) do
+    user_group_ids = Enum.map(scope.groups, & &1.id)
+
     from(p in PrayerRequest,
       where:
         p.organization_id == ^scope.organization.id and
           ((p.visibility == :private and p.user_id == ^scope.user.id) or
-             p.visibility == :organization),
+             p.visibility == :organization or
+             (p.visibility == :group and p.group_id in ^user_group_ids)),
       order_by: [desc: p.inserted_at],
       preload: [:organization, :user]
     )
