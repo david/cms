@@ -20,13 +20,7 @@ defmodule CMSWeb.PrayerRequestLive.Form do
   end
 
   defp apply_action(socket, :new, _params) do
-    changeset =
-      %PrayerRequest{}
-      |> Prayers.change_prayer_request()
-      # Initialize the form fields for the autocomplete component.
-      # The `:user_name` is the visible text field, and `:user_id` is the hidden value field.
-      |> Ecto.Changeset.put_change(:user_name, nil)
-      |> Ecto.Changeset.put_change(:user_id, nil)
+    changeset = Prayers.change_prayer_request(socket.assigns.current_scope, %PrayerRequest{}) 
 
     socket
     |> assign(:form, to_form(changeset))

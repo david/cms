@@ -50,8 +50,8 @@ defmodule CMS.Prayers do
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking prayer_request changes.
   """
-  def change_prayer_request(%PrayerRequest{} = prayer_request, attrs \\ %{}) do
-    PrayerRequest.changeset(prayer_request, attrs)
+  def change_prayer_request(%Scope{} = scope, %PrayerRequest{} = prayer_request, attrs \\ %{}) do
+    PrayerRequest.changeset(prayer_request, attrs, scope)
   end
 
   @doc """
