@@ -22,8 +22,7 @@ defmodule CMS.Prayers do
     from(p in PrayerRequest,
       where: p.organization_id == ^scope.organization.id,
       order_by: [desc: p.inserted_at],
-      # Preload `created_by` to display the name of the user who created the prayer request.
-      preload: [:organization, :user, :created_by]
+      preload: [:organization, :user]
     )
     |> Repo.all()
   end
@@ -69,19 +68,6 @@ defmodule CMS.Prayers do
   def create_prayer_request(%Scope{} = scope, attrs) do
     %PrayerRequest{}
     |> PrayerRequest.changeset(attrs, scope)
-    |> ensure_user_in_organization(scope)
     |> Repo.insert()
-  end
-
-  defp ensure_user_in_organization(changeset, %Scope{} = scope) do
-    if user_id = Ecto.Changeset.get_field(changeset, :user_id) do
-      user = CMS.Accounts.get_user(scope, user_id)
-
-      if is_nil(user) || user.organization_id != scope.organization.id do
-        raise "user #{user_id} is not in organization #{scope.organization.id}"
-      end
-    end
-
-    changeset
   end
 end

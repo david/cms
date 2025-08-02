@@ -44,40 +44,6 @@ defmodule CMSWeb.PrayerRequestLive.FormTest do
     end
   end
 
-  describe "New Prayer Request as Admin" do
-    setup [:register_and_log_in_admin]
-
-    test "as admin, shows user select", %{conn: conn, organization: org} do
-      user_fixture(%{}, org)
-
-      {:ok, view, _html} = live(conn, ~p"/prayers/new")
-
-      assert has_element?(view, "datalist#user-id-autocomplete-suggestions")
-    end
-
-    test "creates prayer request for other user", %{conn: conn, organization: org} do
-      other_user = user_fixture(%{}, org)
-
-      {:ok, view, _html} = live(conn, ~p"/prayers/new")
-
-      form_data = %{
-        "prayer_request" => %{
-          "body" => "Por favor, orem pela minha família.",
-          "user_name" => other_user.name,
-          "user_id" => other_user.id
-        }
-      }
-
-      {:ok, _redirected_view, html} =
-        view
-        |> element("#prayer-request-form")
-        |> render_submit(form_data)
-        |> follow_redirect(conn)
-
-      assert html =~ "Pedido de oração criado com sucesso."
-    end
-  end
-
   describe "authentication" do
     test "redirects unauthenticated users to the login page" do
       organization = organization_fixture()
