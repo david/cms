@@ -26,13 +26,6 @@ defmodule CMSWeb.PrayerRequestLive.Form do
   def render(assigns) do
     ~H"""
     <.main_layout flash={@flash} current_scope={@current_scope} page_title={@page_title}>
-      <.header>
-        {@page_title}
-        <:subtitle>
-          Escreva o seu pedido de oração abaixo.
-        </:subtitle>
-      </.header>
-
       <.form for={@form} id="prayer-request-form" phx-change="validate" phx-submit="save">
         <.input field={@form[:body]} type="textarea" label="Pedido de Oração" required />
         <.input
@@ -46,7 +39,7 @@ defmodule CMSWeb.PrayerRequestLive.Form do
           ]}
           required
         />
-          
+
         <div :if={@form[:visibility].value == :group}>
           <.input
             field={@form[:group_id]}
