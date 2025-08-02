@@ -15,16 +15,10 @@ defmodule CMS.Prayers.PrayerRequest do
     timestamps()
   end
 
-  @doc false
-  def changeset(prayer_request, attrs) do
+  def changeset(prayer_request, attrs, %Scope{} = scope) do
     prayer_request
     |> cast(attrs, [:body, :user_id])
     |> validate_required([:body])
-  end
-
-  def changeset(prayer_request, attrs, %Scope{} = scope) do
-    prayer_request
-    |> changeset(attrs)
     |> put_assoc(:created_by, scope.user)
     |> put_assoc(:organization, scope.organization)
     |> assign_user_if_not_present(scope.user)
