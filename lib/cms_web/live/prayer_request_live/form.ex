@@ -1,7 +1,6 @@
 defmodule CMSWeb.PrayerRequestLive.Form do
   use CMSWeb, :live_view
 
-  alias CMS.Accounts
   alias CMS.Prayers
   alias CMS.Prayers.PrayerRequest
 
@@ -9,18 +8,11 @@ defmodule CMSWeb.PrayerRequestLive.Form do
   def mount(params, _session, socket) do
     {:ok,
      socket
-     |> assign_users()
      |> apply_action(socket.assigns.live_action, params)}
   end
 
-  defp assign_users(socket) do
-    scope = socket.assigns.current_scope
-    users = if scope.user.role == :admin, do: Accounts.list_users(scope), else: []
-    assign(socket, :users, users)
-  end
-
   defp apply_action(socket, :new, _params) do
-    changeset = Prayers.change_prayer_request(socket.assigns.current_scope, %PrayerRequest{}) 
+    changeset = Prayers.change_prayer_request(socket.assigns.current_scope, %PrayerRequest{})
 
     socket
     |> assign(:form, to_form(changeset))
@@ -39,17 +31,6 @@ defmodule CMSWeb.PrayerRequestLive.Form do
       </.header>
 
       <.form for={@form} id="prayer-request-form" phx-submit="save">
-        <div :if={@current_scope.user.role == :admin}>
-          <.autocomplete
-            id="user-id-autocomplete"
-            label="Membro"
-            text_field={@form[:user_name]}
-            value_field={@form[:user_id]}
-            suggestions={@users}
-            suggestion_label={:name}
-          />
-        </div>
-
         <.input field={@form[:body]} type="textarea" label="Pedido de Oração" required />
 
         <footer>
