@@ -1,59 +1,67 @@
-# Prompt: Guiding the Creation of a Feature Specification Document (FSD)
+# Prompt: Generate Feature Specification
 
-## Your Goal
+## Purpose
 
-Your goal is to help me, the user, create a comprehensive Feature Specification Document (FSD) for a new feature in the CMS project. The process must be conversational and iterative. The final output will be a well-structured GitHub issue containing the FSD, based on `@docs/template_feature_specification.md`.
+This prompt helps you create a comprehensive Feature Specification Document (FSD) by guiding you through the key sections required for a detailed, actionable plan. The output will conform to the structure in `docs/template_feature_specification.md`.
 
-## Your Guiding Principles
-
-1. **Iterative Dialogue:** Do not ask for everything at once. You must guide me through each section of the FSD template step-by-step.
-2. **Context-Aware:** You must constantly reference `docs/reference_product_requirements.md`, `docs/reference_architecture.md`, and the project's core principles from `GEMINI.md` to ensure the feature is well-aligned with the project.
-3. **Natural Flow:** The conversation must start high-level and progressively get more detailed.
-4. **Action-Oriented:** The final step must be to create or update a GitHub issue in the current project repository.
+This document translates a single capability from a parent epic into a concrete set of requirements that are ready for technical design and implementation.
 
 ---
 
-## Your Process
+### **1. User Story & Rationale**
 
-### Step 1: The Starting Point
+*Based on the parent epic, define the core user story for this feature. This clarifies the "who, what, and why" from a user's perspective.*
 
-You will begin by setting the stage and determining our starting point.
+*   **Parent Epic:** Link to the parent Epic Specification document.
+*   **DDD Subdomain:** The primary Domain-Driven Design subdomain this feature belongs to (e.g., Accounts, Prayers, Liturgies), inherited from the parent epic.
+*   **User Story:** A concise narrative describing the user's goal, formatted as: `As a [Persona], I want to [Action], so that [Benefit].`
+*   **Rationale:** A brief explanation (1-2 sentences) of how this feature contributes to the parent epic's objectives.
 
-> **Your Opening Line:** "I can help with that. Let's work together to create a Feature Specification Document (FSD).
->
-> What is the GitHub issue number for the feature you want to specify? If you don't have one, just say **'new feature'**."
+---
 
-### Step 2: Gathering Initial Context
+### **2. Acceptance Criteria (BDD Scenarios)**
 
-Based on my answer, you will either fetch the issue or ask for a feature name.
+*Based on the User Story, define the Acceptance Criteria for this feature using Behavior-Driven Development (BDD) scenarios. For each scenario, provide the following:*
 
-> **If I provide an issue number:**
-> [You will then use the `get_issue` tool to fetch the issue's title and body.]
->
-> **You will say:** "Thanks. I've loaded issue `#[issue_number]: [issue_title]`. We'll use this as our foundation and expand it into a full FSD."
+*   **Scenario Name:** A descriptive name for the user behavior being tested (e.g., "Successful Prayer Request Submission," "Attempting to Submit an Incomplete Form").
+*   **GIVEN:** The initial context or state of the system before the user acts. This sets up the preconditions.
+*   **WHEN:** The specific action the user performs.
+*   **THEN:** The expected outcome or change in the system state after the action is performed. This defines the success criteria.
 
-> **If I say 'new feature':**
-> **You will ask:** "Okay, a new feature. To start, what is the name of the feature you want to build?"
+*Your goal is to create a comprehensive set of scenarios that cover the primary success path, edge cases, and potential error conditions.*
 
-### Step 3: Building the FSD (Iterative Discussion)
+---
 
-Next, you will guide me through the core sections of the FSD template in a conversational manner. You should ask questions like:
+### **3. UI/UX Flow**
 
-* "Let's start with the 'why'. Could you give me a high-level description of this feature?"
-* "Which specific user problem does this solve? And for which user personas?"
-* "What are the key things a user should be able to *do* with this feature?"
-* "Now let's switch to the technical side. Which Phoenix contexts or modules will be affected? What about database changes? And what are the key functions we'll need, keeping the `Scope` rule in mind?"
-* "How should we test this feature?"
-* "Finally, are there any open questions we need to resolve?"
+*Describe the step-by-step journey a user takes to interact with this feature. Your description should be a numbered list that clearly outlines the path from the user's starting point to the completion of their goal.*
 
-### Step 4: Synthesizing and Taking Action
+*For each step, describe:*
+*   *The user's action (e.g., "clicks the 'Submit' button").*
+*   *The system's response (e.g., "a success message is displayed," "the user is redirected to the dashboard").*
 
-Once you have enough information, you will synthesize it and propose the final action.
+*The goal is to create a clear, sequential narrative of the user experience. We can start with the primary success path and then explore alternative flows or error states if necessary.*
 
-> **You will say:** "Excellent. I have enough information to draft the full FSD based on the template. I will now synthesize everything we've discussed into a complete document.
->
-> [Here, you will generate the FSD content, formatted as markdown.]
->
-> **You will then ask:** "How does that look? If you're happy with it, I will proceed with [creating a new issue / updating issue #[issue_number]]. Shall I proceed?"
+---
 
-If I agree, you will use the appropriate tool (`create_issue` or `update_issue`) to complete the task.
+### **4. Permissions**
+
+*Based on the user personas and the feature's functionality, define the access control rules. For each user role that can interact with this feature, specify what actions they are permitted to perform.*
+
+*Consider the standard CRUD operations (Create, Read, Update, Delete) as a baseline, but also include any other specific actions relevant to this feature.*
+
+*Example:*
+*   ***Administrator:*** *Can Create, Read, Update, and Delete all prayer requests.*
+*   ***Congregation Member:*** *Can Create new prayer requests and Read only public ones.*
+
+---
+
+### **5. Out of Scope**
+
+*To clarify the boundaries of this feature, list any capabilities or functionalities that might seem related but are intentionally being excluded from this implementation.*
+
+*For each excluded item, provide:*
+*   ***Capability:*** *A brief description of the functionality we are not building (e.g., "Real-time notifications," "Advanced search filters").*
+*   ***Reason:*** *A short explanation for its exclusion (e.g., "Will be addressed in a future feature," "Considered lower priority," "Requires further research").*
+
+*This helps us maintain focus and ensures everyone has a shared understanding of the project's limits.*
