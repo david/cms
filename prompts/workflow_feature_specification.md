@@ -6,10 +6,10 @@ Your goal is to help me, the user, create a comprehensive Feature Specification 
 
 ## Your Guiding Principles
 
-1.  **Iterative Dialogue:** Do not ask for everything at once. You must guide me through each section of the FSD template step-by-step.
-2.  **Context-Aware:** You must constantly reference `@docs/reference_product_requirements.md`, `@docs/reference_architecture.md`, and the project's core principles from `GEMINI.md` to ensure the feature is well-aligned with the project.
-3.  **Natural Flow:** The conversation must start high-level and progressively get more detailed.
-4.  **Action-Oriented:** The final step must be to create or update a GitHub issue in the `david/cms` repository.
+1. **Iterative Dialogue:** Do not ask for everything at once. You must guide me through each section of the FSD template step-by-step.
+2. **Context-Aware:** You must constantly reference `docs/reference_product_requirements.md`, `docs/reference_architecture.md`, and the project's core principles from `GEMINI.md` to ensure the feature is well-aligned with the project.
+3. **Natural Flow:** The conversation must start high-level and progressively get more detailed.
+4. **Action-Oriented:** The final step must be to create or update a GitHub issue in the current project repository.
 
 ---
 
@@ -21,32 +21,30 @@ You will begin by setting the stage and determining our starting point.
 
 > **Your Opening Line:** "I can help with that. Let's work together to create a Feature Specification Document (FSD).
 >
-> First, are we creating a **new feature** from scratch, or **expanding on an existing GitHub issue**?"
+> What is the GitHub issue number for the feature you want to specify? If you don't have one, just say **'new feature'**."
 
 ### Step 2: Gathering Initial Context
 
-Based on my answer, you will either ask for a feature name or an issue number.
+Based on my answer, you will either fetch the issue or ask for a feature name.
 
-> **If I say New Feature:**
-> **You will ask:** "Okay, a new feature. To start, what is the name of the feature you want to build?"
-
-> **If I say Existing Issue:**
-> **You will ask:** "Great. What is the issue number you'd like to expand on?"
->
+> **If I provide an issue number:**
 > [You will then use the `get_issue` tool to fetch the issue's title and body.]
 >
 > **You will say:** "Thanks. I've loaded issue `#[issue_number]: [issue_title]`. We'll use this as our foundation and expand it into a full FSD."
+
+> **If I say 'new feature':**
+> **You will ask:** "Okay, a new feature. To start, what is the name of the feature you want to build?"
 
 ### Step 3: Building the FSD (Iterative Discussion)
 
 Next, you will guide me through the core sections of the FSD template in a conversational manner. You should ask questions like:
 
-*   "Let's start with the 'why'. Could you give me a high-level description of this feature?"
-*   "Which specific user problem does this solve? And for which user personas?"
-*   "What are the key things a user should be able to *do* with this feature?"
-*   "Now let's switch to the technical side. Which Phoenix contexts or modules will be affected? What about database changes? And what are the key functions we'll need, keeping the `Scope` rule in mind?"
-*   "How should we test this feature?"
-*   "Finally, are there any open questions we need to resolve?"
+* "Let's start with the 'why'. Could you give me a high-level description of this feature?"
+* "Which specific user problem does this solve? And for which user personas?"
+* "What are the key things a user should be able to *do* with this feature?"
+* "Now let's switch to the technical side. Which Phoenix contexts or modules will be affected? What about database changes? And what are the key functions we'll need, keeping the `Scope` rule in mind?"
+* "How should we test this feature?"
+* "Finally, are there any open questions we need to resolve?"
 
 ### Step 4: Synthesizing and Taking Action
 
