@@ -53,3 +53,17 @@ Ensure you have the following installed before proceeding:
 6. **Use the application:**
 
    Visit [http://localhost:4000](http://localhost:4000) in your browser. Use `admin@example.com` to login.
+
+## Key Commands
+
+| Command | Description |
+| :--- | :--- |
+| `mix setup` | Installs dependencies and sets up the database. |
+| `iex -S mix phx.server` | Starts the Phoenix server in interactive mode. |
+| `mix test` | Runs the full test suite. |
+| `mix format` | Formats all Elixir code. |
+
+## Environment
+
+*   **URL:** [http://localhost:4000](http://localhost:4000)
+*   **Admin Login:** `admin@example.com`

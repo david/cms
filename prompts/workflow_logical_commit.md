@@ -35,3 +35,12 @@ Your task is to analyze all uncommitted changes in the repository and commit the
 5.  **Final Confirmation:**
     *   Run `git status` one last time to confirm that the working directory is clean and all changes have been committed.
     *   Inform the user that the process is complete.
+
+### Git & Version Control
+- **Close Issues in Commits:** Use `Closes #<issue_number>` in commit messages.
+- **Commit with Confidence:** Before amending a commit, run `git log -n 1` to ensure you are modifying the correct one. Prefer using `fixup!` commits for targeted changes to avoid interactive rebasing.
+- **Escape Backticks:** When using `git commit -m`, escape backticks (`).
+- **Atomic Commits:** Each commit should represent a single logical change. Do not group unrelated changes.
+- **Descriptive Messages:** Commit messages should be descriptive and explain the "what" and "why" of the change.
+- **Pull Before Pushing:** Always run `git pull --rebase` before pushing to ensure your local branch is up to date.
+- **Check Status Before Stashing:** Run `git status` before `git stash` to be aware of untracked files.

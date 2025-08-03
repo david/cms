@@ -59,6 +59,18 @@ The business logic in `lib/cms` is organized into "contexts." Each context is a 
 *   **Associated Schemas:**
     *   `CMS.Songs.Song`: Represents a single song, including its title, lyrics, author, and other metadata.
 
+## Common Implementation Patterns
+
+This section outlines established patterns and conventions to ensure consistency and quality across the codebase. Adhering to these patterns is expected in all new feature development.
+
+### LiveView Forms
+
+To provide a responsive user experience with real-time validation, all forms should:
+
+1.  Be bound to a changeset using `to_form`.
+2.  Include the `phx-change="validate"` attribute on the `<.form>` component or the form element.
+3.  Implement a `handle_event("validate", ...)` callback in the LiveView to update the changeset based on the form data.
+
 ## Frontend Conventions
 
 ### Z-Index Scale
@@ -78,3 +90,38 @@ To ensure a consistent and predictable stacking order for UI elements, we use a 
   <!-- Modal content -->
 </div>
 ```
+
+## The Single Most Important Rule: Data Scoping
+
+To ensure a user from one organization cannot access data from another, every function that reads or modifies data **must** use a `%Scope{}` struct.
+
+- **Reading Data:** Context functions that query data must accept a `%Scope{}` struct as their **first** argument and use `scope.organization_id` in the Ecto query.
+  - Example: `Prayers.list_requests(scope)`
+- **Writing Data:** Changeset functions must accept the `%Scope{}` struct as their **last** argument and use it to securely set the `organization_id`.
+  - Example: `PrayerRequest.changeset(prayer_request, attrs, scope)`
+
+This is a non-negotiable security requirement.
+
+## Elixir & Phoenix Conventions
+- **Navigate with Precision:** Use `get_source_location` to find module/function definitions.
+- **Data Integrity:** All validation must be in Ecto changesets. Keep `priv/repo/seeds.exs` updated.
+- **Real-time Updates:** Broadcast only resource IDs via PubSub, not full data objects.
+- **Migrations:** Prefer Ecto's migration helpers over raw SQL for schema changes.
+- **UI & Components:**
+    - All user-facing text must be in Portuguese (`pt_PT`) using `gettext`.
+    - Use `Phoenix.VerifiedRoutes` in components that use the `~p` sigil.
+    - Verify `attr` definitions in `core_components.ex` before using them.
+    - Wrap all top-level LiveViews in the `<.main_layout>` component.
+
+## Testing Strategy
+
+- **ALWAYS Test, Then Format:** Run `mix test` after any change. If it passes, run `mix format`.
+- **Write Feature Tests:** New features require new tests.
+- **Treat Warnings as Errors:** Address all compiler warnings before committing.
+- **The Two-Strike Rule:** If a second attempt to fix a test fails, stop and re-evaluate the approach.
+- **Verify the Outcome:** Prioritize testing the business outcome over UI details.
+- **Fixtures First:** Use existing fixtures from `test/support/fixtures/` for test data. Note that fixture files use the `.ex` extension.
+- **Debug the App, Not the Test:** Analyze the stack trace to find the root cause in the application code.
+- **Testing LiveView Navigation:** Use the `follow_redirect(conn)` helper to test `push_navigate` or `push_redirect`.
+- **Testing Stateless Components:** Use `render_component/2` for stateless functional components.
+- **Testing with Scope:** Use the `log_in_user/2` helper in tests to set up the `current_scope`.
