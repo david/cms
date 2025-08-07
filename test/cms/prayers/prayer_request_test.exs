@@ -23,7 +23,7 @@ defmodule CMS.Prayers.PrayerRequestTest do
     {:ok, %{user: user, scope: scope, org: org, prayer_request: prayer_request}}
   end
 
-  test "changeset sets group_id to nil when visibility changes from :group to :private", %{
+  test "changeset sets group_id to nil when visibility changes from :group to something else", %{
     prayer_request: prayer_request,
     scope: scope
   } do
