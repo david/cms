@@ -7,6 +7,9 @@ services:
         ELIXIR_VERSION: ${ELIXIR_VERSION}
         OTP_VERSION: ${OTP_VERSION}
     command: ["sleep", "infinity"]
+    depends_on:
+      db:
+        condition: service_healthy
     restart: unless-stopped
     ports:
       - "4000:4000"
@@ -22,6 +25,11 @@ services:
       POSTGRES_DB: cms_dev
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
