@@ -3,6 +3,7 @@ defmodule CMSWeb.SongLive.Admin.IndexTest do
 
   import Phoenix.LiveViewTest
   import CMS.AccountsFixtures
+  import CMS.SongsFixtures
 
   describe "as a logged-out user" do
     test "is redirected to the login page", %{conn: conn} do
@@ -25,17 +26,21 @@ defmodule CMSWeb.SongLive.Admin.IndexTest do
   end
 
   describe "as an admin" do
-    test "when no songs exist, prompts to add first song", %{conn: conn} do
-      org = organization_fixture()
-      admin = admin_fixture(%{}, org)
+    setup :register_and_log_in_admin
 
-      conn = log_in_user(conn, admin)
+    test "when no songs exist, it renders an empty table", %{conn: conn} do
+      {:ok, view, _html} = live(conn, ~p"/admin/songs")
 
-      {:ok, view, html} = live(conn, ~p"/admin/songs")
+      assert has_element?(view, "table")
+      refute has_element?(view, "tbody tr")
+    end
 
-      assert html =~ "Ainda não há músicas!"
-      assert html =~ "Que tal adicionar a primeira?"
-      refute has_element?(view, "table")
+    test "lists all songs", %{conn: conn, scope: scope} do
+      song = song_fixture(%{}, scope)
+
+      {:ok, view, _html} = live(conn, ~p"/admin/songs")
+
+      assert has_element?(view, "td", song.title)
     end
   end
 end
