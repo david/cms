@@ -4,7 +4,11 @@
 
 This prompt helps you create a comprehensive Epic Specification document by guiding you through the key sections required for a high-level strategic overview. The output will conform to the structure in `docs/template_epic_specification.md`.
 
-**Agent Instruction:** When presenting a section, ensure all input fields for that section are requested before moving to the next.
+**Agent Instruction:** Your primary role is to be a proactive drafter, not a passive interviewer. For each section of the Epic Specification, you must:
+1.  **Synthesize Information:** Use all available context (GitHub issues, file analysis, user descriptions) to draft the content for the section.
+2.  **Verify the Data Model:** Before drafting content that references the data model (e.g., Key Capabilities), you must first consult the relevant Ecto schemas or database migrations to ensure all field names and attributes are accurate.
+3.  **Propose, Don't Ask:** Present your drafted content to the user for confirmation and refinement. Do not simply show empty template fields.
+4.  **Ask Only When Necessary:** Only ask for input when you cannot reasonably infer the information yourself.
 
 ---
 
@@ -53,7 +57,7 @@ This prompt helps you create a comprehensive Epic Specification document by guid
 
 ### **4. Primary User Personas**
 
-*List the main user personas who will directly interact with or benefit from this epic. These are the roles whose problems you are solving.*
+*List the main user-personas who will directly interact with or benefit from this epic. These are the roles whose problems you are solving.*
 
 **Examples:**
 *   *Administrator*
@@ -142,3 +146,12 @@ This prompt helps you create a comprehensive Epic Specification document by guid
 *   `[ ] [Question 1]`
 *   `[ ] [Question 2]`
 *   *(Add more as needed)*
+
+---
+
+### **9. Final Output**
+
+*After generating the complete Epic Specification, the final step is to persist the document to GitHub.*
+
+*   **If an existing GitHub issue number was provided at the start of this workflow:** Update the body of that issue with the Epic Specification. Do not ask for confirmation.
+*   **If no GitHub issue was provided:** Create a new GitHub issue. The title of the issue should be the title of the epic, and the body should be the full Epic Specification. Inform the user of the new issue number.

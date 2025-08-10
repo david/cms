@@ -1,67 +1,74 @@
-# Prompt: Generate Feature Specification
+# Prompt: Decompose an Epic into a Feature Sub-Issue
+
+*When a user asks you to create a feature specification, they are asking you to decompose a single capability from an Epic into a concrete, actionable sub-issue. Follow these steps:*
+
+*1. Ask for the GitHub issue number for the parent epic.*
+*2. Retrieve the epic's details to understand the context.*
+*3. Propose the title for a new feature sub-issue that corresponds to one of the capabilities listed in the epic.*
+*4. Work with the user to collaboratively write the sub-issue content, one section at a time. Present each section for discussion and feedback before moving to the next.*
+*5. Once all sections are complete and approved, create the sub-issue on GitHub and assign it to the parent epic.*
 
 ## Purpose
 
-This prompt helps you create a comprehensive Feature Specification Document (FSD) by guiding you through the key sections required for a detailed, actionable plan. The output will conform to the structure in `docs/template_feature_specification.md`.
-
-This document translates a single capability from a parent epic into a concrete set of requirements that are ready for technical design and implementation.
+This prompt guides you through creating a well-defined feature sub-issue from a parent epic. This process ensures clarity, alignment, and a shared understanding before implementation begins. The output will be a new GitHub issue that follows the structure of `docs/template_sub_issue.md`.
 
 ---
 
-### **1. User Story & Rationale**
+### **Collaborative Writing Process**
 
-*Based on the parent epic, define the core user story for this feature. This clarifies the "who, what, and why" from a user's perspective.*
+*You will guide the user through filling out the following sections for the new sub-issue. Present each section one at a time, wait for the user's input, and incorporate their feedback.*
 
-*   **Parent Epic:** Link to the parent Epic Specification document.
+---
+
+### **1. Title**
+
+*Propose a clear and concise title for the sub-issue. The title should summarize the feature's purpose.*
+
+---
+
+### **2. User Story & Rationale**
+
+*Based on the parent epic, define the core user story for this feature.*
+
+*   **Parent Epic Issue:** The issue number from GitHub that contains the epic.
 *   **DDD Subdomain:** The primary Domain-Driven Design subdomain this feature belongs to (e.g., Accounts, Prayers, Liturgies), inherited from the parent epic.
 *   **User Story:** A concise narrative describing the user's goal, formatted as: `As a [Persona], I want to [Action], so that [Benefit].`
 *   **Rationale:** A brief explanation (1-2 sentences) of how this feature contributes to the parent epic's objectives.
 
 ---
 
-### **2. Acceptance Criteria (BDD Scenarios)**
+### **3. Acceptance Criteria (BDD Scenarios)**
 
-*Based on the User Story, define the Acceptance Criteria for this feature using Behavior-Driven Development (BDD) scenarios. For each scenario, provide the following:*
+*Define the Acceptance Criteria using Behavior-Driven Development (BDD) scenarios.*
 
-*   **Scenario Name:** A descriptive name for the user behavior being tested (e.g., "Successful Prayer Request Submission," "Attempting to Submit an Incomplete Form").
-*   **GIVEN:** The initial context or state of the system before the user acts. This sets up the preconditions.
-*   **WHEN:** The specific action the user performs.
-*   **THEN:** The expected outcome or change in the system state after the action is performed. This defines the success criteria.
+*For each scenario, provide:*
+*   **Scenario Name:** A descriptive name for the user behavior.
+*   **GIVEN:** The initial context.
+*   **WHEN:** The user's action.
+*   **THEN:** The expected outcome.
 
-*Your goal is to create a comprehensive set of scenarios that cover the primary success path, edge cases, and potential error conditions.*
-
----
-
-### **3. UI/UX Flow**
-
-*Describe the step-by-step journey a user takes to interact with this feature. Your description should be a numbered list that clearly outlines the path from the user's starting point to the completion of their goal.*
-
-*For each step, describe:*
-*   *The user's action (e.g., "clicks the 'Submit' button").*
-*   *The system's response (e.g., "a success message is displayed," "the user is redirected to the dashboard").*
-
-*The goal is to create a clear, sequential narrative of the user experience. We can start with the primary success path and then explore alternative flows or error states if necessary.*
+*Collaborate with the user to define scenarios that cover the primary success path, edge cases, and potential error conditions.*
 
 ---
 
-### **4. Permissions**
+### **4. UI/UX Flow**
 
-*Based on the user personas and the feature's functionality, define the access control rules. For each user role that can interact with this feature, specify what actions they are permitted to perform.*
-
-*Consider the standard CRUD operations (Create, Read, Update, Delete) as a baseline, but also include any other specific actions relevant to this feature.*
-
-*Example:*
-*   ***Administrator:*** *Can Create, Read, Update, and Delete all prayer requests.*
-*   ***Congregation Member:*** *Can Create new prayer requests and Read only public ones.*
+*Describe the step-by-step user journey as a numbered list. For each step, describe the user's action and the system's response. Start with the primary success path.*
 
 ---
 
-### **5. Out of Scope**
+### **5. Permissions**
 
-*To clarify the boundaries of this feature, list any capabilities or functionalities that might seem related but are intentionally being excluded from this implementation.*
+*Define the access control rules for each user role that can interact with this feature (e.g., Administrator, Congregation Member).*
 
-*For each excluded item, provide:*
-*   ***Capability:*** *A brief description of the functionality we are not building (e.g., "Real-time notifications," "Advanced search filters").*
-*   ***Reason:*** *A short explanation for its exclusion (e.g., "Will be addressed in a future feature," "Considered lower priority," "Requires further research").*
+---
 
-*This helps us maintain focus and ensures everyone has a shared understanding of the project's limits.*
+### **6. Out of Scope**
+
+*List any capabilities that are intentionally excluded from this feature and provide a brief reason for their exclusion.*
+
+---
+
+### **Final Step: Create the Issue**
+
+*After all sections have been collaboratively defined and approved by the user, combine them into a single description and use the `create_issue` tool to create the sub-issue on GitHub. Then, use the `add_sub_issue` tool to link it to the parent epic.*
