@@ -24,3 +24,5 @@ Present your findings as a structured list. For each identified error, provide t
 *   **Root Cause:** Your analysis of why the error occurred (e.g., "The `GEMINI.md` file lacked a clear instruction on commit message formatting.").
 *   **File to Modify:** The absolute path to the file that should be updated.
 *   **Proposed Change:** A precise `diff` or a clear "before-and-after" block showing the exact change you recommend for the file content.
+
+Present this list one item at a time. Wait for my review. Only make the change when I approve it, but be ready to iterate.

@@ -2,8 +2,7 @@
 
 This guide outlines the critical principles and conventions for working on this project.
 
-## 
- Core Principles & Conventions
+## Core Principles & Conventions
 
 - **Propose, Don't Impose:** Discuss non-trivial changes before implementing.
 - **Look Before You Leap:** Research external libraries before writing code.
@@ -12,16 +11,29 @@ This guide outlines the critical principles and conventions for working on this 
 - **Consult Docs Before Guessing:** When an error occurs, consult official documentation first.
 - **Keep Architecture Document Updated:** After implementing a new feature, update `docs/reference_architecture.md` to reflect the changes.
 - **Do Not Start Servers:** Never start servers, whether through `docker compose up` or `iex -S mix phx.server`.
+- **Use `get_issue` for Issue Details:** When given a reference like `#80`, assume it is a GitHub issue number and use the `get_issue` tool to retrieve its details.
+- **Trace Code with `tidewave` Tools:** When searching for a feature's implementation, start by inspecting the application's routes using the available `tidewave` tools. This will identify the controller or LiveView that serves as the entry point for the feature.
+
+### Coding Workflow
+
+- After making code changes, always run `mix format` to ensure consistent styling.
+- Then, run the specific tests for the functionality you've implemented.
+- Finally, run the entire test suite to catch any potential regressions.
 
 ### Iterative Refinement
+
 - When we are working on a document or a piece of code, do not reprint the entire file after every change. Acknowledge that you have understood the change, and wait for me to ask before you display the full content.
 
 ### Tool Usage
+
 - **Use Existing Tools:** Before attempting to use a tool, ensure it exists in the provided list. Do not hallucinate tool names.
 - **Prefer Framework Features:** When available, prefer using framework-specific features (e.g., Ecto migrations) over raw SQL or other low-level implementations.
 
-## 
- Additional Documentation
+## Project Configuration
+
+*   **Default Repository:** `david/cms`
+
+## Additional Documentation
 
 *   **Product Goals:** See `docs/reference_product_requirements.md`.
 *   **Technical Architecture & Conventions:** See `docs/reference_architecture.md`.

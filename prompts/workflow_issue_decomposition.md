@@ -21,6 +21,9 @@ Your task is to act as an expert senior developer and guide me through a collabo
     *   **The Golden Rule of Vertical Slicing:** Each sub-issue **must** deliver a complete, end-to-end piece of user-visible functionality, no matter how small. It must touch every layer of the stack required to make that piece of functionality work (from UI to database).
     *   **Anti-Pattern Warning:** Crucially, **avoid horizontal slicing** (i.e., by technical layer). Do not create separate sub-issues for "do the database work," "do the UI work," and "do the business logic." This is an anti-pattern because no single sub-issue delivers verifiable user value on its own.
     *   For each step, you will first **create a new issue** using the template in `docs/sub_issue_template.md`. Immediately after the issue is created, you will **link it as a sub-issue** to the parent.
+    *   **Sub-Issue Creation Workflow:**
+        1.  **Create the Sub-Issue:** Use the `create_issue` tool. This will return the new issue's `id` (note: this is different from the issue number).
+        2.  **Link to Parent:** Immediately after, use the `add_sub_issue` tool to establish the parent-child relationship.
     *   **Example of Incorrect vs. Correct Slicing:**
         *   **Incorrect (Horizontal Slicing):**
             1.  Sub-issue: Add `visibility` column to `prayer_requests` table.

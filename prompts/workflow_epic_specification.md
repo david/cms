@@ -4,9 +4,25 @@
 
 This prompt helps you create a comprehensive Epic Specification document by guiding you through the key sections required for a high-level strategic overview. The output will conform to the structure in `docs/template_epic_specification.md`.
 
+**Agent Instruction:** When presenting a section, ensure all input fields for that section are requested before moving to the next.
+
 ---
 
-### **1. Epic Identification**
+### **1. Epic Overview**
+
+*Is there an existing GitHub issue for this epic? If so, please provide the issue number. If not, we will create a new one.*
+
+**Input:** `[GitHub Issue Number (optional)]`
+
+*If an issue number is provided, I will use the `gh` tool to fetch its details. Otherwise, we will proceed to define a new epic.*
+
+*Provide a high-level description of the epic. What is the core problem this epic solves? What is the proposed solution? This should be clear enough for someone outside the development team to understand.*
+
+**Input:** `[Free-form text]`
+
+---
+
+### **2. Epic Identification**
 
 *Define a unique identifier for this epic and associate it with a business subdomain. This is used for tracking and architectural alignment. The Epic Code will be used to create the GitHub issue label (e.g., `epic:service-planner`).*
 
@@ -16,14 +32,6 @@ This prompt helps you create a comprehensive Epic Specification document by guid
 **Input:**
 *   **Epic Code:** `[Text]`
 *   **DDD Subdomain:** `[Text]`
-
----
-
-### **2. Epic Overview**
-
-*Provide a high-level description of the epic. What is the core problem this epic solves? What is the proposed solution? This should be clear enough for someone outside the development team to understand.*
-
-**Input:** `[Free-form text]`
 
 ---
 
@@ -84,6 +92,8 @@ This prompt helps you create a comprehensive Epic Specification document by guid
 *   Is it a technical component (e.g., an API integration)?
 *   Is it another feature or epic (e.g., User Authentication)?
 *   What is its current status (e.g., Not Started, In Progress, Complete)?
+
+**Agent Instruction:** For each dependency, proactively use tools (e.g., `list_directory`, `read_file`, `search_file_content`, `glob`) to investigate the codebase and determine its current status (e.g., Not Started, In Progress, Complete). Present your findings to the user.
 
 **Examples:**
 *   **Dependency:** The YouVersion API integration must be complete.
