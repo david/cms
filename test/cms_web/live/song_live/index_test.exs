@@ -10,11 +10,11 @@ defmodule CMSWeb.SongLive.IndexTest do
   describe "Songs LiveView (/songs)" do
     test "mounts with songs for the current organization, sorted alphabetically", %{
       conn: conn,
-      organization: %{id: org_id}
+      scope: scope
     } do
-      song_c = song_fixture(%{title: "Song C", organization_id: org_id})
-      song_a = song_fixture(%{title: "Song A", organization_id: org_id})
-      song_b = song_fixture(%{title: "Song B", organization_id: org_id})
+      song_c = song_fixture(%{title: "Song C"}, scope)
+      song_a = song_fixture(%{title: "Song A"}, scope)
+      song_b = song_fixture(%{title: "Song B"}, scope)
 
       {:ok, _view, html} = live(conn, ~p"/songs")
 

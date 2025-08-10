@@ -8,8 +8,8 @@ defmodule CMSWeb.SongLive.ShowTest do
   setup :register_and_log_in_user
 
   describe "Song Show LiveView (/songs/:id)" do
-    test "mounts with the requested song", %{conn: conn, organization: %{id: org_id}} do
-      song = song_fixture(%{organization_id: org_id})
+    test "mounts with the requested song", %{conn: conn, scope: scope} do
+      song = song_fixture(%{}, scope)
 
       {:ok, _view, html} = live(conn, ~p"/songs/#{song.id}")
 

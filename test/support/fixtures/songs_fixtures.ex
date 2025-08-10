@@ -1,21 +1,22 @@
 defmodule CMS.SongsFixtures do
   @moduledoc """
   This module defines test helpers for creating
-  song entities.
+  entities via the `CMS.Songs` context.
   """
 
   alias CMS.Songs.Song
   alias CMS.Repo
 
-  @doc """
-  Generate a song.
-  """
-  def song_fixture(attrs \\ %{}) do
+  def song_fixture(attrs \\ %{}, scope) do
     {:ok, song} =
-      %Song{
-        title: "Test Song #{System.unique_integer()}"
-      }
-      |> Map.merge(attrs)
+      %Song{}
+      |> Song.changeset(
+        attrs
+        |> Enum.into(%{
+          title: "Amazing Grace"
+        }),
+        scope
+      )
       |> Repo.insert()
 
     song

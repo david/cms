@@ -43,7 +43,7 @@ defmodule CMS.Liturgies.BlockTest do
     end
 
     test "for a song that already exists", %{scope: scope} do
-      song = song_fixture(%{organization_id: scope.organization.id})
+      song = song_fixture(%{}, scope)
       attrs = %{"title" => song.title}
       liturgy_attrs = %{"blocks_sort" => ["new-song"]}
 

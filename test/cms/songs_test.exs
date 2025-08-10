@@ -11,8 +11,8 @@ defmodule CMS.SongsTest do
       user = user_fixture(%{}, organization_fixture())
       scope = Scope.for_user(user, user.organization)
 
-      _song_z = song_fixture(%{organization_id: user.organization_id, title: "Song Z for Org 1"})
-      _song_a = song_fixture(%{organization_id: user.organization_id, title: "Song A for Org 1"})
+      _song_z = song_fixture(%{title: "Song Z for Org 1"}, scope)
+      _song_a = song_fixture(%{title: "Song A for Org 1"}, scope)
 
       songs_for_scope = Songs.list_songs(scope)
 
