@@ -38,7 +38,10 @@ defmodule CMSWeb.Navbar do
 
   def navbar(assigns) do
     ~H"""
-    <div class={["sticky top-0 z-sticky flex items-center flex-shrink-0 bg-base-100 shadow-md", "print:shadow-none"]}>
+    <div class={[
+      "sticky top-0 z-sticky flex items-center flex-shrink-0 bg-base-100 shadow-md",
+      "print:shadow-none"
+    ]}>
       <.hamburger_button :if={@show_sidebar_button} />
       <div class={[
         "navbar z-sticky print:main-margins print:px-6",
