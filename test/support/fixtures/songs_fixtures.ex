@@ -13,7 +13,8 @@ defmodule CMS.SongsFixtures do
       |> Song.changeset(
         attrs
         |> Enum.into(%{
-          title: "Amazing Grace"
+          title: "Amazing Grace",
+          body: "Amazing grace! How sweet the sound\nThat saved a wretch like me!\nI once was lost, but now am found;\nWas blind, but now I see.\n"
         }),
         scope
       )

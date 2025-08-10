@@ -27,4 +27,36 @@ defmodule CMS.SongsTest do
       assert Songs.list_songs(scope) == []
     end
   end
+
+  describe "update_song/3" do
+    test "updates a song with valid data" do
+      user = user_fixture(%{}, organization_fixture())
+      scope = Scope.for_user(user, user.organization)
+      song = song_fixture(%{}, scope)
+
+      attrs = %{
+        "title" => "New Title",
+        "body" => "New Body"
+      }
+
+      assert {:ok, updated_song} = Songs.update_song(scope, song, attrs)
+      assert updated_song.title == "New Title"
+      assert updated_song.body == "New Body"
+    end
+
+    test "returns an error changeset when data is invalid" do
+      user = user_fixture(%{}, organization_fixture())
+      scope = Scope.for_user(user, user.organization)
+      song = song_fixture(%{}, scope)
+
+      attrs = %{
+        "title" => "",
+        "body" => ""
+      }
+
+      assert {:error, changeset} = Songs.update_song(scope, song, attrs)
+      assert changeset.errors[:title] == {"can't be blank", [validation: :required]}
+      assert changeset.errors[:body] == {"can't be blank", [validation: :required]}
+    end
+  end
 end

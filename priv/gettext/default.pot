@@ -109,7 +109,6 @@ msgid "Settings"
 msgstr ""
 
 #: lib/cms_web/components/bottom_dock.ex:19
-#: lib/cms_web/live/song_live/admin/index.ex:19
 #, elixir-autogen, elixir-format
 msgid "Songs"
 msgstr ""
@@ -320,7 +319,7 @@ msgstr ""
 msgid "Importar Utilizadores"
 msgstr ""
 
-#: lib/cms_web/components/navbar.ex:98
+#: lib/cms_web/components/navbar.ex:101
 #: lib/cms_web/live/user_live/confirmation.ex:48
 #: lib/cms_web/live/user_live/registration.ex:16
 #, elixir-autogen, elixir-format
@@ -368,6 +367,7 @@ msgstr ""
 msgid "Música"
 msgstr ""
 
+#: lib/cms_web/live/song_live/admin/index.ex:12
 #: lib/cms_web/live/song_live/index.ex:10
 #, elixir-autogen, elixir-format
 msgid "Músicas"
@@ -439,7 +439,7 @@ msgstr ""
 msgid "Utilizador convidado com sucesso."
 msgstr ""
 
-#: lib/cms_web/components/navbar.ex:87
+#: lib/cms_web/components/navbar.ex:90
 #: lib/cms_web/live/user_live/admin/index.ex:71
 #, elixir-autogen, elixir-format
 msgid "Utilizadores"
@@ -498,27 +498,38 @@ msgstr ""
 msgid "versículos"
 msgstr ""
 
-#: lib/cms_web/components/navbar.ex:92
+#: lib/cms_web/components/navbar.ex:95
 #, elixir-autogen, elixir-format
 msgid "Definições"
 msgstr ""
 
-#: lib/cms_web/components/navbar.ex:90
+#: lib/cms_web/components/navbar.ex:93
 #, elixir-autogen, elixir-format
 msgid "Liturgias"
 msgstr ""
 
-#: lib/cms_web/components/navbar.ex:93
+#: lib/cms_web/components/navbar.ex:96
 #, elixir-autogen, elixir-format
 msgid "Sair"
 msgstr ""
 
-#: lib/cms_web/live/song_live/admin/index.ex:25
+#: lib/cms_web/live/song_live/admin/form.ex:35
 #, elixir-autogen, elixir-format
-msgid "Get started by adding your first song."
+msgid "Body"
 msgstr ""
 
-#: lib/cms_web/live/song_live/admin/index.ex:24
+#: lib/cms_web/live/song_live/admin/index.ex:26
 #, elixir-autogen, elixir-format
-msgid "No songs yet!"
+msgid "Edit"
+msgstr ""
+
+#: lib/cms_web/live/song_live/admin/form.ex:34
+#: lib/cms_web/live/song_live/admin/index.ex:23
+#, elixir-autogen, elixir-format
+msgid "Title"
+msgstr ""
+
+#: lib/cms_web/live/song_live/admin/form.ex:59
+#, elixir-autogen, elixir-format
+msgid "Song updated successfully"
 msgstr ""

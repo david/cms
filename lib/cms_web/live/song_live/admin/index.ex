@@ -18,9 +18,14 @@ defmodule CMSWeb.SongLive.Admin.Index do
   @impl true
   def render(assigns) do
     ~H"""
-    <.main_layout current_scope={@current_scope} page_title={@page_title}>
+    <.main_layout current_scope={@current_scope} page_title={@page_title} flash={@flash}>
       <.table id="songs" rows={@streams.songs}>
         <:col :let={{_id, song}} label={gettext("Title")}>{song.title}</:col>
+        <:action :let={{_id, song}}>
+          <.link navigate={~p"/admin/songs/#{song}/edit"}>
+            {gettext("Edit")}
+          </.link>
+        </:action>
       </.table>
     </.main_layout>
     """

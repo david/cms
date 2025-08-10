@@ -78,6 +78,7 @@ defmodule CMSWeb.Router do
       live "/admin/groups/new", GroupLive.Admin.Form, :new
 
       live "/admin/songs", SongLive.Admin.Index, :index
+      live "/admin/songs/:id/edit", SongLive.Admin.Form, :edit
     end
   end
 

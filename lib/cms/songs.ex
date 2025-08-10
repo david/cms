@@ -51,4 +51,20 @@ defmodule CMS.Songs do
   end
 
   def suggest(_, _), do: nil
+
+  @doc """
+  Updates a song.
+  """
+  def update_song(%Scope{} = scope, %Song{} = song, attrs) do
+    song
+    |> Song.changeset(attrs, scope)
+    |> Repo.update()
+  end
+
+  @doc """
+  Returns a changeset for a song.
+  """
+  def change_song(%Song{} = song, attrs, %Scope{} = scope) do
+    Song.changeset(song, attrs, scope)
+  end
 end

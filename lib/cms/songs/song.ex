@@ -17,6 +17,7 @@ defmodule CMS.Songs.Song do
   def changeset(song, attrs, %Scope{} = scope) do
     song
     |> cast(attrs, [:title, :body])
+    |> validate_required([:title, :body])
     |> put_change(:organization_id, scope.organization.id)
   end
 end
