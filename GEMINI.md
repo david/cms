@@ -7,11 +7,10 @@ This guide outlines the critical principles and conventions for working on this 
 - **Propose, Don't Impose:** Discuss non-trivial changes before implementing.
 - **Look Before You Leap:** Research external libraries before writing code.
 - **Verify, Don't Assume:** When refactoring, search the entire codebase for instances of the pattern you are changing. Do not rely solely on the files listed in the issue description.
-- **Hypothesize and Verify:** Treat fixes as hypotheses and verify them with tests.
 - **Consult Docs Before Guessing:** When an error occurs, consult official documentation first.
+- **Hypothesize and Verify:** Treat fixes as hypotheses and verify them with tests.
 - **Keep Architecture Document Updated:** After implementing a new feature, update `docs/reference_architecture.md` to reflect the changes.
 - **Do Not Start Servers:** Never start servers, whether through `docker compose up` or `iex -S mix phx.server`.
-- **Use `get_issue` for Issue Details:** When given a reference like `#80`, assume it is a GitHub issue number and use the `get_issue` tool to retrieve its details.
 - **Trace Code with `tidewave` Tools:** When searching for a feature's implementation, start by inspecting the application's routes using the available `tidewave` tools. This will identify the controller or LiveView that serves as the entry point for the feature.
 
 ### Coding Workflow
